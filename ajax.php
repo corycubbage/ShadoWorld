@@ -1,5 +1,6 @@
 <?php
 $con=mysql_connect('localhost','thecscom_phpb717','0f6m8PS1at');
+// test
 mysql_select_db('thecscom_phpb923',$con);
 $id = $_GET['id'];
 $input = $_GET['input'];
