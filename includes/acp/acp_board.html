@@ -1,0 +1,1124 @@
+
+<!-- INCLUDE overall_header.html -->
+<script src="//code.jquery.com/jquery-1.9.1.js"></script>
+<script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+<script>
+//archi11
+    $(document).ready(function() {
+        $("#selected_gear").css('width', '119px');
+        $("#new_current_hit").val('');
+        $("#new_maximum_hit").val('');
+        $("#new_good_condition").val('');
+        $("#new_bad_condition").val('');
+        $("#new_level").val('');
+        $("#new_minimum_level").val('');
+        $("#new_maximum_level").val('');
+        $("#new_minimum_ability").val('');
+        $("#new_maximum_ability").val('');
+        $("#new_gear").val('');
+        $("#new_spell").val('');
+        
+
+//ajax call to add  spell
+        $("#variable_spells").click(function() {
+            var i = $('#increment_variable_spell').val();
+            var user_id = $('#user_id').val();
+            $.ajax({
+                type: "POST",
+                async: false,
+                //url: 'includes/ucp/ucp_variable_create.php?Id='+i+'USER_ID'+user_id,
+                url: 'includes/ucp/ucp_variable_spell_create.php?Id=' + i + '&user_id=' + user_id,
+                data: '',
+                success: function(result) {
+                    $('#additionalspell').append(result);
+                    var j;
+                    if (i == '')
+                    {
+                        j = 1;
+                    }
+                    else
+                    {
+                        j = parseInt(i) + 1;
+                    }
+
+                    $('#increment_variable_spell').val(j);
+                }
+            });
+        });
+
+        //ajax call to add ability
+        $("#variable_speability").click(function() {
+            var i = $('#increment_variable_ability').val();
+            var user_id = $('#user_id').val();
+            $.ajax({
+                async: false,
+                type: "POST",
+                //url: 'includes/ucp/ucp_variable_create.php?Id='+i+'USER_ID'+user_id,
+                url: 'includes/ucp/ucp_variable_ability_create.php?Id=' + i + '&user_id=' + user_id,
+                data: '',
+                success: function(result) {
+                    $('#additionalability').append(result);
+                    var j;
+                    if (i == '')
+                    {
+                        j = 1;
+                    }
+                    else
+                    {
+                        j = parseInt(i) + 1;
+                    }
+
+                    $('#increment_variable_ability').val(j);
+                }
+            });
+        });
+
+        //add gear  
+        $("#add_gear").click(function() {
+
+            var add = 'Addtext';
+
+            $.ajax({
+                async: false,
+                type: "POST",
+                //url: 'includes/ucp/ucp_add_gear.php?Id='+i+'USER_ID'+user_id,
+                url: 'includes/ucp/ucp_add_delete_gear.php?addtext=' + add,
+                data: '',
+                success: function(result) {
+                    $("#div_gear_name").remove();
+                    $("#gear_quantity").append(result);
+                }
+            });
+
+        });
+        //ajax call to add gear
+        $("#add_quantity").click(function() {
+            var seleted = $("#gear").val();
+            if (seleted)
+            {
+
+                $.ajax({
+                    async: false,
+                    type: "POST",
+                    //url: 'includes/ucp/ucp_add_gear.php?Id='+i+'USER_ID'+user_id,
+                    url: 'includes/ucp/ucp_add_delete_gear.php?seleted=' + seleted,
+                    data: '',
+                    success: function(result) {
+                        $("#div_gear_quantity").remove();
+                        $("#gear_quantity").append(result);
+                    }
+                });
+            }
+            else
+            {
+                alert("Please Select Gear");
+            }
+        });
+
+        //delete gear  
+        $("#delete_gear").click(function() {
+            var Delete = $("#gear").val();
+            var post_id = $("#post_id").val();
+            var user_id = $("#user_id").val();
+            if (Delete)
+            {
+                var add = 'Addtext';
+
+                $.ajax({
+                    async: false,
+                    type: "POST",
+                    //url: 'includes/ucp/ucp_add_gear.php?Id='+i+'USER_ID'+user_id,
+                    url: 'includes/ucp/ucp_add_delete_gear.php?Delete=' + Delete + '&user_id=' + user_id + '&post_id=' + post_id,
+                    data: '',
+                    success: function(result) {
+                        //alert(result);
+                        window.location.reload();
+                    }
+                });
+            }
+            else
+            {
+                alert("Please Select Gear");
+            }
+        });
+
+        //add skill values
+        $("#add_skill_value").click(function() {
+            var add = 'Addtext';
+            var seleted = $("#skill").val();
+            if (seleted)
+            {
+
+                $.ajax({
+                    type: "POST",
+                    async: false,
+                    //url: 'includes/ucp/ucp_add_gear.php?Id='+i+'USER_ID'+user_id,
+                    url: 'includes/ucp/ucp_add_delete_skill.php?addtext=' + add + '&seleted=' + seleted,
+                    data: '',
+                    success: function(result) {
+                        $("#div_skill_value").remove();
+                        $("#skill_value").append(result);
+                    }
+                });
+            }
+            else
+            {
+                alert("Please Select Skill");
+            }
+        });
+
+        //add more skill values
+
+        //edit_skill
+        $("#edit_skill").click(function() {
+            var edit = 'Edittext';
+            var seleted = $("#skill").val();
+            if (seleted)
+            {
+
+                $.ajax({
+                    type: "POST",
+                    async: false,
+                    //url: 'includes/ucp/ucp_add_gear.php?Id='+i+'USER_ID'+user_id,
+                    url: 'includes/ucp/ucp_add_delete_skill.php?Edittext=' + edit + '&seleted=' + seleted,
+                    data: '',
+                    success: function(result) {
+                        $("#div_skill_value").remove();
+                        $("#skill_value").append(result);
+                    }
+                });
+            }
+            else
+            {
+                alert("Please Select Skill");
+            }
+        });
+
+
+    });
+    function addquantity()
+    {
+        var quality = [];
+        var qualityval = [];
+        var gear = [];
+        var i = 0;
+        var k = 0;
+        $('input[name="quality[]"]').each(function() {
+            qualityval[k++] = $(this).val();
+            quality[i++] = $(this).attr('id');
+        });
+
+        var j = 0;
+        $('#gear :selected').each(function() {
+            gear[j++] = $(this).val();
+        });
+        var l;
+        for (l = 0; l < quality.length; l++)
+        {
+            if (quality[l] == gear[l])
+            {
+                var numbers = /^[0-9]+$/;
+                if (qualityval[l].match(numbers))
+                {
+                    $g = gear[l].split("(")
+                    $('#gear option:contains("' + gear[l] + '")').val($g[0] + "(" + qualityval[l] + ")");
+                    $('#gear option:contains("' + gear[l] + '")').text($g[0] + "(" + qualityval[l] + ")");
+                }
+                else
+                {
+                    alert('Please Enter ' + gear[l] + ' Quantity numeric');
+                }
+                if (l == (quality.length - 1))
+                {
+                    $('#div_gear_quantity').hide();
+                }
+            }
+
+        }
+    }
+    function remove_level1(variable)
+    {
+        var bool = confirm("Do you Want to delete this Spell ?");
+        if (bool == true)
+        {
+            var level = variable.id;
+            var post_uid = variable.name;
+
+            $.ajax({
+                type: "POST",
+                url: 'includes/ucp/ucp_delete_level.php?Level=' + level + '&Id=' + post_uid,
+                data: '',
+                success: function(result) {
+                    window.location.reload();
+                }
+            });
+        }
+    }
+    function remove_ability1(variable)
+    {
+        var bool = confirm("Do you Want to delete this Specialy Ability ?");
+        if (bool == true)
+        {
+            var ability = variable.id;
+            var post_uid = variable.name;
+
+            $.ajax({
+                type: "POST",
+                url: 'includes/ucp/ucp_delete_level.php?Ability=' + ability + '&Idability=' + post_uid,
+                data: '',
+                success: function(result) {
+                    window.location.reload();
+                }
+            });
+
+        }
+
+    }
+    function addgear() {
+        var newgear = $('#new_gear').val();
+        var gear = newgear.replace(/\//g, "&#47");
+
+        if (gear != "")
+        {
+            $("#gear").append("<option value='" + gear + "'>" + gear + "</option>");
+            $("#div_gear_name").remove();
+        }
+        else
+        {
+            alert("Please Enter Gear Name");
+        }
+    }
+    function remove_current_hit()
+    {
+
+        var change_current_hit = $("#select_curren_hit option:selected").text();
+        $.ajax({
+            type: "POST",
+            url: 'mods/ucp_remove_variable_admin.php?change_current_hit=' + change_current_hit,
+            data: '',
+            success: function(result) {
+                window.location.reload();
+            }
+        });
+    }
+    function remove_maximum_hit()
+    {
+        var select_maximum_hit = $("#select_maximum_hit option:selected").text();
+        $.ajax({
+            type: "POST",
+            url: 'mods/ucp_remove_variable_admin.php?select_maximum_hit=' + select_maximum_hit,
+            data: '',
+            success: function(result) {
+                window.location.reload();
+            }
+        });
+    }
+    function remove_good_condition()
+    {
+        var selected_positive_condition = $("#selected_positive_condition option:selected").text();
+        $.ajax({
+            type: "POST",
+            url: 'mods/ucp_remove_variable_admin.php?selected_positive_condition=' + selected_positive_condition,
+            data: '',
+            success: function(result) {
+                window.location.reload();
+            }
+        });
+    }
+    function remove_negative_condition()
+    {
+        var selected_negative_condition = $("#selected_negative_condition option:selected").text();
+        $.ajax({
+            type: "POST",
+            url: 'mods/ucp_remove_variable_admin.php?selected_negative_condition=' + selected_negative_condition,
+            data: '',
+            success: function(result) {
+                window.location.reload();
+            }
+        });
+    }
+    function remove_level()
+    {
+        var selected_level = $("#selected_level option:selected").text();
+        $.ajax({
+            type: "POST",
+            url: 'mods/ucp_remove_variable_admin.php?selected_level=' + selected_level,
+            data: '',
+            success: function(result) {
+                window.location.reload();
+            }
+        });
+    }
+
+    function remove_level_min()
+    {
+        var selected_level_min = $("#selected_level_min option:selected").text();
+        $.ajax({
+            type: "POST",
+            url: 'mods/ucp_remove_variable_admin.php?selected_level_min=' + selected_level_min,
+            data: '',
+            success: function(result) {
+                window.location.reload();
+            }
+        });
+    }
+    function remove_level_max()
+    {
+        var selected_level_max = $("#selected_level_max option:selected").text();
+        $.ajax({
+            type: "POST",
+            url: 'mods/ucp_remove_variable_admin.php?selected_level_max=' + selected_level_max,
+            data: '',
+            success: function(result) {
+                window.location.reload();
+            }
+        });
+    }
+    function remove_min_ability()
+    {
+        var selected_min_ability = $("#selected_min_ability option:selected").text();
+        $.ajax({
+            type: "POST",
+            url: 'mods/ucp_remove_variable_admin.php?selected_min_ability=' + selected_min_ability,
+            data: '',
+            success: function(result) {
+                window.location.reload();
+            }
+        });
+    }
+    function remove_max_ability()
+    {
+        var selected_max_ability = $("#selected_max_ability option:selected").text();
+        $.ajax({
+            type: "POST",
+            url: 'mods/ucp_remove_variable_admin.php?selected_max_ability=' + selected_max_ability,
+            data: '',
+            success: function(result) {
+                window.location.reload();
+            }
+        });
+    }
+
+
+
+    function remove_gear()
+    {
+        var selected_gear = $("#selected_gear option:selected").text();
+        $.ajax({
+            type: "POST",
+            url: 'mods/ucp_remove_variable_admin.php?selected_gear=' + selected_gear,
+            data: '',
+            success: function(result) {
+               window.location.reload();
+            }
+        });
+    }
+    function remove_spell()
+    {
+        var selected_spell = $("#selected_spell option:selected").text();
+        $.ajax({
+            type: "POST",
+            url: 'mods/ucp_remove_variable_admin.php?selected_spell=' + selected_spell,
+            data: '',
+            success: function(result) {
+               window.location.reload();
+            }
+        });
+    }
+
+    function remove_extra_level(clicked)
+    {
+        var name = clicked.name;
+        var splits = name.split('_');
+        var id = parseInt(splits[2]) + 1;
+        var pid = splits[0];
+        var uid = splits[1];
+        var sp = splits[2];
+        var val = $("#increment_variable_spell").val();
+        var value = parseInt(val) - 1;
+        $("#increment_variable_spell").val(value);
+        $('[name="' + clicked.name + '"]').parent().parent().parent().remove();
+        var i;
+        for (i = 0; i < value; i++)
+        {
+            $('label[for=select_current_count' + id + ']').attr('for', 'select_current_count' + sp);
+
+            $("#select_level" + id).attr('name', 'select_level' + sp);
+            $("#select_level" + id).attr('id', 'select_level' + sp);
+
+            $("#select_level_min" + id).attr('name', 'select_level_min' + sp);
+            $("#select_level_min" + id).attr('id', 'select_level_min' + sp);
+
+            $("#select_level_max" + id).attr('name', 'select_level_max' + sp);
+            $("#select_level_max" + id).attr('id', 'select_level_max' + sp);
+
+            $('[name="' + pid + '_' + uid + '_' + id + '"]').attr('name', pid + '_' + uid + '_' + sp);
+            id++;
+            sp++;
+        }
+    }
+    function remove_extra_ability(clicked)
+    {
+
+        var name = clicked.name;
+        var splits = name.split('_');
+        var id = parseInt(splits[2]) + 1;
+        var pid = splits[0];
+        var uid = splits[1];
+        var sp = splits[2];
+        var val = $("#increment_variable_ability").val();
+        var value = parseInt(val) - 1;
+        $("#increment_variable_ability").val(value);
+        $('[name="' + clicked.name + '"]').parent().parent().parent().remove();
+        var i;
+        for (i = 0; i < value; i++)
+        {
+            $('[name="ability' + id + '"]').attr('name', 'ability' + sp);
+            $('label[for=minmaxability' + id + ']').attr('for', 'minmax_ability' + sp);
+            $("#min_ability" + id).attr('name', 'min_ability' + sp);
+            $("#min_ability" + id).attr('id', 'min_ability' + sp);
+            $("#max_ability" + id).attr('name', 'max_ability' + sp);
+            $("#max_ability" + id).attr('id', 'max_ability' + sp);
+            $('[name="' + pid + '_' + uid + '_' + id + '"]').attr('name', pid + '_' + uid + '_' + sp);
+            id++;
+            sp++;
+        }
+    }
+
+function addcusotmeskill()
+{
+    var skill = [];
+    var skill1 = [];
+    var skilltype = [];
+    var skillval = [];
+    var gear = [];
+    var i = 0;
+    var j = 0;
+    var k = 0;
+
+    var type = $(".type_id").val();
+
+    $('input[name="type[]"]').each(function() {
+        skilltype[i++] = $(this).val();
+
+    });
+
+    $('input[name="value[]"]').each(function() {
+        skillval[k++] = $(this).val();
+        skill[j++] = $(this).attr('id');
+
+    });
+
+    var m = 0;
+    $('#skill :selected').each(function() {
+        skill1[m++] = $(this).val();
+    });
+    var l;
+    var ll = 0;
+    for (l = 0; l < skill.length; l++)
+    {
+        if (skill[l] == skill1[l])
+        {
+            var numbers = /^[0-9]+$/;
+            if (skillval[l].match(numbers))
+            {
+                var g = skill1[l].split("[");
+                var gg = g[0].split("(");
+
+                if (gg[0] == 'Craft' || gg[0] == 'Knowledge' || gg[0] == 'Perform' || gg[0] == 'Profession')
+                {
+                    if (skilltype[ll] != null)
+                    {
+                        $('#skill option:contains("' + skill1[l] + '")').val(gg[0] + "(" + skilltype[ll] + ")" + "[" + skillval[l] + "]");
+                        $('#skill option:contains("' + skill1[l] + '")').text(gg[0] + "(" + skilltype[ll] + ")" + "[" + skillval[l] + "]");
+
+                    }
+                    else
+                    {
+                        alert("Enter Type of skill " + skilltype[ll]);
+                    }
+                    //ll++;
+                }
+                else
+                {
+
+                    $('#skill option:contains("' + skill1[l] + '")').val(gg[0] + "[" + skillval[l] + "]");
+                    $('#skill option:contains("' + skill1[l] + '")').text(gg[0] + "[" + skillval[l] + "]");
+
+                }
+
+            }
+
+            else
+            {
+                alert('Please Enter ' + skill1[l] + ' Value numeric');
+            }
+
+            if (l == (skillval.length - 1))
+            {
+                $('#div_skill_value').hide();
+            }
+        }
+        else
+        {
+            var g1 = skill[l].split("[");
+            var gg1 = g1[0].split("(");
+
+            if (gg1[0] == 'Craft' || gg1[0] == 'Knowledge' || gg1[0] == 'Perform' || gg1[0] == 'Profession')
+            {
+                $("#skill").append("<option  value='" + gg1[0] + "(" + skilltype[ll] + ")" + "[" + skillval[ll] + "]' selected='selected'>" + gg1[0] + "(" + skilltype[ll] + ")" + "[" + skillval[ll] + "] </option>");
+                // ll++;
+            }
+            else
+            {
+                $("#skill").append("<option  value='" + gg1[0] + "[" + skillval[ll] + "]' selected='selected'>" + gg1[0] + "[" + skillval[ll] + "] </option>");
+                // ll++;
+            }
+            if (l == (skillval.length - 1))
+            {
+                $('#div_skill_value').hide();
+            }
+
+        }
+        ll++;
+
+    }
+
+    $("#skill").html($('#skill option').sort(function(x, y) {
+        return $(x).text() < $(y).text() ? -1 : 1;
+    }))
+    e.preventDefault();
+
+}
+
+    function hit()
+    {
+        if ($('#hit_curr').is(':visible') == false)
+        {
+            $("#hit_curr").show();
+            $('#hit_current').text('- Hit Points');
+        }
+        else
+        {
+            $("#hit_curr").hide();
+            $('#hit_current').text('+ Hit Points');
+        }
+    }
+    function condition_status() {
+
+        if ($('#condi_stat').is(':visible') == false)
+        {
+            $("#condi_stat").show();
+            $('#condi_status').text('- Conditions and Status Effects');
+        }
+        else
+        {
+            $("#condi_stat").hide();
+            $('#condi_status').text('+ Conditions and Status Effects');
+        }
+    }
+    function Spells() {
+
+        if ($('#spell').is(':visible') == false)
+        {
+            $("#spell").show();
+            $('#spells').text('- Spells');
+        }
+        else
+        {
+            $("#spell").hide();
+            $('#spells').text('+ Spells');
+        }
+    }
+
+    function special_abilities() {
+
+        if ($('#special_abilities').is(':visible') == false)
+        {
+            $("#special_abilities").show();
+            $('#special_abili').text('- Special Abilities');
+        }
+        else
+        {
+            $("#special_abilities").hide();
+            $('#special_abili').text('+ Special Abilities');
+        }
+    }
+
+    function skills_fn() {
+
+        if ($('#skills_fn').is(':visible') == false)
+        {
+            $("#skills_fn").show();
+            $('#skill_fn').text('- Skills');
+        }
+        else
+        {
+            $("#skills_fn").hide();
+            $('#skill_fn').text('+ Skills');
+        }
+    }
+
+    function offense() {
+
+        if ($('#offens').is(':visible') == false)
+        {
+            $("#offens").show();
+            $('#offen').text('- Offense');
+        }
+        else
+        {
+            $("#offens").hide();
+            $('#offen').text('+ Offense');
+        }
+    }
+
+    function gear_fn() {
+
+        if ($('#gear2').is(':visible') == false)
+        {
+            $("#gear2").show();
+            $('#gear1').text('- Gear');
+        }
+        else
+        {
+            $("#gear2").hide();
+            $('#gear1').text('+ Gear');
+        }
+    }
+
+    function other() {
+
+        if ($('#other2').is(':visible') == false)
+        {
+            $("#other2").show();
+            $('#other1').text('- Other');
+        }
+        else
+        {
+            $("#other2").hide();
+            $('#other1').text('+ Other');
+        }
+    }
+function addskilldecription()
+{
+
+    $("#addskilldecription").show();
+    var seleted = $("#skill").val();
+
+    var i;
+    var html;
+    for (i = 0; i < seleted.length; i++)
+    {
+        $("#addskilldecription").append(seleted[i] + ': <input type=text name=ability id=name/><br /><br />');
+        if (i == (seleted.length - 1))
+        {
+            $("#addskilldecription").append('<br/><input type=button name=ability id=name class="button1" value="Add Skill Description"/>');
+        }
+
+    }
+    $('#add_skill_description').attr('disabled', true);
+}
+
+function addcusotmeskill1(selected)
+{
+    var ct = $('input[name="' + selected.name + '"]').attr('count');
+
+    var g = selected.name.split("[");
+    var gg = g[0].split("(");
+    //if ($(':input[type="text"]').hasClass("type_id"))
+    if (gg[0] == 'Craft' || gg[0] == 'Knowledge' || gg[0] == 'Perform' || gg[0] == 'Profession')
+    {
+        $('#tableid').append('<tr><td>' + gg[0] + '</td><td>&nbsp;&nbsp;&nbsp;Type :<input id="' + selected.name + '_' + ct + '" class="type_id" type="text" value="" name="type[]"></td></tr><tr><td></td><td>&nbsp;&nbsp;&nbsp;Value:<input id="' + selected.name + '" type="text" value="" name="value[]"><br></td></tr>');
+    }
+    else
+    {
+        $('#tableid').append('<tr><td>' + gg[0] + '</td><td>&nbsp;&nbsp;&nbsp;Value:<input id="' + selected.name + '_' + ct + '" type="text" value="" name="value[]"><br></td></tr>');
+    }
+    $('input[name="' + selected.name + '"]').attr('count', parseInt(ct) + 1);
+
+}
+
+function addconstatusdecription()
+{
+
+    $("#addnegative_condescription").show();
+    $("#addpositive_consdescription").show();
+    var nc = $("#negative_condition").val();
+    var pc = $("#positive_condition").val()//;alert(ng);
+    var i;
+    var html;
+    for (i = 0; i < nc.length; i++)
+    {
+        $("#addnegative_condescription").append(nc[i] + ': <input type=text name=con_status id=name size=5/><br /><br />');
+        if (i == (nc.length - 1))
+        {
+            $("#addnegative_condescription").append('<br/><input type=button name=nc id=name class="button1" value="Add"/>');
+        }
+
+    }
+
+    for (i = 0; i < pc.length; i++)
+    {
+        $("#addpositive_consdescription").append(pc[i] + ': <input type=text name=con_status id=name size=5/><br /><br />');
+        if (i == (pc.length - 1))
+        {
+            $("#addpositive_consdescription").append('<br/><input type=button name=pc id=name class="button1" value="Add"/>');
+        }
+
+    }
+
+    $('#add_con_status_description').attr('disabled', true);
+}
+function addspelldecription()
+{   
+    $("#addspelldescription").show();    
+    var a = $("#increment_variable_spell").val();
+    var ct = parseInt(a);
+    var i;
+    var html;
+    for (i = 0; i < ct; i++)
+    {
+        $("#addspelldescription").append('Spell ' + i + ': <input type=text name=spell id=name/><br /><br />');
+        if (i == (ct - 1))
+        {
+            $("#addspelldescription").append('<br/><input type=button name=spell class="button1" id=name value="Add Spell Description"/>');
+        }
+
+    }
+    $('#add_spell_description').attr('disabled', true);
+}
+
+
+//    function addmoreCustomeskill()
+//    {
+//        //alert("hii"); 
+//        var add = 'Addtext';//alert(add);
+//        var seleted = $("#skill").val();//alert(selected);
+//        if (seleted)
+//        {
+//
+//            var html = $("#div_skill_value").html();
+//            alert(html);
+//            var text = "<table><tr><td>" + seleted + "</td><td>Value : <input type='text' id=" + seleted + "</td></tr></table>";
+//            var html1 = html + text;
+//            $("#div_skill_value").append(html1);
+//
+//            alert($("#div_skill_value").html());
+//
+////                $.ajax({
+////                    type: "POST",
+////                    async: false,
+////                    //url: 'includes/ucp/ucp_add_gear.php?Id='+i+'USER_ID'+user_id,
+////                    url: 'includes/ucp/ucp_add_delete_skill.php?addtext=' + add + '&seleted=' + seleted,
+////                    data: '',
+////                    success: function(result) {
+////                        //alert("hi");
+////                        $("#div_skill_value").remove();
+////                        $("#skill_value").append(result);alert(result);
+////                        //alert("success");
+////                    }
+////                });
+//        }
+//        else
+//        {
+//            alert("Please Select Skill");
+//        }
+//    }
+
+//archi11
+</script>
+<a name="maincontent"></a>
+
+<h1>{L_TITLE}</h1>
+
+<p>{L_TITLE_EXPLAIN}</p>
+
+<!-- IF S_ERROR -->
+<div class="errorbox">
+    <h3>{L_WARNING}</h3>
+    <p>{ERROR_MSG}</p>
+</div>
+<!-- ENDIF -->
+<!-- IF PLAYER_ID == null and SUCCESS == 0-->
+<form id="acp_board" method="post" action="{U_ACTION}">
+    <!-- IF MODE == 'signature'  -->
+    <fieldset>
+        <legend>{CHANGE_PLAYER_INFO}</legend>
+
+        {TABLE_START}
+    </fieldset>
+    <!-- ENDIF -->
+    <!-- BEGIN options -->
+    <!-- IF options.S_LEGEND -->
+    <!-- IF not options.S_FIRST_ROW -->
+</fieldset>
+
+
+<!-- ENDIF -->
+<fieldset>
+    <legend>{options.LEGEND}</legend>
+    <!-- ELSE -->
+
+    <dl>
+        <dt><label for="{options.KEY}">{options.TITLE}:</label><!-- IF options.S_EXPLAIN --><br /><span>{options.TITLE_EXPLAIN}</span><!-- ENDIF --></dt>
+        <dd>{options.CONTENT}</dd>
+    </dl>
+    <!-- ENDIF -->
+    <!-- END options -->
+
+    <!-- IF S_AUTH -->
+    <!-- BEGIN auth_tpl -->
+    {auth_tpl.TPL}
+    <!-- END auth_tpl -->
+    <!-- ENDIF -->
+
+    <p class="submit-buttons">
+        <input class="button1" type="submit" id="submit" name="submit" value="{L_SUBMIT}" />&nbsp;
+        <input class="button2" type="reset" id="reset" name="reset" value="{L_RESET}" />
+    </p>
+    {S_FORM_TOKEN}
+</fieldset>
+</form>
+<!-- ENDIF -->
+<!-- IF !(PLAYER_ID == null) and SUCCESS == 0-->
+<font color='#228822' style="font-size:22px"> {PLAYER_NAME}</font>
+<form id="acp_board" method="post" action="#">
+    <div id="variables" style="display:block">
+        <br>
+        <h4 style="margin-left: 30px"><a  id="hit_current" href="javascript:void(0)" name='hit_current' onclick="hit();" style="color:blue">+ Hit Points</a></h4>
+        <div id="hit_curr" style="display: none;margin-left: 30px">
+            <dl>
+                <dt><label for="hit_count" > {L_HIT_CURRENT_COUNT}:</label><br /></dt>
+
+                <dd style="margin-left: 201px; margin-top: ;">
+                    <label for="select_level_count">{L_SELECT_COUNT}: <select name="select_current_count" id="select_current_count" style="width:5em;">{S_HIT_CURRENT_COUNT}</select>/<select name="select_maximum_count" id="select_maximum_count" style="width:5em;">{S_HIT_MAXIMUM_COUNT}</select></label>&nbsp;&nbsp;<label for="non_lethal"><b>{L_NON_LETHAL_COUNT} :</b>&nbsp;&nbsp;<select name="select_non_lethal" id="select_non_lethal" style="width:5em;">{S_NON_LETHAL}</select></label> 
+                </dd>
+            </dl>
+        </div>
+
+        <br>
+        <!--hit_count end
+        <!--condition-->
+        <h4 style="margin-left: 30px"><a  id="condi_status" href="javascript:void(0)" name='condi_status' onclick="condition_status();" style="color:blue">+ Conditions and Status Effects</a></h4>
+        <div id="condi_stat" style="display: none;margin-left: 30px">
+            <dl>
+                <dt> <label for="condition">{L_CONDITION_AND_STATUS_EFFECT}:</dt>
+                    <dd>
+
+                        <table style="width: 26%">
+
+                            <tr><td><select name="negative_condition[]" id="negative_condition" style="width:12em;color: tomato" multiple>{S_NEGATIVE_CONDITION}</select></td>
+                                <td><select name="positive_condition[]" id="positive_condition" style="width:12em;color: blue" multiple>{S_POSITIVE_CONDITION}</select></td>
+                                <td><input type="button" id="add_con_status_description" name="add_con_status_desc"  value="Add Description" onclick="addconstatusdecription();"  class="button1" /></td>
+                            </tr>
+                        </table>
+                    </dd>
+                    <dd>
+                            <div style="margin-left:206px;overflow: hidden;">
+                                <div id="addnegative_condescription" name="addnegative_condescription"  style="float: left;"></div>
+                                <div id="addpositive_consdescription" name="addpositive_consdescription" style="float: right;margin-right:598px;"></div>
+                            </div>
+                    </dd>
+            </dl> 
+        </div>
+        <br>
+        <!--condition end>
+        <!--ability-->
+        <h4 style="margin-left: 30px"><a  id="spells" href="javascript:void(0)" name='spells' onclick="Spells();" style="color:blue">+ Spells</a></h4>
+        <div id="spell" style="display: none;margin-left: 30px">
+            <dl>
+                <dt class ="dtwidth"><label for="hit_count" > {L_SPELLS}:</label><br />
+                <input id="variable_spells" class="button1 addaditinal" type="button" name="variable_spells" value="Add Additional Spells" style="margin-left:0px; margin-top:6px;height:37px">
+                </dt>
+
+                <!-- IF S_VARIABLE_LEVEL == yes-->
+                <dd style="margin-left: 212px; margin-top:26px;"> 
+                    <table><tr><td><input type="button" name='{LAST_LEVEL_NAME}' id='0' value="-" class=button1 addaditinal onclick="return remove_level(this);" style="width: 25px;height: 22px;"></td><td>&nbsp;&nbsp;{S_SPELL_VARIABLE}&nbsp;&nbsp;</td><td>
+                                <label for="level" style="margin-left:0px;">{L_LEVEL}: <select name="select_level" id="select_level" style="width:5em;">{S_LEVEL}</select></label> 
+                                <label for="minmax_level">&nbsp;&nbsp;Current/Max: <select name="select_level_min" id="select_level_min" style="width:5em;">{S_LEVEL_MIN}</select>
+                                    /<select name="select_level_max" id="select_level_max" style="width:5em;">{S_LEVEL_MAX}</select></label>
+                            </td></tr></table>
+
+                </dd>
+                <input type="hidden" name="increment_variable_spell" id="increment_variable_spell" value="1">
+                <div id="additionalspell" style="margin-left:202px;margin-top:4px"></div>
+                <!-- ENDIF -->
+                <dd>
+                            <input type="button" id="add_spell_description" name="add_desc"  value="Add Description" onclick="addspelldecription();" style="margin-left:468px;margin-top:-7px;" class="button1" />
+                        </dd>
+                <!-- IF S_VARIABLE_LEVEL == no-->
+                <dd style="margin-left: 212px; margin-top:26px;">
+                    <table style="margin-left:14px; margin-top:-29px;width:50%;"><tr><td>{BUTTON_LEVEL}</td><td>{S_EDIT_LEVEL}</td><td>{S_EDIT_MIN_LEVEL}</td><td>{S_EDIT_MAX_LEVEL}</td></tr></table>
+                    <div id="additionalspell" style="margin-left:-1px;margin-top:9px"></div>
+                    {S_INCREMENR_SPELL}
+                </dd>
+                <!-- ENDIF -->
+<dd><div id="addspelldescription" name="addspelldescription" style="display:none;margin-left:198px;margin-top: 20px;"></div></dd>
+                <!-- IF S_VARIABLE_LEVEL == null-->
+                <dd>
+                    <div id="additionalspell" style="margin-left:211px"></div>
+                    <input type="hidden" name="increment_variable_spell" id="increment_variable_spell" value="">
+                </dd>
+                <!-- ENDIF -->
+
+            </dl>
+        </div>
+        <br />
+
+        <h4 style="margin-left: 30px"><a  id="special_abili" href="javascript:void(0)" name='special_abili' onclick="special_abilities();" style="color:blue">+ Special Abilities</a></h4>
+        <div id="special_abilities" style="display: none;margin-left: 30px">
+            <dl>
+                <dt class ="dtwidth"><label for="hit_count" > {L_SPECIAL_ABILITY}:</label><br />
+                <input id="variable_speability" class="button1 addaditinal" type="button" name="variable_speability" value="Add Additional Ability" style="margin-left:0px;margin-top:18px;height:35px">
+                </dt>
+
+                <!-- IF S_VARIABLE_ABILITY == yes-->
+                <dd>
+                    <div style="margin-left: 199px;">  
+                        <input type="hidden" name="increment_variable_ability" id="increment_variable_ability" value="1">
+
+                        <table style="width:auto;margin-left:10px"><tr><td> <input type="button" name="{LAST_LEVEL_NAME}" id="0" value="-" class="button1" addaditinal="" onclick="return remove_ability(this);" style="width: 25px;height: 22px;"/>  </td><td>
+                                    &nbsp;{S_EDIT_ABILITY_NAME} </td><td>
+                                    <label for="minmax_ability">&nbsp;&nbsp;Current/Max :</label> 
+                                    <select name="min_ability" id="min_ability" style="width:5em;">{S_MIN_ABILITY}</select>/<select name="max_ability" id="max_ability" style="width:5em;">{S_MAX_ABILITY}</select></label>
+
+                                </td></tr></table>
+
+                        <div id="additionalability" style="margin-left:0px;margin-top:-6px"></div>
+
+                    </div>
+                </dd>
+                <!-- ENDIF -->
+
+                <!-- IF S_VARIABLE_ABILITY == no-->
+                <dd style="margin-left: 195px;">
+                    <div>    
+                        <table style="width:auto;margin-left:10px"><tr><td>{BUTTON_ABILITY}</td><td>{S_EDIT_ABILITY_NAME}</td><td>{S_EDIT_MIN_ABILITY}</td><td>{S_EDIT_MAX_ABILITY}</td></tr></table></div>
+                    {S_INCREMENR_ABILITY}
+                    <div id="additionalability" style="margin-left:0px;margin-top:-6px"></div>
+                </dd>
+                <!-- ENDIF -->
+                <!-- IF S_VARIABLE_ABILITY == null-->
+                <dd style="margin-left: 195px;">
+                    <div id="additionalability" style="margin-left:198px"></div>
+                    <input type="hidden" name="increment_variable_ability" id="increment_variable_ability" value="">
+                </dd>
+                <!-- ENDIF -->
+
+            </dl> 
+        </div>
+        <!-- ability end-->
+        <br /> 
+        <!-- quick skill start--> 
+        <h4 style="margin-left: 30px"><a  id="skill_fn" href="javascript:void(0)" name='skill_fn' onclick="skills_fn();" style="color:blue">+ Skills</a></h4>
+        <div id="skills_fn" style="display: none;margin-left: 30px">       
+            <dl>
+                <dt class ="dtwidth"><label for="quick_skill" > {L_QUICK_SKILL}:</label><br /></dt>
+
+                <dd style="margin-left: 201px;">
+                    <table style="width:auto;">
+                        <tr><td rowspan="4"><select name="skill[]" id="skill" style="width:12em; height:140px;" multiple>{S_QUICK_SKILL}</select></label>&nbsp;&nbsp;</td>
+                            <td><input type="button" name="add_skill_value" id="add_skill_value" value="Add Custom Skill" class="button1"></td></tr>
+                        <tr><td><input type="button" name="edit_skill" id="edit_skill" value="Edit Skill Value" class="button1"></td></tr>
+                        <tr><td><input type="button" name="delete_skill" id="delete_skill" value="Delete Skill" class="button1"></td></tr>
+                        <tr><td><input type="button" id="add_skill_description" name="add_skill_desc"  value="Add Description" onclick="addskilldecription();"  class="button1" /></td></tr>
+                    </table>
+                    <div id="skill_value"></div>
+                </dd>
+                <dd>
+                            <div id="addskilldecription" name="addskilldecription" style="display:none;margin-left:200px;margin-top: 10px;"></div>
+                        </dd>
+
+            </dl>
+        </div>
+        <br />
+        <!-- quick skill ends-->
+        <!-- quick offense starts-->
+           <h4 style="margin-left: 30px"><a  id="offen" href="javascript:void(0)" name='offen' onclick="offense();" style="color:blue">+ Offense</a></h4>
+
+        <div id="offens" style="display: none;margin-left: 30px">
+
+            <dl>
+                <dt class ="dtwidth"><br><label for="offense" >{L_OFFENSE}:</label><br /></dt>
+                <dd style="margin-left: 201px; margin-top: -6px">
+                    <div>
+                        <table cellspacing="11">
+                            <tr>
+                                <td><select name="weapenbox[]" id="weapenbox" style="width: auto; height: 141px;" multiple="">{S_WEAPON_NAME}</select></td>
+                                <td>
+                                    <input type="button" id="addweaponame" name="addweaponame" value="Add New Weapon" onclick="addname();" class="button1"><br><br>
+                                    <input type="button" id="addweapon" name="addweapon" value="Edit Weapon Details" class="button1"><br><br>
+                                    <input type="button" id="deletewapon" name="deletewapon" value="Delete Weapon" class="button1">
+                                </td>
+                            </tr>
+                            <tr><td></td>
+                                <td><div id="addweaponnames"></div></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id='weaponsfields' style='margin-left:10px'>
+                    </div>
+                </dd>
+            </dl>
+        </div>
+        <!-- quick offense ends-->
+        <br />
+        <!-- gear-->
+        <h4 style="margin-left: 30px"><a  id="gear1" href="javascript:void(0)" name='gear1' onclick="gear_fn();" style="color:blue">+ Gear</a></h4>
+        <div id="gear2" style="display: none;margin-left: 30px">
+            <dl>
+                <dt class ="dtwidth"><label for="gear" > {L_GEAR}:</label><br /></dt>
+                <dd style="margin-left: 201px;">
+                    <table style="width:auto;">
+                        <tr><td rowspan="3"><select name="gear[]" id="gear" style="width:12em; height:140px;" multiple>{S_GEAR}</select></label>&nbsp;&nbsp;</td>
+                            <td><input type="button" name="add_quantity" id="add_quantity" value="Change Quantity" class="button1"></td></tr>
+                        <tr><td><input type="button" name="add_gear" id="add_gear" value="Add New Gear" class="button1"></td></tr>
+                        <tr><td><input type="button" name="delete_gear" id="delete_gear" value="Delete Gear " class="button1"></td></tr></table>
+                    <!--<input type="button" name="delete_gear" id="delete_gear" value="Delete Gear" class="button1">-->
+                    <div id="gear_quantity"></div><br><br>
+                </dd>
+
+            </dl>
+        </div>
+        <input type="hidden" name="user_id" id="user_id" value="{USER_ID}">
+        <input type="hidden" name="post_id" id="post_id" value="{POST_ID}">
+        <!-- gear end-->
+
+        <!-- quick stats ends -->
+        <br />
+        <!-- other start-->
+        <h4 style="margin-left: 30px"><a  id="other1" href="javascript:void(0)" name='other1' onclick="other();" style="color:blue">+ Other</a></h4>
+        <br />
+        <div id="other2" style="display: none;margin-left: 30px">
+            <dl>
+
+                <dt class ="dtwidth"><label for="quick_stats" > {L_HERO_POINTS}:</label><br /></dt>
+                <dd style="margin-left: 201px; margin-top: -20px;"><select name="select_hero_points" id="select_hero_points" style="width:5em;">{S_HERO_POINT}</select></dd>
+                <br/>
+                <dt class ="dtwidth"><label for="quick_stats" > {L_QUICK_STATS}:</label><br /></dt>
+                <!-- IF S_QUICK_STATS -->
+                <dd style="margin-left: 201px;"><input type='text' name='quick_stats' id='quick_stats' value="{S_QUICK_STATS}"></dd>
+                <!-- ELSE -->
+                <dd style="margin-left: 201px; margin-top: -20px;"><input type='text' name='quick_stats' id='quick_stats' value=""></dd>
+                <!-- ENDIF -->
+
+            </dl>
+        </div>
+        <p class="submit-buttons">
+
+            <input type="hidden" name="players" value="{PLAYER_ID}" >
+            <input class="button1" type="submit" id="submit" name="submit_variable" value="{L_SUBMIT}" />&nbsp;
+        </p>
+</form>
+<!-- ENDIF -->
+<!-- IF SUCCESS == 1-->
+<div class="successbox">
+    <h3>{INFORMATION}</h3>
+    <p>{MESSAGE}</p>
+    <br><br>
+    <a href="./index.php{SID}&i=board&mode=signature">{LINK}</a>
+</div>
+<!-- ENDIF -->
+<!-- INCLUDE overall_footer.html -->

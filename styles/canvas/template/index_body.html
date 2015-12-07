@@ -1,0 +1,32 @@
+<!-- INCLUDE overall_header.html -->
+
+<!-- Index Alerts -->
+<!-- INCLUDE custom/alerts_index.html -->
+
+<!-- EVENT index_body_markforums_before -->
+<!-- IF U_MARK_FORUMS -->
+	<div class="action-bar compact hidden">
+		<a href="{U_MARK_FORUMS}" class="mark-read rightside" accesskey="m" data-ajax="mark_forums_read">{L_MARK_FORUMS_READ}</a>
+	</div>
+<!-- ENDIF -->
+<!-- EVENT index_body_markforums_after -->
+
+<div class="big-grid<!-- IF not ST_sidebar__index --> no-sidebar<!-- ENDIF -->">
+		<div class="col-maincontent">
+		<!-- EVENT index_body_forumlist_body_before -->
+		<!-- INCLUDE forumlist_body.html -->
+		<!-- EVENT index_body_forumlist_body_after -->
+		</div>
+		<!-- IF ST_sidebar__index !== '0' -->
+		<div class="col-sidebar">
+		<!-- EVENT st_sidebar_before -->
+		<!-- INCLUDE custom/sidebar_blocks.html -->
+		<!-- EVENT st_sidebar_after -->
+		</div>
+		<!-- ENDIF -->
+</div>
+
+<!-- EVENT index_body_stat_blocks_before -->
+<!-- EVENT index_body_stat_blocks_after -->
+
+<!-- INCLUDE overall_footer.html -->

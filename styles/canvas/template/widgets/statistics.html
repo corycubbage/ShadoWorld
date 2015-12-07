@@ -1,0 +1,16 @@
+<!-- IF SCRIPT_NAME == 'index' -->
+<div class="sidebar-widget statistics">
+<div class="widget-header">
+  <i class="widget-icon fi fi-chart-bar"></i>
+  {L_STATISTICS}
+</div>
+<div class="widget-content collapse in" id="widget-statistics">
+		<!-- EVENT index_body_block_stats_prepend -->
+		<!-- IF TOTAL_TOPICS --><p><i class="fa fa-comment"></i>{TOTAL_TOPICS}</p><!-- ENDIF -->
+		<!-- IF TOTAL_POSTS --><p><i class="fa fa-comments"></i>{TOTAL_POSTS}</p><!-- ENDIF -->
+		<!-- IF TOTAL_USERS --><p><i class="fa fa-users"></i>{TOTAL_USERS}</p><!-- ENDIF -->
+		<!-- IF NEWEST_USER --><p><i class="fa fa-user"></i>{NEWEST_USER}</p><!-- ENDIF -->
+		<!-- EVENT index_body_block_stats_append -->
+</div>
+</div>
+<!-- ENDIF -->

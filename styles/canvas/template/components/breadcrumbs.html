@@ -1,0 +1,45 @@
+<!-- EVENT overall_header_breadcrumbs_before -->
+<div class="breadcrumbs-bar breadcrumbs-bar--{$breadcrumbsPos} <!-- IF ST_breadcrumbs__detach -->detached<!-- ENDIF -->">
+<ol class="nav-breadcrumbs">
+  
+  <!-- IF (S_VIEWTOPIC or S_VIEWFORUM or SEARCH_TOPIC or S_SEARCH_ACTION or S_DISPLAY_JUMPBOX) and not S_IS_BOT -->
+	<li class="quick-nav-link dd-container jumpbox">
+		<a href="javascript:void(0)" data-toggle="dropdown" title="<!-- IF S_IN_MCP and S_MERGE_SELECT -->{L_SELECT_TOPICS_FROM}<!-- ELSEIF S_IN_MCP -->{L_MODERATE_FORUM}<!-- ELSE -->{L_JUMP_TO}<!-- ENDIF -->">
+			<i class="fi fi-open-in-new"></i>
+		</a>
+		
+		<ul class="dropdown-menu jumpbox-dropdown" role="menu">
+			<!-- BEGIN jumpbox_forums -->
+				<!-- IF jumpbox_forums.FORUM_ID neq -1 -->
+					<li <!-- BEGIN level -->class="jumpbox-subforum"<!-- END level -->><a href="{jumpbox_forums.LINK}" role="menuitem" tabindex="-1"><span>{jumpbox_forums.FORUM_NAME}</span></a></li>
+				<!-- ENDIF -->
+			<!-- END jumpbox_forums -->
+		</ul>
+	</li>
+	<!-- ENDIF -->
+  
+  <!-- DEFINE $MICRODATA = 'itemtype="http://data-vocabulary.org/Breadcrumb" itemscope' -->
+
+  <!-- IF U_SITE_HOME -->
+  <li class="crumb crumb--home" {$MICRODATA}>
+	<a href="{U_SITE_HOME}" itemprop="url" data-navbar-reference="home" title="{L_SITE_HOME}"><span itemprop="title">{L_SITE_HOME}</span></a>
+  </li>
+  <!-- ENDIF -->
+
+  <!-- EVENT overall_header_breadcrumb_prepend -->
+  
+  <li class="crumb<!-- IF not U_SITE_HOME --> crumb--home<!-- ENDIF -->" {$MICRODATA}>
+	<a href="{U_INDEX}" itemprop="url" accesskey="h" data-navbar-reference="index" title="{L_INDEX}"><span itemprop="title">{L_INDEX}</span></a>
+  </li>
+  
+  <!-- BEGIN navlinks -->
+	<!-- EVENT overall_header_navlink_prepend -->
+	<li class="crumb" {$MICRODATA}<!-- IF navlinks.MICRODATA --> {navlinks.MICRODATA}<!-- ENDIF -->>
+	  <a href="{navlinks.U_VIEW_FORUM}" itemprop="url" title="{navlinks.FORUM_NAME}"><span itemprop="title">{navlinks.FORUM_NAME}</span></a>
+	</li>
+	<!-- EVENT overall_header_navlink_append -->
+  <!-- END navlinks -->
+  <!-- EVENT overall_header_breadcrumb_append -->
+</ol>
+</div>
+<!-- EVENT overall_header_breadcrumbs_after -->

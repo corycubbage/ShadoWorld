@@ -1,0 +1,448 @@
+<script type="text/javascript">
+// <![CDATA[
+
+    onload_functions.push('apply_onkeypress_event()');
+// ]]>
+</script>
+
+<fieldset class="st-editor">
+	<!-- IF ERROR --><p class="alert alert-danger">{ERROR}</p><!-- ENDIF -->
+
+	<!-- IF S_SHOW_TOPIC_ICONS or S_SHOW_PM_ICONS -->
+	<dl>
+		<dt><label for="icon">{L_ICON}{L_COLON}</label></dt>
+		<dd>
+			<label for="icon"><input type="radio" name="icon" id="icon" value="0" checked="checked" tabindex="1" /> <!-- IF S_SHOW_TOPIC_ICONS -->{L_NO_TOPIC_ICON}<!-- ELSE -->{L_NO_PM_ICON}<!-- ENDIF --></label>
+			<!-- BEGIN topic_icon --><label for="icon-{topic_icon.ICON_ID}"><input type="radio" name="icon" id="icon-{topic_icon.ICON_ID}" value="{topic_icon.ICON_ID}" {topic_icon.S_ICON_CHECKED} tabindex="1" /><img src="{topic_icon.ICON_IMG}" width="{topic_icon.ICON_WIDTH}" height="{topic_icon.ICON_HEIGHT}" alt="" title="" /></label> <!-- END topic_icon -->
+		</dd>
+	</dl>
+	<!-- ENDIF -->
+
+	<!-- IF not S_PRIVMSGS and S_DISPLAY_USERNAME -->
+	<dl style="clear: left;">
+		<dt><label for="username">{L_USERNAME}{L_COLON}</label></dt>
+		<dd><input type="text" tabindex="1" name="username" id="username" size="25" value="{USERNAME}" class="inputbox autowidth" /></dd>
+	</dl>
+	<!-- ENDIF -->
+
+	<!-- EVENT posting_editor_subject_before -->
+
+
+	<!-- IF S_POST_ACTION or S_PRIVMSGS or S_EDIT_DRAFT -->
+        <dl style="clear: left;">
+            <dd>Post As: <select name="post_as" id="post_as" style="width:20em;">{ALIAS_NAME}</select></dd>	
+            <dd><input placeholder="{L_SUBJECT}" type="text" name="subject" id="subject" size="45" maxlength="<!-- IF S_NEW_MESSAGE -->120<!-- ELSE -->124<!-- ENDIF -->" tabindex="2" value="{SUBJECT}{DRAFT_SUBJECT}" class="inputbox autowidth" /></dd>
+	</dl>
+	<!-- IF CAPTCHA_TEMPLATE and S_CONFIRM_CODE -->
+		<!-- DEFINE $CAPTCHA_TAB_INDEX = 3 -->
+		<!-- INCLUDE {CAPTCHA_TEMPLATE} -->
+	<!-- ENDIF -->
+	<!-- ENDIF -->
+
+	<!-- EVENT posting_editor_subject_after -->
+	
+        <!-- ************************************************* STATS *********************************************************** -->
+<div class="container">
+    <ul class="nav nav-tabs" data-tabs="tabs" id="CharStats" role="tablist">
+      <li class="active" role="presentation"><a data-toggle="tab" href="#Vitals" role="tab">Vitals</a></li>
+      <li role="presentation"><a data-toggle="tab" href="#CharacterInfo" role="tab">{SELECTED_ALIAS}'s Information</a></li>
+      <li role="presentation"><a data-toggle="tab" href="#FullStatSheet" role="tab">Character Stat Sheet</a></li>
+      <li role="presentation"><a data-toggle="tab" href="#CombatInformation" role="tab">Combat Information</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div id="Vitals" class="tab-pane fade in active" role="tabpanel">
+            <table><tr>
+                <td width='30'><b>[{SELECTED_ALIAS}]: </b></td><td>
+                    <!-- IF ((SELECTED_CURRENT_HIT == 0)or !(SELECTED_CURRENT_HIT == '')) &&  ((SELECTED_MAXIMUM_HIT == 0)or !(SELECTED_MAXIMUM_HIT == '')) && ((SELECTED_NON_LETHAL == 0) or !(SELECTED_NON_LETHAL == '')) -->
+
+                        <!-- IF ((SELECTED_CURRENT_HIT == 0) or !(SELECTED_CURRENT_HIT == '')) -->
+
+                            <!-- IF (!(SELECTED_CURRENT_HIT == '') && (SELECTED_CURRENT_HIT != SELECTED_MAXIMUM_HIT)) -->
+                                [ <span class="HitPointInfo"><b>HP:</b>&nbsp;{SELECTED_CURRENT_HIT}/{SELECTED_MAXIMUM_HIT}</span>
+                            <!-- ENDIF -->
+                         
+                            <!-- IF (!(SELECTED_CURRENT_HIT == '') && (SELECTED_CURRENT_HIT == SELECTED_MAXIMUM_HIT)) -->
+                               [ <span class="HitPointInfo"><b>HP:</b>&nbsp;{SELECTED_CURRENT_HIT}/{SELECTED_MAXIMUM_HIT}</span>
+                            <!-- ENDIF -->
+                         
+                        <!-- ENDIF -->
+
+                            <!-- IF !(SELECTED_NON_LETHAL == '') -->
+                                 , <span class="RedHitPointInfo"><b>NL:&nbsp;</b>{SELECTED_NON_LETHAL}</span> ]
+                            <!-- ENDIF -->
+
+                            <!-- IF (SELECTED_NON_LETHAL == '') -->
+                                ]
+                            <!-- ENDIF -->
+
+                    <!-- ENDIF -->
+
+                    <!-- IF SELECTED_GOOD_CONDITION or (SELECTED_GOOD_CONDITION == '') or  SELECTED_BAD_CONDITION or (SELECTED_BAD_CONDITION == '')-->
+                        <!-- IF !(SELECTED_GOOD_CONDITION == '') or (SELECTED_BAD_CONDITION)-->
+                            [
+                    <!-- ENDIF -->
+                    <!-- IF SELECTED_GOOD_CONDITION or (SELECTED_GOOD_CONDITION == '')-->                                
+                        <font color="#0070CA ">{SELECTED_GOOD_CONDITION}</font>
+                    <!-- ENDIF -->
+                    <!-- IF !(SELECTED_GOOD_CONDITION == '') and !(SELECTED_BAD_CONDITION == '')-->
+                        ,
+                    <!-- ENDIF -->
+                    <!-- IF SELECTED_BAD_CONDITION or (SELECTED_BAD_CONDITION == '')-->                                
+                        <font color="#FF0000 ">{SELECTED_BAD_CONDITION}</font>
+                        <!-- IF !(SELECTED_GOOD_CONDITION == '') or (SELECTED_BAD_CONDITION)-->
+                             ]
+                        <!-- ENDIF -->
+                    <!-- ENDIF -->
+                <!-- ENDIF -->
+                <!-- IF LEVELS-->
+                    [<font color="#5F497A ">{LEVELS}</font>]
+                <!-- ENDIF -->
+
+                <!-- IF ABILITY-->
+                    [<font color="#FF8C00 ">{ABILITY}</font>]
+                <!-- ENDIF -->
+
+                </td><td>
+                        [ <span class="ACInfo"><b>AC</b>: {AC} <b>T</b>: {TAC} <b>FF</b>: {FFAC}</span> ]                    
+                        [ <span class="SAVEInfo"><b>F</b>: {FORT} <b>R</b>: {REFLEX} <b>W</b>: {WILL}</span>  ]                      
+                
+                <!-- IF RESIST -->
+                    [<span class="resist_info"><b>Resists: </b> {RESIST}</span>]
+                <!-- ENDIF -->
+
+                <!-- IF IMMUNITY -->
+                    [<span class="ImmunityInfo"><b>Immunity: </b> {IMMUNITY}</span>]
+                <!-- ENDIF -->
+                            
+                <!-- IF HERO_POINT > 0-->
+                    [<span class="HeroPointInfo"><b>Hero: </b> {HERO_POINT}</span>]
+                <!-- ENDIF -->
+                
+                </td></tr></table>
+            Group Stats Tests: <br />
+            {GROUP_MEMBERS_STATS}
+              </h5>
+
+        </div>
+
+            <div id="CharacterInfo" class="tab-pane fade">        
+                <div class="container">                          <!-- ********* ACTIVE EFFECTS, DEFENSE, SPELLS, SPECIAL ABILITIES, GEAR ************** -->
+                    <div class="panel-group" id="accordion">            
+                        <div class="panel panel-default">           <!-- ********* GENERAL ************** -->                
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#general">General Information</a>
+                                </h4>
+                            </div>
+                            <div id="general" class="panel-collapse collapse active">        
+                                <table> <tr><td class="PostingEditorTable"><font size="-1"><b>Player Name</b>:</td><td><input type='text' name='PLAYERINFO' id='PLAYERINFO' value="{PLAYERINFO}" size="15"></font></td>
+                                        <td><font size="-1"><b>Character Info</b>:</td><td><input type='text' name='CLASS_INFO' id='CLASS_INFO' value="{CLASS_INFO}" size="30"></font></td></table>
+                                        <td class="PostingEditorTable"><font size="-1"><b>Notes</b>:</td><td><input type='text' name='quick_stats' id='quick_stats' value="{S_QUICK_STATS}" size="60"></font></td></tr>
+                                        <tr><td><b>Init:</b></td><td><select name="select_init_points" id="select_init_points"style="width:3em;">{S_INIT_POINT}</select></td>
+                                            <td><b>Hero Points:</b></td><td><select name="select_hero_points" id="select_hero_points" style="width:2em;">{S_HERO_POINT}</select></td></tr>
+                                        <br>                                
+                                
+                                <table>
+                                    <td width="20%"><center><b>Buffs:</b></center></td>            
+                                    <td width="20%"><center><b>Debuffs:</b></center></td>
+                                    </tr>  
+                                    <td width="20%"><center><select name="positive_condition[]" id="positive_condition" style="width:12em;color: blue" multiple>{S_POSITIVE_CONDITION}</select></center></td>
+                                    <td width="20%"><center><select name="negative_condition[]" id="negative_condition" style="width:12em;color: tomato" multiple>{S_NEGATIVE_CONDITION}</select></center></td></tr>
+                                </table>
+                                            
+                            </div>
+                        </div>
+                     
+                        
+                        <div class="panel panel-default">           <!-- ********* DEFENSE ************** -->                
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#defense">Defense</a>
+                                </h4>
+                            </div>
+                            <div id="defense" class="panel-collapse collapse">        
+                                <table> <tr><td class="PostingEditorTable">
+                                    <tr><td width="15%"><center><b>Current<br />Hit Points:</b></center></td>
+                                    <td width="15%"><center><b>Maximum<br />Hit Points:</b></center></td>
+                                    <td width="15%"><center><b>Non-lethal<br />Damage:</b></center></td>            
+                                    </tr>  
+
+                                    <tr><td width="15%"><center><select name="select_current_count" id="select_current_count" style="width:3em;">{S_HIT_CURRENT_COUNT}</select></center></td>
+                                    <td width="15%"><center><select name="select_maximum_count" id="select_maximum_count" style="width:3em;">{S_HIT_MAXIMUM_COUNT}</select></center></td>
+                                    <td width="15%"><center><select name="select_non_lethal" id="select_non_lethal" style="width:3em;">{S_NON_LETHAL}</select></center></td></tr>
+                                    </table>
+                                    <br>
+                                    <table>
+                                    <tr><td><b>Current AC</b>:</td><td><input type='text' name='AC' id='AC' value="{AC}" size="2"></td>
+                                    <td><b>Touch AC</b>:</td><td><input type='text' name='TAC' id='TAC' value="{TAC}" size="2"></td>
+                                    <td><b>Flat-Footed AC</b>:</td><td><input type='text' name='FFAC' id='FFAC' value="{FFAC}" size="2"></td></tr>
+                                    
+                                    <tr>
+                                    <td><b>Fort</b>:</td><td><input type='text' name='FORT' id='FORT' value="{FORT}" size="2"></td>
+                                    <td><b>Reflex</b>:</td><td><input type='text' name='REFLEX' id='REFLEX' value="{REFLEX}" size="2"></td>
+                                    <td><b>Will</b>:</td><td><input type='text' name='WILL' id='WILL' value="{WILL}" size="2"></td></tr></table>
+                                    <br>
+                                    <table><tr><td class="PostingEditorTable"></td>
+                                    <td><b>Resists</b>:</td><td><td><input type='text' name='RESIST' id='RESIST' value="{RESIST}" size="25"></td>
+                                    <td><b>Immunity</b>:</td><td><td><input type='text' name='IMMUNITY' id='IMMUNITY' value="{IMMUNITY}" size="25"></td>
+                                </table>        
+                            </div>
+                        </div>
+                     
+                                              <div class="panel panel-default">       <!-- ********* OFFENSE ************** -->                
+                          <div class="panel-heading">
+                              <h4 class="panel-title">
+                                  <a data-toggle="collapse" data-parent="#accordion" href="#spell">Offense</a>
+                              </h4>
+                          </div>
+                          <div id="spell" class="panel-collapse collapse">
+                              
+                              <table>
+                              <td><b>Speed</b>:</td><td><input type='text' name='SPEED' id='SPEED' value="{SPEED}" size="2"></td>
+                              </table>
+                              
+                              <center><input id="variable_spells" class="btn btn-info-green" type="button" name="variable_spells" value="Add Spell Level"></center>
+
+                                  <!-- IF S_VARIABLE_LEVEL == yes-->
+                                          <!-- CVC 11/29/15
+
+                                          <table><tr><td><input type="button" name='{LAST_LEVEL_NAME}' id='0' value="-" class="btn btn-info-red" onclick="return remove_level(this);"></td>
+                                          <td>&nbsp;&nbsp;{S_SPELL_VARIABLE}&nbsp;&nbsp;</td><td>
+                                              <label for="level">Level:</label><select name="select_level" id="select_level" style="width:3em;">{S_LEVEL}</select>
+                                          <label for="minmax_level">&nbsp;&nbsp;Current/Max: <select name="select_level_min" id="select_level_min" style="width:3em;">{S_LEVEL_MIN}</select>/<select name="select_level_max" id="select_level_max" style="width:5em;">{S_LEVEL_MAX}</select></label>
+                                          </td></tr></table><br>
+                                      <input type="hidden" name="increment_variable_spell" id="increment_variable_spell" value="1">
+
+                                          -->
+                                          <div id="additionalspell"></div>
+                                  <!-- ENDIF -->
+
+                                  <!-- IF S_VARIABLE_LEVEL == no-->
+                                      <!-- dd style="margin-left: 214px; margin-top: 60px;"> -->
+                                          <table><tr><td>{BUTTON_LEVEL}</td><td>{S_EDIT_LEVEL}</td><td>{S_EDIT_MIN_LEVEL}</td><td>{S_EDIT_MAX_LEVEL}</td></tr></table>
+                                          <div id="additionalspell"></div>
+                                          {S_INCREMENR_SPELL}
+                                      <!-- </dd> -->
+
+                                  <!-- ENDIF -->
+
+                                  <!-- <div id="addspelldescription" name="addspelldescription">
+                                      <input type="button" id="add_spell_description" name="add_desc"  value="Add Description" onclick="addspelldecription();" style="margin-left:599px;margin-top:-375px;" class="btn btn-info" />
+                                  </div> -->
+
+                                  <!-- IF S_VARIABLE_LEVEL == null-->
+                                      <div id="additionalspell"></div>
+                                      <input type="hidden" name="increment_variable_spell" id="increment_variable_spell" value="">
+                                  <!-- ENDIF -->
+                          </div>
+                      </div> 
+                        
+                        <div class="panel panel-default">           <!-- ********* STATISTICS ************** -->                
+                          <div class="panel-heading">
+                              <h4 class="panel-title">
+                                  <a data-toggle="collapse" data-parent="#accordion" href="#statistics">Statistics</a>
+                              </h4>
+                          </div>
+                          <div id="statistics" class="panel-collapse collapse">
+                            <div id="gear2">        <!-- gear-->
+                              <table>
+                                  <tr><td rowspan="3"><select name="gear[]" id="gear" style="width:12em; height:140px;" multiple>{S_GEAR}</select></label>&nbsp;&nbsp;</td>
+                                  <td><input type="button" name="add_quantity" id="add_quantity" value="Edit Gear" class="btn btn-info"></td></tr>
+                                  <tr><td><input type="button" name="add_gear" id="add_gear" value="Add New Gear" class="btn btn-info-green"></td></tr>
+                                  <tr><td><input type="button" name="delete_gear" id="delete_gear" value="Delete Gear" class="btn btn-info-red"></td></tr></table>
+                                  <div id="gear_quantity"></div>
+                                  <div type="hidden" name="gear_desc" value="" id="gear_desc"></div>
+                            </div> <!-- gear end-->
+                          </div> <!-- statistics end -->
+                      </div>
+                        
+
+                    <div class="panel panel-default">       <!-- ********* SPECIAL ABILITIES ************** -->                
+                          <div class="panel-heading">
+                              <h4 class="panel-title">
+                                  <a data-toggle="collapse" data-parent="#accordion" href="#special_abilities">Special Abilities</a>
+                              </h4>
+                          </div>
+                        <div id="special_abilities" class="panel-collapse collapse">
+                          <center><input id="variable_speability" class="btn btn-info-green" type="button" name="variable_speability" value="Add Additional Ability"></center>
+
+                          <!-- IF S_VARIABLE_ABILITY == yes-->
+                              <!-- CVC - 11/29/15
+                                  <div>  
+                                      <input type="hidden" name="increment_variable_ability" id="increment_variable_ability" value="1">
+                                      <table><tr><td> <input type="button" name="{LAST_LEVEL_NAME}" id="0" value="-" class="btn btn-info-red" onclick="return remove_ability(this);">  </td><td>
+                                          &nbsp;{S_EDIT_ABILITY_NAME} </td><td>
+                                          <label for="minmax_ability">&nbsp;&nbsp;Current/Max :</label> 
+                                          <select name="min_ability" id="min_ability" style="width:3em;">{S_MIN_ABILITY}</select>/<select name="max_ability" id="max_ability" style="width:3em;">{S_MAX_ABILITY}</select></label>
+                                      </td></tr></table>
+
+                                      <div id="additionalability"></div>
+                                  </div>
+                              --> 
+                          <!-- ENDIF -->
+
+                          <!-- IF S_VARIABLE_ABILITY == no-->
+                                  <div><table><tr><td>{BUTTON_ABILITY}</td><td>{S_EDIT_ABILITY_NAME}</td><td>{S_EDIT_MIN_ABILITY}</td><td>{S_EDIT_MAX_ABILITY}</td></tr></table></div>
+                                  {S_INCREMENR_ABILITY}
+                                  <div id="additionalability"></div>
+                          <!-- ENDIF -->
+
+                          <!-- IF S_VARIABLE_ABILITY == null-->
+                                  <div id="additionalability"></div>
+                                  <input type="hidden" name="increment_variable_ability" id="increment_variable_ability" value="">
+                          <!-- ENDIF -->
+                        </div>
+                    </div>
+              </div> 
+                </div>
+            </div>
+        <div id="FullStatSheet" class="tab-pane fade" role="tabpanel">
+                  {SELECTED_SIG}
+        </div>
+
+        <div id="CombatInformation" class="tab-pane fade" role="tabpanel">
+          <p>Combat info goes here.</p>
+        </div>
+
+        <div id="AllAliases" class="tab-pane fade" role="tabpanel">
+          {GROUP_VARIABLE}
+        </div>
+    </div>
+ </div>
+        
+	<div class="st-editor__box">
+		<!-- INCLUDE posting_buttons.html -->
+	
+		<div id="smiley-box">
+			<!-- EVENT posting_editor_smilies_before -->	
+			<!-- IF S_SMILIES_ALLOWED and .smiley -->
+				<strong>{L_SMILIES}</strong><br />
+				<!-- BEGIN smiley -->
+					<a href="#" onclick="insert_text('{smiley.A_SMILEY_CODE}', true); return false;"><img src="{smiley.SMILEY_IMG}" width="{smiley.SMILEY_WIDTH}" height="{smiley.SMILEY_HEIGHT}" alt="{smiley.SMILEY_CODE}" title="{smiley.SMILEY_DESC}" /></a>
+				<!-- END smiley -->
+			<!-- ENDIF -->
+			<!-- IF S_SHOW_SMILEY_LINK and S_SMILIES_ALLOWED -->
+				<br /><a href="{U_MORE_SMILIES}" onclick="popup(this.href, 750, 350, '_phpbbsmilies'); return false;">{L_MORE_SMILIES}</a>
+			<!-- ENDIF -->
+			<!-- EVENT posting_editor_smilies_after -->
+		</div>
+	
+		<!-- EVENT posting_editor_message_before -->
+	
+		<div id="message-box">
+			<textarea <!-- IF S_UCP_ACTION and not S_PRIVMSGS and not S_EDIT_DRAFT -->name="signature" id="signature" style="height: 9em;"<!-- ELSE -->name="message" id="message"<!-- ENDIF --> rows="15" cols="76" tabindex="4" onclick="storeCaret(this);" onkeyup="storeCaret(this);" onfocus="initInsertions();" class="inputbox">{MESSAGE}{DRAFT_MESSAGE}{SIGNATURE}</textarea>
+		</div>
+		
+	</div>
+
+	<!-- EVENT posting_editor_message_after -->
+	</fieldset>
+
+<!-- IF $EXTRA_POSTING_OPTIONS eq 1 -->
+
+	<!-- IF not S_SHOW_DRAFTS -->
+		</div>
+	</div>
+	<!-- ENDIF -->
+
+	<!-- IF not S_SHOW_DRAFTS and not $SIG_EDIT eq 1 -->
+	<fieldset class="submit-buttons">
+		{S_HIDDEN_ADDRESS_FIELD}
+		{S_HIDDEN_FIELDS}
+		<!-- IF S_HAS_DRAFTS --><input type="submit" accesskey="d" tabindex="8" name="load" value="{L_LOAD_DRAFT}" class="button2" onclick="load_draft = true;" />&nbsp; <!-- ENDIF -->
+		<!-- IF S_SAVE_ALLOWED --><input type="submit" accesskey="k" tabindex="7" name="save" value="{L_SAVE_DRAFT}" class="button2" />&nbsp; <!-- ENDIF -->
+		<input type="submit" tabindex="5" name="preview" value="{L_PREVIEW}" class="button1"<!-- IF not S_PRIVMSGS --> onclick="document.getElementById('postform').action += '#preview';"<!-- ENDIF --> />&nbsp;
+		<input type="submit" accesskey="s" tabindex="6" name="post" value="{L_SUBMIT}" class="button1 default-submit-action" />&nbsp;
+
+	</fieldset>
+	<!-- ENDIF -->
+
+	<!-- IF not S_PRIVMSGS and not S_SHOW_DRAFTS and not $SIG_EDIT eq 1 -->
+		<div id="tabs" class="sub-panels" data-show-panel="<!-- IF SHOW_PANEL -->{SHOW_PANEL}<!-- ELSE -->options-panel<!-- ENDIF -->" role="tablist">
+			<ul>
+				<li id="options-panel-tab" class="tab activetab"><a href="#tabs" data-subpanel="options-panel" role="tab" aria-controls="options-panel"><span>{L_OPTIONS}</span></a></li>
+				<!-- IF S_SHOW_ATTACH_BOX -->
+					<li id="attach-panel-tab" class="tab">
+						<a href="#tabs" data-subpanel="attach-panel" role="tab" aria-controls="attach-panel">
+							{L_ATTACHMENTS} <strong id="file-total-progress"><strong id="file-total-progress-bar"></strong></strong>
+						</a>
+					</li>
+				<!-- ENDIF -->
+				<!-- IF S_SHOW_POLL_BOX || S_POLL_DELETE -->
+					<li id="poll-panel-tab" class="tab">
+						<a href="#tabs" data-subpanel="poll-panel" role="tab" aria-controls="poll-panel">{L_ADD_POLL}</a>
+					</li>
+				<!-- ENDIF -->
+			</ul>
+		</div>
+	<!-- ENDIF -->
+
+	<!-- IF not S_SHOW_DRAFTS and not $SIG_EDIT eq 1 -->
+	<div class="st-panel bg3" id="options-panel">
+		<div class="inner">
+
+		<fieldset class="fields1">
+			<!-- EVENT posting_editor_options_prepend -->
+			<!-- IF S_BBCODE_ALLOWED -->
+				<div><label for="disable_bbcode"><input type="checkbox" name="disable_bbcode" id="disable_bbcode"{S_BBCODE_CHECKED} /> {L_DISABLE_BBCODE}</label></div>
+			<!-- ENDIF -->
+			<!-- IF S_SMILIES_ALLOWED -->
+				<div><label for="disable_smilies"><input type="checkbox" name="disable_smilies" id="disable_smilies"{S_SMILIES_CHECKED} /> {L_DISABLE_SMILIES}</label></div>
+			<!-- ENDIF -->
+			<!-- IF S_LINKS_ALLOWED -->
+				<div><label for="disable_magic_url"><input type="checkbox" name="disable_magic_url" id="disable_magic_url"{S_MAGIC_URL_CHECKED} /> {L_DISABLE_MAGIC_URL}</label></div>
+			<!-- ENDIF -->
+			<!-- IF S_SIG_ALLOWED -->
+				<div><label for="attach_sig"><input type="checkbox" name="attach_sig" id="attach_sig"{S_SIGNATURE_CHECKED} /> {L_ATTACH_SIG}</label></div>
+			<!-- ENDIF -->
+			<!-- IF S_NOTIFY_ALLOWED -->
+				<div><label for="notify"><input type="checkbox" name="notify" id="notify"{S_NOTIFY_CHECKED} /> {L_NOTIFY_REPLY}</label></div>
+			<!-- ENDIF -->
+			<!-- IF S_LOCK_TOPIC_ALLOWED -->
+				<div><label for="lock_topic"><input type="checkbox" name="lock_topic" id="lock_topic"{S_LOCK_TOPIC_CHECKED} /> {L_LOCK_TOPIC}</label></div>
+			<!-- ENDIF -->
+			<!-- IF S_LOCK_POST_ALLOWED -->
+				<div><label for="lock_post"><input type="checkbox" name="lock_post" id="lock_post"{S_LOCK_POST_CHECKED} /> {L_LOCK_POST} [{L_LOCK_POST_EXPLAIN}]</label></div>
+			<!-- ENDIF -->
+
+			<!-- IF S_TYPE_TOGGLE or S_TOPIC_TYPE_ANNOUNCE or S_TOPIC_TYPE_STICKY -->
+			<hr class="dashed" />
+			<!-- ENDIF -->
+
+			<!-- IF S_TYPE_TOGGLE -->
+			<dl>
+				<dt><label for="topic_type-0"><!-- IF S_EDIT_POST -->{L_CHANGE_TOPIC_TO}<!-- ELSE -->{L_POST_TOPIC_AS}<!-- ENDIF -->{L_COLON}</label></dt>
+				<dd><!-- BEGIN topic_type --><label for="topic_type-{topic_type.VALUE}"><input type="radio" name="topic_type" id="topic_type-{topic_type.VALUE}" value="{topic_type.VALUE}"{topic_type.S_CHECKED} />{topic_type.L_TOPIC_TYPE}</label> <!-- END topic_type --></dd>
+			</dl>
+			<!-- ENDIF -->
+
+			<!-- IF S_TOPIC_TYPE_ANNOUNCE or S_TOPIC_TYPE_STICKY -->
+			<dl>
+				<dt><label for="topic_time_limit">{L_STICK_TOPIC_FOR}{L_COLON}</label></dt>
+				<dd><label for="topic_time_limit"><input type="number" min="0" max="999" name="topic_time_limit" id="topic_time_limit" size="3" maxlength="3" value="{TOPIC_TIME_LIMIT}" class="inputbox autowidth" /> {L_DAYS}</label></dd>
+				<dd>{L_STICK_TOPIC_FOR_EXPLAIN}</dd>
+			</dl>
+			<!-- ENDIF -->
+
+			<!-- IF S_SOFTDELETE_ALLOWED or S_DELETE_ALLOWED -->
+				<hr class="dashed" />
+				<dl>
+					<dt><label for="delete">{L_DELETE_POST}{L_COLON}</label></dt>
+					<dd><label for="delete"><input type="checkbox" name="delete" id="delete" {S_SOFTDELETE_CHECKED} /> {L_DELETE_POST_WARN}</label></dd>
+					<!-- IF S_DELETE_ALLOWED and S_SOFTDELETE_ALLOWED -->
+						<dd><label for="delete_permanent"><input type="checkbox" name="delete_permanent" id="delete_permanent" /> {L_DELETE_POST_PERMANENTLY}</label></dd>
+					<!-- ENDIF -->
+				</dl>
+			<!-- ENDIF -->
+
+			<!-- IF S_EDIT_REASON -->
+			<dl>
+				<dt><label for="edit_reason">{L_EDIT_REASON}{L_COLON}</label></dt>
+				<dd><input type="text" name="edit_reason" id="edit_reason" value="{EDIT_REASON}" class="inputbox" /></dd>
+			</dl>
+			<!-- ENDIF -->
+		</fieldset>
+		<!-- ENDIF -->
+
+<!-- ENDIF -->

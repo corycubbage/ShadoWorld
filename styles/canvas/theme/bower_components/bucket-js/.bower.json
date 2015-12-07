@@ -1,0 +1,37 @@
+{
+  "name": "bucket-js",
+  "version": "1.1.0",
+  "authors": [
+    "Tushar Singh <tushar.rzr@gmail.com>"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/tushar-singh/bucket-js.git"
+  },
+  "description": "localStorage library",
+  "main": "dist/bucket.min.js",
+  "moduleType": [
+    "node"
+  ],
+  "keywords": [
+    "javascript",
+    "localstorage",
+    "library"
+  ],
+  "license": "MIT",
+  "homepage": "http://tushar-singh.github.com/bucket-js",
+  "ignore": [
+    "**/*",
+    "!dist/*",
+    "!src/*"
+  ],
+  "_release": "1.1.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "1.1.0",
+    "commit": "e621b8d8f762e020c3f8db559b56c2b705c1152d"
+  },
+  "_source": "git://github.com/tushar-singh/bucket-js.git",
+  "_target": ">=1.0.0",
+  "_originalSource": "bucket-js"
+}
