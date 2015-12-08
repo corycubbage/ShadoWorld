@@ -302,6 +302,183 @@ for ($al = 0; $al < $alias_count; $al++) {
 
 // **** ALIAS END
 
+//  Get Group Member stats
+$groupMembers_data = getGroupMemberStats($forum_id);
+$groupMemberStats = 'This is a test';
+$groupMembers_count = count($groupMembers_data);
+if ($groupMembers_count > 0 )
+{
+    $groupMemberStats.="<table>";
+    for ($gm = 0; $gm < $groupMembers_count; $gm++)
+    {
+        //Username
+        $groupMemberStats .= "<tr><td width='30'><b>";
+        $groupMemberStats .= "[" . $groupMembers_data[$gm]['username'] . "]";
+        $groupMemberStats .= "</b></td>";
+        
+        $groupMemberStats .= "<td>";
+        //Hit points======================================================
+        $cur_hp = $groupMembers_data[$gm]['selected_current_hit'];
+        $max_hp = $groupMembers_data[$gm]['selected_maximum_hit'];
+        $nl_hp = $groupMembers_data[$gm]['seleted_non_lethal'];
+        if ($cur_hp != '' && $max_hp != '' && $nl_hp != '')
+        {
+           $groupMemberStats .="[ <span class='HitPointInfo'><b>HP:</b>&nbsp;". $cur_hp ."/".$max_hp . "</span>";
+           if ($nl_hp != '')
+           {
+               $groupMemberStats .= " , <span class='RedHitPointInfo'><b>NL:&nbsp;</b>". $nl_hp ."</span> ]";
+           }
+           else
+           {
+              $groupMemberStats .= "]"; 
+           }
+        }
+        // end hitpoints=================================================
+        
+        //conditions=====================================================
+        
+        $cond_good = $groupMembers_data[$gm]['seleted_good_condition'];
+        $cond_bad = $groupMembers_data[$gm]['seleted_bad_condition'];
+        $sgc = json_decode($cond_good, true);
+        $sbc = json_decode($cond_bad, true);
+        if (count($sbc) > 1) 
+        {
+            $cond_bad_disp = '';
+            for ($bc = 0; $bc < count($sbc); $bc++) 
+            {
+                if ($bc != (count($sbc) - 1)) 
+                {
+                    $cond_bad_disp .=$sbc[$bc] . ",&nbsp;";
+                } 
+                else 
+                {
+                    $cond_bad_disp .=$sbc[$bc];
+                }
+            }
+        } 
+        elseif (count($sbc) == 1) 
+        {
+            $cond_bad_disp .=$sbc[0];
+        } 
+        elseif ($sbc == null) 
+        {
+            $cond_bad_disp = '';
+        }
+
+        //seleted good condition       
+        if (count($sgc) > 1) {
+            $cond_good_disp = '';
+            for ($gc = 0; $gc < count($sgc); $gc++) {
+                if ($gc != (count($sgc) - 1)) {
+                    $cond_good_disp .=$sgc[$gc] . ",&nbsp;";
+                } else {
+                    $cond_good_disp .=$sgc[$gc];
+                }
+            }
+        } elseif (count($sgc) == 1) {
+            $cond_good_disp .=$sgc[0];
+        } elseif ($sgc == null) {
+            $cond_good_disp = '';
+        }
+        ///=======================
+        if ($cond_good_disp != '' OR $cond_bad_disp != '')
+        {
+            $groupMemberStats .= " ["; 
+            if($cond_good_disp != '')
+            {
+                $groupMemberStats .= "<font color='#0070CA '>" . $cond_good_disp .", </font>";
+            }
+            if($cond_bad_disp != '')
+            {
+                $groupMemberStats .= "<font color='#FF0000 '>" . $cond_bad_disp ."</font>";
+            }
+            $groupMemberStats .= "]"; 
+        }
+        //end conditions =============================================================
+        
+        //levels =====================================================================
+        //todo
+        //end levels =================================================================
+        
+        //ability ===================================================================
+        //todo
+        //end ability ===============================================================
+        
+        $groupMemberStats .= "</td>";
+        
+        $groupMemberStats .= "<td>";
+        //AC ========================================================================
+        $DecodedAC = json_decode($groupMembers_data[$gm]['AC'], true);
+        $Decoded_AC_count = count($DecodedAC);
+
+        if ($DecodedAC) {
+            $AC = $DecodedAC[0];          //AC
+            $TAC = $DecodedAC[1];         //Touch AC
+            $FFAC = $DecodedAC[2];        //Flat Footed AC
+
+        }	
+        else    {
+            $AC = 0;
+            $TAC = 0;
+            $FFAC = 0;
+        }
+
+        $DecodedSAVES = json_decode($groupMembers_data[$gm]['SAVES'], true);
+        $Decoded_SAVES_count = count($DecodedSAVES);
+
+        if ($DecodedSAVES) {
+            $FORT = $DecodedSAVES[0];          //AC
+            $REFLEX = $DecodedSAVES[1];         //Touch AC
+            $WILL = $DecodedSAVES[2];        //Flat Footed AC
+                }
+        else {
+            $FORT = 0;
+            $REFLEX = 0;
+            $WILL = 0;
+        }
+        $groupMemberStats .= "[ <span class='ACInfo'><b>AC</b>: " . $AC . "<b>T</b>: ".$TAC." <b>FF</b>: ".$FACC."</span> ]";
+        $groupMemberStats .= "[ <span class='SAVEInfo'<b>F</b>: ".$FORT." <b>R</b>: ".$REFLEX." <b>W</b>: ".$WILL."</span>  ]";
+        
+        //END AC=====================================================================
+        
+        //Resists========================================================
+        $DecodedRESISTIMMUNITY = json_decode($groupMembers_data[$gm]['RESISTIMMUNITY'], true);
+        $Decoded_RESISTIMMUNITY_count = count($DecodedRESISTIMMUNITY);
+
+        if ($DecodedRESISTIMMUNITY) {
+            $RESIST = $DecodedRESISTIMMUNITY[0];          
+            $IMMUNITY = $DecodedRESISTIMMUNITY[1];         
+                }
+        else {
+            $RESIST = 0;
+            $IMMUNITY = 0;
+
+        }
+        if($RESIST)
+        {
+            $groupMemberStats .= "[<span class='resist_info'><b>Resists: </b> " .$RESIST."</span>]";
+        }
+        //End resists====================================================
+        
+        //imunity =======================================================
+        if($IMMUNITY)
+        {
+            $groupMemberStats .= "[<span class='ImmunityInfo'><b>Immunity: </b> ".$IMMUNITY."</span>]";
+        }
+        //end immunity ==================================================
+        
+        //hero point ====================================================
+        //todo
+        //end hero point=================================================
+        
+        $groupMemberStats .= "</tr>";
+    }
+    $groupMemberStats.="</table>" ; 
+}
+   
+
+// **** end get group member stats        
+        
 
 if (!$post_data)
 {
@@ -1488,7 +1665,7 @@ if ($submit || $preview || $refresh)
                     $chekcsum = md5($message_parser->message);
                     //print_r($dmessage); exit;
 
-                    //debug_to_console ("Loading SaveUserVariables ahead of data_upate_post.");
+                    debug_to_console ("Loading SaveUserVariables ahead of data_upate_post.");
                     $data_update_post = array(                                                                                                                     
                         'AC'                                                    => request_var('AC',''),
                         'PLAYERINFO'                                            => request_var('PLAYERINFO',''),
@@ -2132,6 +2309,7 @@ $page_data = array(
         'ALIAS_NAME' => $alias_names,
         'SELECTED_ALIAS' => $selected_Alias,
         'SELECTED_SIG' => $selected_Sig,
+        'GROUP_MEMBERS_STATS' => $groupMemberStats,
         //CVC - End User Variables
 );
 
