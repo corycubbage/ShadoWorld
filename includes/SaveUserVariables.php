@@ -1,7 +1,5 @@
 <?php
 // This file was extracted from posting.php so that it would be easier to diagnose and troubleshoot issues. - 11/25/CVC
-                    
-//debug_to_console("Loading SaveUserVariables.Php");
 
 if (request_var('gear_desc1','') != '' && request_var('gear_value','') != '') {
     $ct = count(request_var('gear_desc1',''));
@@ -16,8 +14,7 @@ if (request_var('gear_desc1','') != '' && request_var('gear_value','') != '') {
     $db->sql_query($sql);
 }
 
-// negative(bad)  description
-if (request_var('nc_name','') != '' && request_var('nc_name_hide','') != '') {
+if (request_var('nc_name','') != '' && request_var('nc_name_hide','') != '') {  // negative(bad)  description
     $ct = count(request_var('nc_name',''));
     for ($gd = 0; $gd < $ct; $gd++) {
         //$nc_description[request_var('nc_name_hide','')[$gd]] = request_var('nc_name','')[$gd];
@@ -29,8 +26,7 @@ if (request_var('nc_name','') != '' && request_var('nc_name_hide','') != '') {
     $db->sql_query($sql);
 }
 
-// positive(good) description
-if (request_var('pc_name','') != '' && request_var('pc_name_hide','') != '') {
+if (request_var('pc_name','') != '' && request_var('pc_name_hide','') != '') { // positive(good) description
     $ct = count(request_var('pc_name',''));
     for ($gd = 0; $gd < $ct; $gd++) {
         $poscond = request_var('pc_name_hide','');
@@ -41,9 +37,8 @@ if (request_var('pc_name','') != '' && request_var('pc_name_hide','') != '') {
     $data_update_post = array('positive_condition_description' => $pc_desc);
     $sql = 'UPDATE ' . USER_VARIABLES_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $data_update_post) . ' WHERE user_id = ' . $poster_id;
     $db->sql_query($sql);
-}
+} 
 
-// skill description
 if (request_var('skill_desc','') != '' && request_var('hidden_skill','') != '') {
     $ct = count(request_var('skill_desc',''));
     for ($gd = 0; $gd < $ct; $gd++) {
@@ -54,31 +49,75 @@ if (request_var('skill_desc','') != '' && request_var('hidden_skill','') != '') 
         'skill_description' => $skill_desc);
     $sql = 'UPDATE ' . USER_VARIABLES_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $data_update_post) . ' WHERE user_id = ' . $poster_id;
     $db->sql_query($sql);
-}
+}// skill description
 
-if (request_var('increment_variable_spell','') and request_var('increment_variable_spell','') != 1) {
+//if (request_var('increment_variable_spell','')) {
+//if ($TotalSpellLevels > 0) {
+
     $level = array();
     $spell_class_type = array();                //CVC - 12/05/15 - Added
     $level_min = array();
     $level_max = array();
     $spell = array();
 
-//Bard
-//Cleric
-//Druid
-//Paladin
-//Ranger
-//Sorcerer
-//Wizard
-    
-    
-    for ($i = 1; $i < request_var('increment_variable_spell',''); $i++) {
-        $level[] = request_var('select_level' . $i . '','');
-        $spell_class_type[] = request_var('select_type' . $i . '','');
-        $level_min[] = request_var('select_level_min' . $i . '','');
-        $level_max[] = request_var('select_level_max' . $i . '','');
-    }
+    for ($i = 0; $i < 10; $i++) {
+        
+        if ((request_var('select_level' . $i . '',''))!='') {            
+            
+                $decodedST = (request_var('select_type' . $i . '',''));
 
+                switch ($decodedST) {
+                    case "Bard": 
+                        $decodedST ="0";
+                        break;
+                    case "Cleric": 
+                        $decodedST ="1";
+                        break;
+                    case "Druid": 
+                        $decodedST ="2";
+                        break;
+                    case "Paladin": 
+                        $decodedST ="3";
+                        break;
+                    case "Ranger": 
+                        $decodedST ="4";
+                        break;                   
+                    case "Wizard": 
+                        $decodedST ="6";
+                        break;                                
+                    case "Sorcerer": 
+                        $decodedST ="6";
+                        break;                                          
+                    }      
+        $spell_class_type[] = $decodedST;
+               
+        $level[] = request_var('select_level' . $i . '','');
+        print_r("Level: " . (request_var('select_level' . $i . '','')));
+        $level_min[] = request_var('select_level_min' . $i . '','');
+        $level_max[] = request_var('select_level_max' . $i . '','');    
+        
+         }
+}   
+    
+        //$lmin = "{\"0\":\"1\",\"1\":\"2\",\"2\":\"7\"}";    //{"0":"4","1":"6","2":"8"}
+        //$lmax = "{\"0\":\"4\",\"1\":\"6\",\"2\":\"5\"}";    //{"0":"1","1":"2","2":"4"}
+        //$l = "{\"0\":\"0\",\"1\":\"1\",\"2\":\"2\"}";       //{"0":"0","1":"1","2":"2"}
+        //$sct = "{\"0\":\"1\",\"1\":\"1\",\"0\":\"1\"}";     //{"0":"0","1":"1","2":"0"}
+        //$spell_variable1 = "{\"0\":{\"0\":\"Detect Magic\",\"1\":\"Message\",\"2\":\"Read Magic\"},\"1\":{\"0\":\"Bane\", \"1\":\"Cure Light Wounds\",\"2\":\"Command\"},\"2\":{\"0\":\"Alter Self\",\"1\":\"Animal Trance\",\"2\":\"Blur\"}}"; //{"0":{"0":"Detect Magic","1":"Message","2":"Read Magic"},"1":{"0":"Bane", "1":"Cure Light Wounds","2":"Command"},"2":{"0":"Alter Self","1":"Animal Trance","2":"Blur"}}
+        
+        $spell_desc1 = "TBD";
+        $l = json_encode($level, JSON_FORCE_OBJECT);    
+        $sct = json_encode($spell_class_type, JSON_FORCE_OBJECT);
+        $lmin = json_encode($level_min, JSON_FORCE_OBJECT);
+        $lmax = json_encode($level_max, JSON_FORCE_OBJECT);
+        
+        //$level_min1 = array_merge(array(request_var('select_level_min','')), $level_min);
+        //$spell_desc1 =  json_encode($level_min1, JSON_FORCE_OBJECT);
+        //$sct = json_encode($spell_class_type, JSON_FORCE_OBJECT);
+        //$lmin = json_encode($level_min, JSON_FORCE_OBJECT);
+        //$lmax = json_encode($level_max, JSON_FORCE_OBJECT);
+    
+    /*
     $spell_desc = array();
     for ($i = 1; $i < request_var('increment_variable_spell',''); $i++) {
         $lvl = request_var('select_level' . $i . '','');
@@ -101,7 +140,8 @@ if (request_var('increment_variable_spell','') and request_var('increment_variab
     $sct = json_encode($spell_class_type1, JSON_FORCE_OBJECT);
     $lmin = json_encode($level_min1, JSON_FORCE_OBJECT);
     $lmax = json_encode($level_max1, JSON_FORCE_OBJECT);
-
+    $lmin = "{\"8:\",\"8:\"}";
+    
     $fl = request_var('select_level','');
     $sd = request_var('spell_desc','');
     for ($s1 = 0; $s1 < count($sd); $s1++) {
@@ -117,7 +157,7 @@ if (request_var('increment_variable_spell','') and request_var('increment_variab
     $sct = json_encode(array(request_var('select_type','')), JSON_FORCE_OBJECT);
     $lmin = json_encode(array(request_var('select_level_min','')), JSON_FORCE_OBJECT);
     $lmax = json_encode(array(request_var('select_level_max','')), JSON_FORCE_OBJECT);
-
+    $lmin = "{\"9:\",\"9:\"}";
     $fl = request_var('select_level','');
     $fs = request_var('spell_level','');
    // $spell_details1 = array("$fl" => array('name' => $fs));
@@ -127,7 +167,11 @@ if (request_var('increment_variable_spell','') and request_var('increment_variab
     $spell_variable1 = json_encode($spell_details1, JSON_FORCE_OBJECT);
 
     //$spell_variable1 = json_decode($spell_details1, JSON_FORCE_OBJECT);
+    
+    
 }
+
+*/
 
 if (request_var('increment_variable_ability','') and request_var('increment_variable_ability','') > 1) {
     $ability = array();
@@ -180,6 +224,7 @@ if (request_var('post_as','') != '') {                                          
         $message = "Posting as default alias.  POSTER_ID == " . $poster_id;
         //echo "<script type='text/javascript'>alert('$message');</script>";
 }
+
 if (request_var('type','') != '') {
     $type = json_encode(request_var('type',''), JSON_FORCE_OBJECT);
 } else {

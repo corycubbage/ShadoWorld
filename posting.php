@@ -240,6 +240,7 @@ else
 }
 $result_post_data = $db->sql_query($select_post_data);
 
+
 // CVC - 11/23/15 - Moved all of the user variable retrieval and evaluation into functionLoadUserVariables for easier reading
 include ($phpbb_root_path . 'includes/LoadUserVariables.' . $phpEx);                //CVC - 11/23/15
 
@@ -302,6 +303,373 @@ for ($al = 0; $al < $alias_count; $al++) {
 
 // **** ALIAS END
 
+//  Get Group Member stats
+$groupMembers_data = getGroupMemberStats($forum_id);
+$groupMembers_count = count($groupMembers_data);
+if ($groupMembers_count > 0 )
+{
+    $groupMemberStats.="<div class=\"container\">";
+    $groupMemberStats.="<table class=\"table-hover table-responsive table-striped table-bordered\" style=\"width:100%\">";
+    $groupMemberStats.="<thead>";
+    $groupMemberStats.="<tr>";
+    $groupMemberStats.="<th><center><span class='CharacterInfoTITLE'>CHARACTER INFORMATION</center></th>";
+    $groupMemberStats.="<th><center><span class='HitPointInfoTITLE'>HIT POINTS</span><br><span class='RedHitPointInfoTITLE'>NONLETHAL</span></center></th>";
+    $groupMemberStats.="<th><center><span class='GoodConditionInfoTITLE'>BUFFS</span><br><span class='BadConditionInfoTITLE'>DEBUFFS</span></center></th>";
+    $groupMemberStats.="<th><center><span class='SpellinfoTITLE'>SPELLS</span><br><span class='AbilityInfoTITLE'>ABILITIES</span></center></th>";
+    $groupMemberStats.="<th><center><span class='HeroPointInfoTITLE'>HERO<br>POINTS</span></center></th>";
+    $groupMemberStats.="<th><center><span class='InitInfoTITLE'>INIT</span><br><span class='SpeedInfoTITLE'>SPEED</span></center></th>";
+    $groupMemberStats.="<th><center><span class='ACInfoTITLE'>AC</span><br><span class='SAVEInfoTITLE'>SAVES</span></center></th>";
+    $groupMemberStats.="<th><center><span class='resist_infoTITLE'>RESISTS</span><br><span class='ImmunityInfoTITLE'>IMMUNITIES</span></center></th>";
+    $groupMemberStats.="</tr>";
+    $groupMemberStats.="</thead>";
+    $groupMemberStats.="<tbody>";
+    for ($gm = 0; $gm < $groupMembers_count; $gm++)
+    {
+        //Username
+        //$groupMemberStats .= "<tr><td width='30'><b>";
+        $groupMemberStats .= "<tr><td><b>";
+        $groupMemberStats .= "<center><span class='CharacterTableInfo'>" . $groupMembers_data[$gm]['username'] . "</span> <span class='playerinfo'>[" . $groupMembers_data[$gm]['PLAYERINFO'] . "]</span><br><span class='class_info'>" . $groupMembers_data[$gm]['CLASS_INFO'] . "</span></center>";
+        //$groupMemberStats .= "<div id='DisplayHoverText'><center><span id='default' class='CharacterTableHover'>".$groupMembers_data[$gm]['username']."</span><span id='revealed'><span class='CharacterTableInfo'>" . $groupMembers_data[$gm]['username'] . "</span> <span class='playerinfo'>[" . $groupMembers_data[$gm]['PLAYERINFO'] . "]<br><span class='class_info'>" . $groupMembers_data[$gm]['CLASS_INFO'] . "</span></span></center></span></div>";
+        $curruser = $groupMembers_data[$gm]['username'];
+        $groupMemberStats .= "</b></td>";
+        
+        $groupMemberStats .= "<td>";
+        //Hit points======================================================
+        $cur_hp = $groupMembers_data[$gm]['selected_current_hit'];
+        $max_hp = $groupMembers_data[$gm]['selected_maximum_hit'];
+        $nl_hp = $groupMembers_data[$gm]['seleted_non_lethal'];
+        
+        If (!$cur_hp) {$cur_hp = "00";}            //CVC - Set a default value to keep the formatting correct if there is nothing set - 12/14/15 
+        If (!$max_hp) {$max_hp ="00";}           //CVC - Set a default value to keep the formatting correct if there is nothing set - 12/14/15 
+        If (!$nl_hp) {$nl_hp ="00";}         //CVC - Set a default value to keep the formatting correct if there is nothing set - 12/14/15 
+               
+        if (strlen($cur_hp)== 1) {$cur_hp = "0" . $cur_hp;}
+        if (strlen($max_hp)== 1) {$max_hp = "0" . $max_hp;}
+        if (strlen($nl_hp)== 1) {$nl_hp = "0" . $nl_hp;}
+        
+        $curhp = (int) $cur_hp;
+        $nlhp = (int) $nl_hp;
+        $maxhp = (int) $max_hp;
+        $HPPercent = (100*($curhp/$maxhp));
+        $NLHPPercent = (100*($nlhp/$maxhp));
+        
+        $ProgresBarText = "uhoh";
+        if ($HPPercent == 100) {
+            $HPProgresBarColor = "progress-bar-full progress-bar-striped";    
+            $ProgresBarText = $curhp . "/" . $maxhp;
+        }
+        elseif (($HPPercent > 75) && ($HPPercent < 100)) {
+            $HPProgresBarColor = "progress-bar-success";    
+            $ProgresBarText = $curhp . "/" . $maxhp;
+        }
+        elseif (($HPPercent > 50) && ($HPPercent < 75)) {
+            $HPProgresBarColor = "progress-bar-warning";    
+            $ProgresBarText = $curhp . "/" . $maxhp;
+        }                
+        elseif (($HPPercent > 25) && ($HPPercent < 50)) {
+            $HPProgresBarColor = "progress-bar-yellow";    
+            $ProgresBarText = $curhp . "/" . $maxhp;
+        }                
+        elseif (($HPPercent > 0) && ($HPPercent < 25)) {
+            $HPProgresBarColor = "progress-bar-danger";    
+            $ProgresBarText = $curhp . "/" . $maxhp;
+        }              
+        elseif ($HPPercent == 0) {
+            $HPProgresBarColor = "progress-bar-danger progress-bar-striped'";    
+            $ProgresBarText = $curhp . "/" . $maxhp . " <b>DISABLED</b>";
+        }        
+        elseif ($HPPercent < 0) {
+            $HPProgresBarColor = "progress-bar-dying progress-bar-striped'";    
+            $ProgresBarText = $curhp . "/" . $maxhp . " <b>UNCONSCIOUS</b>";
+        }        
+        $groupMemberStats .= "<div class='progressHP'><div class='progress-bar " . $HPProgresBarColor ."' role='progressbar' aria-valuenow='100' aria-valuemin='0' aria-valuemax='100' style='width:100%' title='HP: $curhp/$maxhp'><b>HP</b>: ".$ProgresBarText."</div></div>";
+
+            //$groupMemberStats .="<center><span class='HitPointInfo'><b>HP:</b>&nbsp;". $cur_hp ."/".$max_hp . "</span></center>";
+            //$groupMemberStats .= "<center><span class='RedHitPointInfo'><b>NL:&nbsp;</b>". $nl_hp ."</span></center>";
+            if ($nlhp > $curhp)                                 //Unconscious
+            {    
+            $groupMemberStats .= "<div class='progressNL'><div class='progress-bar progress-bar-danger progress-bar-striped' role='progressbar' aria-valuenow='$nlhp' aria-valuemin='0' aria-valuemax='$maxhp' style='width:100%' title ='Nonlethal damage: $nlhp'><b>STAGGERED</b></div></div>";
+            }
+            Elseif (($nlhp == $curhp) && ($curhp > 0)) {        //staggered
+                $groupMemberStats .= "<div class='progressNL'><div class='progress-bar progress-bar-danger progress-bar-striped' role='progressbar' aria-valuenow='$nlhp' aria-valuemin='0' aria-valuemax='$maxhp' style='width:100%' title ='Nonlethal damage: $nlhp'><b>UNCONSCIOUS</b></div></div>";
+            }
+            Elseif (($nlhp < $curhp) && ($curhp > 0) && ($nlhp >0)) {          // nonlethal < cur HP
+                        IF ($NLHPPercent < 30) {
+                            $NLHPPercent = 30;        
+                        }
+                
+                $groupMemberStats .= "<div class='progressNL'><div class='progress-bar progress-bar-danger progress-bar-striped' role='progressbar' aria-valuenow='$nlhp' aria-valuemin='0' aria-valuemax='$maxhp' style='width:". $NLHPPercent . "%' title ='Nonlethal damage: $nlhp'> <b>NL</b>: ". $nlhp . "</div></div>";
+            }
+            elseif (($nlhp <= 0) || ($nlhp == ''))              //No nonletahl HP
+            {
+               $groupMemberStats .= "<div class='progressNL'><div class='progress-bar progress-bar-danger progress-bar-striped' role='progressbar' aria-valuenow='$nlhp' aria-valuemin='0' aria-valuemax='$maxhp' style='width:0%'></div></div>";
+            }
+        
+        $groupMemberStats .= "</td>";        
+        $groupMemberStats .= "<td>";
+        // end hitpoints=================================================
+        
+        //conditions=====================================================
+        
+        $cond_good = $groupMembers_data[$gm]['seleted_good_condition'];
+        $cond_bad = $groupMembers_data[$gm]['seleted_bad_condition'];
+        $sgc = json_decode($cond_good, true);
+        $sbc = json_decode($cond_bad, true);
+        if (count($sbc) > 1) 
+        {
+            $cond_bad_disp = '';
+            for ($bc = 0; $bc < count($sbc); $bc++) 
+            {
+                if ($bc != (count($sbc) - 1)) 
+                {
+                    $cond_bad_disp .=$sbc[$bc] . ",&nbsp;";
+                } 
+                else 
+                {
+                    $cond_bad_disp .=$sbc[$bc];
+                }
+            }
+        } 
+        elseif (count($sbc) == 1) 
+        {
+            $cond_bad_disp .=$sbc[0];
+        } 
+        elseif ($sbc == null) 
+        {
+            $cond_bad_disp = '';
+        }
+
+        //seleted good condition       
+        if (count($sgc) > 1) {
+            $cond_good_disp = '';
+            for ($gc = 0; $gc < count($sgc); $gc++) {
+                if ($gc != (count($sgc) - 1)) {
+                    $cond_good_disp .=$sgc[$gc] . ",&nbsp;";
+                } else {
+                    $cond_good_disp .=$sgc[$gc];
+                }
+            }
+        } elseif (count($sgc) == 1) {
+            $cond_good_disp .=$sgc[0];
+        } elseif ($sgc == null) {
+            $cond_good_disp = '';
+        }
+        ///=======================
+        if ($cond_good_disp != '' OR $cond_bad_disp != '')
+        {
+            if($cond_good_disp != '')
+            {
+                //$groupMemberStats .= "<font color='#0070CA '>" . $cond_good_disp .", </font>";
+                $groupMemberStats .= "<center><span class='GoodConditionInfo' title='$curruser Buffs: $cond_good_disp'>$cond_good_disp</span></center>";
+            }
+            if($cond_bad_disp != '')
+            {
+                //$groupMemberStats .= "<font color='#FF0000 '>" . $cond_bad_disp ."</font>";
+                $groupMemberStats .= "<center><span class='BadConditionInfo' title='$curruser Debuffs: $cond_bad_disp'>$cond_bad_disp</span></center>";
+            }
+        }
+        $groupMemberStats .= "</td>";        
+        $groupMemberStats .= "<td>";
+        //end conditions =============================================================
+        
+        //Spells =====================================================================
+        $GroupMinSpells = $groupMembers_data[$gm]['level_min'];
+        $GroupMaxSpells = $groupMembers_data[$gm]['level_max'];
+        $GroupSpellsNames = $groupMembers_data[$gm]['level'];
+        $GroupSpellsDescs = $groupMembers_data[$gm]['spell_description'];            
+        
+        $DecodedGroupMinSpells = json_decode($GroupMinSpells, true);
+        $DecodedGroupMaxSpells = json_decode($GroupMaxSpells, true);  
+        $DecodedSpellsNames = json_decode($GroupSpellsNames, true);
+        $DecodedSpellsDescs = json_decode($GroupSpellsDescs, true);  
+        
+        $GroupSpellsName = '';
+        if ($DecodedSpellsNames[0] != '') {
+            if (count($DecodedSpellsNames) != 0) {
+                for ($j = 0; $j < count($DecodedSpellsNames); $j++) {
+                    
+                    if ($j == 0) {
+                        $GroupSpellsName .= "<b> Level " . $DecodedSpellsNames[$j] . "</b>: " . $DecodedGroupMinSpells[$j] . "/" .$DecodedGroupMaxSpells[$j]; 
+                        
+                    }
+                    else {
+                        $GroupSpellsName .= ", <b> Level " . $DecodedSpellsNames[$j] . "</b>: " . $DecodedGroupMinSpells[$j] . "/" .$DecodedGroupMaxSpells[$j]; 
+                        
+                    }
+        }
+    }
+}          
+        if($GroupSpellsName)
+            {
+                $groupMemberStats .= "<center><span class='Spellinfo' title='$curruser spells: $GroupSpellsName'>$GroupSpellsName</span></center>";
+            }
+        
+        //end levels =================================================================
+        
+        //Abilities===================================================================
+      
+        $GroupMinAbilities = $groupMembers_data[$gm]['min_ability'];
+        $GroupMaxAbilities = $groupMembers_data[$gm]['max_ability'];
+        $GroupAbilityNames = $groupMembers_data[$gm]['ability_name'];
+        $GroupAbilityDescs = $groupMembers_data[$gm]['abilities_description'];            
+        
+        $DecodedGroupMinAbilities = json_decode($GroupMinAbilities, true);
+        $DecodedGroupMaxAbilities = json_decode($GroupMaxAbilities, true);  
+        $DecodedAbilityNames = json_decode($GroupAbilityNames, true);
+        $DecodedAbilityDescs = json_decode($GroupAbilityDescs, true);  
+        
+        $GroupAbiltyName = '';
+        if ($DecodedAbilityNames[0] != '') {
+            if (count($DecodedAbilityNames) != 0) {
+                for ($j = 0; $j < count($DecodedAbilityNames); $j++) {
+                    
+                    if ($j == 0) {
+                        $GroupAbiltyName .= "<b>" . $DecodedAbilityNames[$j] . "</b>: " . $DecodedGroupMinAbilities[$j] . "/" .$DecodedGroupMaxAbilities[$j]; 
+                        
+                    }
+                    else {
+                        $GroupAbiltyName .= ", <b>" . $DecodedAbilityNames[$j] . "</b>: " . $DecodedGroupMinAbilities[$j] . "/" .$DecodedGroupMaxAbilities[$j]; 
+                        
+                    }
+        }
+    }
+}          
+        if($GroupAbiltyName)
+            {
+                $groupMemberStats .= "<center><span class='AbilityInfo' title='$curruser abilities: $GroupAbiltyName'>$GroupAbiltyName</span></center>";
+            }
+        
+        $groupMemberStats .= "</td>";        
+        $groupMemberStats .= "<td>";
+         
+        //end ability ===============================================================
+        
+        //hero point ====================================================
+        $GroupHero_point = $groupMembers_data[$gm]['hero_point'];
+        if($GroupHero_point)
+        {
+            $groupMemberStats .= "<center><span class='HeroPointInfo' title='$curruser Hero Points: $GroupHero_point'>".$GroupHero_point."</span></center>";
+        }        
+        $groupMemberStats .= "</td>";        
+        $groupMemberStats .= "<td>";
+
+        //end hero point=================================================
+
+        // STATIC VALUES -- These values are not daily expenditures, so we are putting them last
+        
+        //Init ====================================================
+        $Groupinit = $groupMembers_data[$gm]['INIT'];
+        if($Groupinit)
+        {
+            $groupMemberStats .= "<center><span class='InitInfo' title='$curruser Inititive: $Groupinit'>+".$Groupinit."</span></center>";
+        }        
+
+        //end init =================================================
+        
+        //Speed ====================================================
+        $GroupSpeed = $groupMembers_data[$gm]['SPEED'];
+        if($GroupSpeed)
+        {
+            $groupMemberStats .= "<center><span class='SpeedInfo' title='$curruser Speed: $GroupSpeed ft.'>".$GroupSpeed." ft</span></center>";
+        }        
+        $groupMemberStats .= "</td>";        
+        $groupMemberStats .= "<td>";
+
+        //end Speed =================================================
+        
+        //AC ========================================================================
+        $GroupDecodedAC = json_decode($groupMembers_data[$gm]['AC'], true);
+        $GroupDecoded_AC_count = count($GroupDecodedAC);
+
+        if ($GroupDecodedAC) {
+            $GroupAC = $GroupDecodedAC[0];          //AC
+            $GroupTAC = $GroupDecodedAC[1];         //Touch AC
+            $GroupFFAC = $GroupDecodedAC[2];        //Flat Footed AC
+
+        }	
+        else    {
+            $GroupAC = 0;
+            $GroupTAC = 0;
+            $GroupFFAC = 0;
+        }
+        If (!$GroupAC) {$GroupAC = "00";}            //CVC - Set a default value to keep the formatting correct if there is nothing set - 12/14/15 
+        If (!$GroupTAC) {$GroupTAC ="00";}           //CVC - Set a default value to keep the formatting correct if there is nothing set - 12/14/15 
+        If (!$GroupFFAC) {$GroupFFAC ="00";}         //CVC - Set a default value to keep the formatting correct if there is nothing set - 12/14/15 
+        if (strlen($GroupAC)== 1) {$GroupAC = "0" . $GroupAC;}
+        if (strlen($GroupTAC)== 1) {$GroupTAC = "0" . $GroupTAC;}
+        if (strlen($GroupFFAC)== 1) {$GroupFFAC = "0" . $GroupFFAC;}
+        
+        $groupMemberStats .= "<center><span class='ACInfo' title='$curruser AC: $GroupAC Touch AC: $GroupTAC Flat Footed AC: $GroupFFAC'><b>AC</b>: " . $GroupAC . "<b> T</b>: ".$GroupTAC." <b>FF</b>: ".$GroupFFAC."</span></center>";
+ 
+      
+        //END AC=====================================================================
+        
+        // SAVES ========================================================
+        $GroupDecodedSAVES = json_decode($groupMembers_data[$gm]['SAVES'], true);
+        $GroupDecoded_SAVES_count = count($GroupDecodedSAVES);
+
+        if ($GroupDecodedSAVES) {
+            $GroupFORT = $GroupDecodedSAVES[0];          //AC
+            $GroupREFLEX = $GroupDecodedSAVES[1];         //Touch AC
+            $GroupWILL = $GroupDecodedSAVES[2];        //Flat Footed AC
+                }
+        else {
+            $GroupFORT = 0;
+            $GroupREFLEX = 0;
+            $GroupWILL = 0;
+        }
+        
+        If (!$GroupFORT) {$GroupFORT = "00";}        //CVC - Set a default value to keep the formatting correct if there is nothing set - 12/14/15 
+        If (!$GroupREFLEX) {$GroupREFLEX ="00";}     //CVC - Set a default value to keep the formatting correct if there is nothing set - 12/14/15 
+        If (!$GroupWILL) {$GroupWILL ="00";}         //CVC - Set a default value to keep the formatting correct if there is nothing set - 12/14/15 
+               
+       if (strlen($GroupWILL)== 1) {$GroupWILL = "0" . $GroupWILL;}
+       if (strlen($GroupREFLEX)== 1) {$GroupREFLEX = "0" . $GroupREFLEX;}
+       if (strlen($GroupFORT)== 1) {$GroupFORT = "0" . $GroupFORT;}
+        
+        $groupMemberStats .= "<center><span class='SAVEInfo' title='$curruser Fort: $GroupFORT Reflex: $GroupREFLEX Will: $GroupWILL'><b>F</b>: ".$GroupFORT." <b>R</b>: ".$GroupREFLEX." <b>W</b>: ".$GroupWILL."</span></center>";
+        $groupMemberStats .= "</td>";        
+        $groupMemberStats .= "<td>";
+      
+        //END SAVES=====================================================================
+                
+        //Resists========================================================
+        $GroupDecodedRESISTIMMUNITY = json_decode($groupMembers_data[$gm]['RESISTIMMUNITY'], true);
+        $GroupDecoded_RESISTIMMUNITY_count = count($GroupDecodedRESISTIMMUNITY);
+
+        if ($GroupDecodedRESISTIMMUNITY) {
+            $GroupRESIST = $GroupDecodedRESISTIMMUNITY[0];          
+            $GroupIMMUNITY = $GroupDecodedRESISTIMMUNITY[1];         
+                }
+        else {
+            $GroupRESIST = 0;
+            $GroupIMMUNITY = 0;
+
+        }
+        if($GroupRESIST)
+        {
+            $groupMemberStats .= "<center><span class='resist_info' title='$curruser Resistance: $GroupRESIST'>$GroupRESIST</span></center>";
+        }
+        //End resists====================================================
+        
+        //imunity =======================================================
+        if($GroupIMMUNITY)
+        {
+            $groupMemberStats .= "<center><span class='ImmunityInfo' title='$curruser Immunity: $GroupIMMUNITY'>$GroupIMMUNITY</span></center>";
+        }
+        $groupMemberStats .= "</td>";        
+        $groupMemberStats .= "<td>";        
+        //end immunity ==================================================
+                
+        $groupMemberStats .= "</tr>";
+    }
+    
+    $groupMemberStats.="</tbody>";
+    $groupMemberStats.="</table>" ; 
+    $groupMemberStats.="</div>";
+    
+}   
+// **** end get group member stats        
 
 if (!$post_data)
 {
@@ -1407,6 +1775,7 @@ if ($submit || $preview || $refresh)
 			}
 
             //Call SaveUserVariables which takes the values that the user set in PostingEditor.html and writes them back into variables to be written into the database  //CVC - 11/25/15
+            //debug_to_console ("Loading SaveUserVariables");
             include ($phpbb_root_path . 'includes/SaveUserVariables.' . $phpEx);                                                                                         //CVC - 11/25/15
             
             // ***** Write all variables for the post back into the datbase. ****
@@ -1464,6 +1833,7 @@ if ($submit || $preview || $refresh)
                                 'level' => $l,
                                 'level_min' => $lmin,
                                 'level_max' => $lmax,
+                                'spell_decription' => $spell_desc1,
                                 'ability_name' => $a,
                                 'min_ability' => $amin,
                                 'max_ability' => $amax,
@@ -1474,7 +1844,6 @@ if ($submit || $preview || $refresh)
                                 'spell' => $spell_variable1,
                                 //'img_title' => $image_name,               //Unused CVC 11/26/15
                                 //'link_path' => $image_url,                //Unused CVC 11/26/15
-                                'spell_decription' => $spell_desc1,
                                 'gear_description' => $gear_desc,
                                 'skill_description' => $skill_desc,
                                 'positive_condition_description' => $pc_desc,
@@ -1488,7 +1857,7 @@ if ($submit || $preview || $refresh)
                     $chekcsum = md5($message_parser->message);
                     //print_r($dmessage); exit;
 
-                    //debug_to_console ("Loading SaveUserVariables ahead of data_upate_post.");
+                    debug_to_console ("Writing User Variables to DB.");
                     $data_update_post = array(                                                                                                                     
                         'AC'                                                    => request_var('AC',''),
                         'PLAYERINFO'                                            => request_var('PLAYERINFO',''),
@@ -1499,6 +1868,8 @@ if ($submit || $preview || $refresh)
                         'seleted_bad_condition'                                 => json_encode(request_var('negative_condition', array('' => '')), JSON_FORCE_OBJECT),
                         'seleted_good_condition'                                => json_encode(request_var('positive_condition', array('' => '')), JSON_FORCE_OBJECT),
                         'spell_class_type'                                      => $sct,                     //CVC - Added 12/05/15
+                        'spell'                                                 => $spell_variable1,
+                        'spell_decription'                                      => $spell_desc1,
                         'level'                                                 => $l,
                         'level_min'                                             => $lmin,
                         'level_max'                                             => $lmax,
@@ -1509,8 +1880,6 @@ if ($submit || $preview || $refresh)
                         'quick_stats'                                           => request_var('quick_stats',''),
                         'hero_point'                                            => request_var('select_hero_points',''),
                         'quick_skill'                                           => $skill_quality,
-                        'spell'                                                 => $spell_variable1,
-                        'spell_decription'                                      => $spell_desc1,
                         'abilities_description'                                 => $abilities_desc,
                     );
 
@@ -1641,7 +2010,7 @@ if ($submit || $preview || $refresh)
 				trigger_error($message);
 			}
                         
-                        redirect($redirect_url);              //SUBMIT THE PAGE and REDIRECT BACK TO PREVIOUS -- CVC 11/26/16
+                        // redirect($redirect_url);              //SUBMIT THE PAGE and REDIRECT BACK TO PREVIOUS -- CVC 11/26/16
 		}
 	}
 }
@@ -1909,13 +2278,15 @@ $template->assign_vars(array(
     'S_EDIT_MIN_LEVEL' => $selectbox_level_min,
     'S_EDIT_MAX_LEVEL' => $selectbox_level_max,
     'S_SPELL_COUNT' => $spell_variable,
-    'S_SPELL_VARIABLE' => $spell_one,
+    //'S_SPELL_VARIABLE' => $spell_one,
+    'S_SPELL_VARIABLE' => $SpellTableData,
     'S_EDIT_ABILITY_NAME' => $edit_ability_namey,
     'S_EDIT_MIN_ABILITY' => $selectbox_min_ability,
     'S_EDIT_MAX_ABILITY' => $selectbox_max_ability,
     'S_INCREMENR_SPELL' => $increment_variable_spell,
     'S_INCREMENR_ABILITY' => $increment_variable_ability,
     'S_HERO_POINT' => $s_hero_points_data,
+    'S_INIT' => $s_init_data,
     'S_QUICK_STATS' => $quick_stats,
     'S_ATTACK' => $attack,
     'S_DAMAGE' => $damage,
@@ -1950,8 +2321,12 @@ $template->assign_vars(array(
     //'SELECTED_BAD_CONDITION' => $seleted_bad_condition1,
     //'SELECTED_GOOD_CONDITION' => $seleted_good_condition1,
     'LEVELS' => $levels1,                                                       // Spell level information concatenated into a string, L:0 4/4, L1: 1/4, etc
+    //'LEVELS' => $SpellTableData,                                               //CVC - 12/15/15
     'ABILITY' => $ability1,
     'HERO_POINT' => $heropoint,
+    'VALUE_TRACKER' => $value_tracker,
+    'SPEED' => $SPEED,                                                          //CVC - 12/14/15 (Added)
+    'INIT' => $INIT,                                                            //CVC - 12/14/15 (Added)
     'OFFENSE' => $offense_buttons,
     'SKILL' => $skill_buttons,
     //'NEW_MODE' => request_var('mode'],
@@ -2075,13 +2450,15 @@ $page_data = array(
         'S_EDIT_MIN_LEVEL' => $selectbox_level_min,
         'S_EDIT_MAX_LEVEL' => $selectbox_level_max,
         'S_SPELL_COUNT' => $spell_variable,
-        'S_SPELL_VARIABLE' => $spell_one,
+        //'S_SPELL_VARIABLE' => $spell_one,
+        'S_SPELL_VARIABLE' => $SpellTableData,
         'S_EDIT_ABILITY_NAME' => $edit_ability_namey,
         'S_EDIT_MIN_ABILITY' => $selectbox_min_ability,
         'S_EDIT_MAX_ABILITY' => $selectbox_max_ability,
         'S_INCREMENR_SPELL' => $increment_variable_spell,
         'S_INCREMENR_ABILITY' => $increment_variable_ability,
         'S_HERO_POINT' => $s_hero_points_data,
+        'S_INIT' => $s_init_data,
         'S_QUICK_STATS' => $quick_stats,
         'S_ATTACK' => $attack,
         'S_DAMAGE' => $damage,
@@ -2108,6 +2485,9 @@ $page_data = array(
         'WILL' => $WILL,                                                            //CVC - 12/04/15 (Added)
         'RESIST' => $RESIST,                                                        //CVC - 12/04/15 (Added)
         'IMMUNITY' => $IMMUNITY,                                                    //CVC - 12/04/15 (Added)
+        'VALUE_TRACKER' => $value_tracker,
+        'SPEED' => $SPEED,
+        'INIT' => $INIT,
         'SELECTED_CURRENT_HIT' => $selected_current_hit,
         'SELECTED_CURRENT_USERNAME' => request_var('useraccount',''),
         'SELECTED_MAXIMUM_HIT' => $selected_maximum_hit,
@@ -2115,6 +2495,7 @@ $page_data = array(
         'SELECTED_BAD_CONDITION' => $seleted_bad_condition1,
         'SELECTED_GOOD_CONDITION' => $seleted_good_condition1,                  
         'LEVELS' => $levels1,                                                   //CVC - 11/28/15 - String of conditions displayed on posting_editor.html
+        //'LEVELS' => $SpellTableData,                                               //CVC - 12/15/15
         'ABILITY' => $ability1,
         'HERO_POINT' => $heropoint,
         'OFFENSE' => $offense_buttons,
@@ -2132,6 +2513,7 @@ $page_data = array(
         'ALIAS_NAME' => $alias_names,
         'SELECTED_ALIAS' => $selected_Alias,
         'SELECTED_SIG' => $selected_Sig,
+        'GROUP_MEMBERS_STATS' => $groupMemberStats,
         //CVC - End User Variables
 );
 

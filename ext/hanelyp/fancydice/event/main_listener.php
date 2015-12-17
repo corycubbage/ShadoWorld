@@ -144,9 +144,19 @@ class main_listener implements EventSubscriberInterface
 			$message = $event['message_parser']->message.'<br />';
 			// count already prepped dice in post
 			$jnk = array();
-			$this->rollcount = preg_match_all('#\[dice\sseed=(\d+)\ssecure=(\w+):?\w*\](.+?)\[/dice\]#i',
+		//JGL - TODO: fix properly by checking secure seed value and filling missing numbers or scanning and ensuring no duplicate?
+                        
+                        $this->rollcount = preg_match_all('#\[dice\sseed=(\d+)\ssecure=(\w+):?\w*\](.+?)\[/dice\]#i',
 						$message, $jnk);
-		}
+                        
+		} 
+                //JGL - this fixes one case of recycled seed but still able to get repeats depending on deletions of existing seeds
+                //also skips a seed on adding rolls to preview (doesn't impact anything really)
+                if ($this->rollcount != 0)
+                {
+                    $this->rollcount++;
+                }
+                                
 		//echo 'prior count '.$this->rollcount.'<br />';
 	}
 
@@ -203,12 +213,11 @@ class main_listener implements EventSubscriberInterface
                 if (empty($poster_lastpost_time)) {
                     $poster_lastpost_time = $this->user->data['user_lastpost_time'];
                 }
-                
-                
+                                
                 return ((1*$poster_lastpost_time) ^
 				(1*$this->user->data['user_email_hash']) ^
 				($this->config['fancyDiceSecure']*$this->rollcount++)) &
-				0xffff;
+				0xffff ;
 	}
 	
 	// invoked by bbcode first pass
@@ -234,6 +243,7 @@ class main_listener implements EventSubscriberInterface
 	// second pass won't call this correctly for post display, but does for post preview		
 	public function bb_replace_dice($spec, $seed, $secure)
 	{
+                
 		//return
 		//debug_print_backtrace(0,2);
 		$securesplit = explode('_', $secure);

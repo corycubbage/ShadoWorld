@@ -65,9 +65,13 @@ $s_level_type_data .= "<option value='Ranger'>Ranger</option>";
 $s_level_type_data .= "<option value='Sorcerer'>Wizard</option>";
 $s_level_type_data .= "<option value='Wizard'>Wizard</option>";
 
-$id = $_REQUEST['Id'];
 $user_id = $_REQUEST['user_id'];
-echo '<table><tr><td><input id="5" class="btn btn-info-red" type="button" name="' . $_REQUEST['post_id'] . '_' . $_REQUEST['user_id'] . '_' . $_REQUEST['Id'] . '" value="-" addaditinal="" onclick="return remove_extra_level(this);"></td>';
+$id = $_SESSION["SpellLevel"];
+
+  $id=$id++;
+ 
+echo '<table><td>' . $id . '</td></table>';
+echo '<table><tr><td><input id="5" class="btn btn-info-red" type="button" name="' . $_REQUEST['post_id'] . '_' . $_REQUEST['user_id'] . '_' . $id . '" value="-" addaditinal="" onclick="return remove_extra_level(this);"></td>';
 echo '<td><label for="select_type' . $id . '">Type: <select name="select_type' . $id . '" id="select_type' . $id . '" style="width:3em;">' . $s_level_type_data . '</select></label></td>';
 echo '<td>&nbsp;&nbsp;&nbsp;<select name="spell_level'.$id.'[]" id="spell_level' . $id . '" class="spell_level" multiple>'.$s_spell1_data.'</select>&nbsp;&nbsp;</td><td>';
 echo '<label for="select_lvl' . $id . '">Level: <select name="select_level' . $id . '" id="select_level' . $id . '" style="width:3em;">' . $s_level_data . '</select></label>';

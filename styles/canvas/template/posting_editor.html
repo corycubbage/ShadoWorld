@@ -52,79 +52,23 @@
 
     <div class="tab-content">
         <div id="Vitals" class="tab-pane fade in active" role="tabpanel">
-            <table><tr>
-                <td width='30'><b>[{SELECTED_ALIAS}]: </b></td><td>
-                    <!-- IF ((SELECTED_CURRENT_HIT == 0)or !(SELECTED_CURRENT_HIT == '')) &&  ((SELECTED_MAXIMUM_HIT == 0)or !(SELECTED_MAXIMUM_HIT == '')) && ((SELECTED_NON_LETHAL == 0) or !(SELECTED_NON_LETHAL == '')) -->
-
-                        <!-- IF ((SELECTED_CURRENT_HIT == 0) or !(SELECTED_CURRENT_HIT == '')) -->
-
-                            <!-- IF (!(SELECTED_CURRENT_HIT == '') && (SELECTED_CURRENT_HIT != SELECTED_MAXIMUM_HIT)) -->
-                                [ <span class="HitPointInfo"><b>HP:</b>&nbsp;{SELECTED_CURRENT_HIT}/{SELECTED_MAXIMUM_HIT}</span>
-                            <!-- ENDIF -->
-                         
-                            <!-- IF (!(SELECTED_CURRENT_HIT == '') && (SELECTED_CURRENT_HIT == SELECTED_MAXIMUM_HIT)) -->
-                               [ <span class="HitPointInfo"><b>HP:</b>&nbsp;{SELECTED_CURRENT_HIT}/{SELECTED_MAXIMUM_HIT}</span>
-                            <!-- ENDIF -->
-                         
-                        <!-- ENDIF -->
-
-                            <!-- IF !(SELECTED_NON_LETHAL == '') -->
-                                 , <span class="RedHitPointInfo"><b>NL:&nbsp;</b>{SELECTED_NON_LETHAL}</span> ]
-                            <!-- ENDIF -->
-
-                            <!-- IF (SELECTED_NON_LETHAL == '') -->
-                                ]
-                            <!-- ENDIF -->
-
-                    <!-- ENDIF -->
-
-                    <!-- IF SELECTED_GOOD_CONDITION or (SELECTED_GOOD_CONDITION == '') or  SELECTED_BAD_CONDITION or (SELECTED_BAD_CONDITION == '')-->
-                        <!-- IF !(SELECTED_GOOD_CONDITION == '') or (SELECTED_BAD_CONDITION)-->
-                            [
-                    <!-- ENDIF -->
-                    <!-- IF SELECTED_GOOD_CONDITION or (SELECTED_GOOD_CONDITION == '')-->                                
-                        <font color="#0070CA ">{SELECTED_GOOD_CONDITION}</font>
-                    <!-- ENDIF -->
-                    <!-- IF !(SELECTED_GOOD_CONDITION == '') and !(SELECTED_BAD_CONDITION == '')-->
-                        ,
-                    <!-- ENDIF -->
-                    <!-- IF SELECTED_BAD_CONDITION or (SELECTED_BAD_CONDITION == '')-->                                
-                        <font color="#FF0000 ">{SELECTED_BAD_CONDITION}</font>
-                        <!-- IF !(SELECTED_GOOD_CONDITION == '') or (SELECTED_BAD_CONDITION)-->
-                             ]
-                        <!-- ENDIF -->
-                    <!-- ENDIF -->
-                <!-- ENDIF -->
-                <!-- IF LEVELS-->
-                    [<font color="#5F497A ">{LEVELS}</font>]
-                <!-- ENDIF -->
-
-                <!-- IF ABILITY-->
-                    [<font color="#FF8C00 ">{ABILITY}</font>]
-                <!-- ENDIF -->
-
-                </td><td>
-                        [ <span class="ACInfo"><b>AC</b>: {AC} <b>T</b>: {TAC} <b>FF</b>: {FFAC}</span> ]                    
-                        [ <span class="SAVEInfo"><b>F</b>: {FORT} <b>R</b>: {REFLEX} <b>W</b>: {WILL}</span>  ]                      
-                
-                <!-- IF RESIST -->
-                    [<span class="resist_info"><b>Resists: </b> {RESIST}</span>]
-                <!-- ENDIF -->
-
-                <!-- IF IMMUNITY -->
-                    [<span class="ImmunityInfo"><b>Immunity: </b> {IMMUNITY}</span>]
-                <!-- ENDIF -->
-                            
-                <!-- IF HERO_POINT > 0-->
-                    [<span class="HeroPointInfo"><b>Hero: </b> {HERO_POINT}</span>]
-                <!-- ENDIF -->
-                
-                </td></tr></table>
-            Group Stats Tests: <br />
-            {GROUP_MEMBERS_STATS}
-              </h5>
-
-        </div>
+            <br>      
+                <div class="container">                          <!-- ********* ACTIVE EFFECTS, DEFENSE, SPELLS, SPECIAL ABILITIES, GEAR ************** -->
+                    <div class="panel-group" id="accordion">            
+                        <div class="panel panel-default">           <!-- ********* GENERAL ************** -->                
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#partyvitals">Party Vitals</a>
+                                </h4>
+                            </div>
+                            <div id="partyvitals" class="panel-collapse collapse active">        
+                                {GROUP_MEMBERS_STATS}    
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
 
             <div id="CharacterInfo" class="tab-pane fade">        
                 <div class="container">                          <!-- ********* ACTIVE EFFECTS, DEFENSE, SPELLS, SPECIAL ABILITIES, GEAR ************** -->
@@ -139,7 +83,7 @@
                                 <table> <tr><td class="PostingEditorTable"><font size="-1"><b>Player Name</b>:</td><td><input type='text' name='PLAYERINFO' id='PLAYERINFO' value="{PLAYERINFO}" size="15"></font></td>
                                         <td><font size="-1"><b>Character Info</b>:</td><td><input type='text' name='CLASS_INFO' id='CLASS_INFO' value="{CLASS_INFO}" size="30"></font></td></table>
                                         <td class="PostingEditorTable"><font size="-1"><b>Notes</b>:</td><td><input type='text' name='quick_stats' id='quick_stats' value="{S_QUICK_STATS}" size="60"></font></td></tr>
-                                        <tr><td><b>Init:</b></td><td><select name="select_init_points" id="select_init_points"style="width:3em;">{S_INIT_POINT}</select></td>
+                                        <tr><td><b>Init:</b></td><td><select name="select_init_points" id="select_init_points"style="width:3em;">{S_INIT}</select></td>
                                             <td><b>Hero Points:</b></td><td><select name="select_hero_points" id="select_hero_points" style="width:2em;">{S_HERO_POINT}</select></td></tr>
                                         <br>                                
                                 
@@ -204,18 +148,11 @@
                               
                               <center><input id="variable_spells" class="btn btn-info-green" type="button" name="variable_spells" value="Add Spell Level"></center>
 
-                                  <!-- IF S_VARIABLE_LEVEL == yes-->
-                                          <!-- CVC 11/29/15
-
-                                          <table><tr><td><input type="button" name='{LAST_LEVEL_NAME}' id='0' value="-" class="btn btn-info-red" onclick="return remove_level(this);"></td>
-                                          <td>&nbsp;&nbsp;{S_SPELL_VARIABLE}&nbsp;&nbsp;</td><td>
-                                              <label for="level">Level:</label><select name="select_level" id="select_level" style="width:3em;">{S_LEVEL}</select>
-                                          <label for="minmax_level">&nbsp;&nbsp;Current/Max: <select name="select_level_min" id="select_level_min" style="width:3em;">{S_LEVEL_MIN}</select>/<select name="select_level_max" id="select_level_max" style="width:5em;">{S_LEVEL_MAX}</select></label>
-                                          </td></tr></table><br>
-                                      <input type="hidden" name="increment_variable_spell" id="increment_variable_spell" value="1">
-
-                                          -->
-                                          <div id="additionalspell"></div>
+                                  <!-- IF S_VARIABLE_LEVEL == yes-->                                         
+                                    <input type="hidden" name="increment_variable_spell" id="increment_variable_spell" value="1">                                         
+                                    <input type="hidden" name="level_tracker" id="level_tracker" value="{VALUE_TRACKER}">                                         
+                                    {S_SPELL_VARIABLE}
+                                    <div id="additionalspell"></div>
                                   <!-- ENDIF -->
 
                                   <!-- IF S_VARIABLE_LEVEL == no-->
@@ -306,7 +243,7 @@
         </div>
 
         <div id="AllAliases" class="tab-pane fade" role="tabpanel">
-          {GROUP_VARIABLE}
+         {GROUP_VARIABLE}
         </div>
     </div>
  </div>

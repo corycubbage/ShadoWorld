@@ -1,0 +1,5 @@
+services:
+    cosmo.colorparser.event.parser:
+        class: cosmo\colorparser\event\parser
+        tags:
+            - { name: event.listener }

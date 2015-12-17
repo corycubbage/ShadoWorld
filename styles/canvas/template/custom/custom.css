@@ -28,7 +28,7 @@ span.playerinfo {
 }
 
 span.Spellinfo {
-	color: #6600FF ;
+	color: #ff66d9 ;
 	font-size: 11px;
 }
 
@@ -38,7 +38,7 @@ span.ACInfo {
 }
 
 span.SAVEInfo {
-	color: #625D5D;
+	color: #005e80;
 	font-size: 11px;
 }
 
@@ -58,7 +58,7 @@ span.RedHitPointInfo {
 }
 
 span.resist_info {
-        color: #7F462C;
+        color: #625D5D;
 	font-size: 11px;}
 
 span.ImmunityInfo {
@@ -67,10 +67,29 @@ span.ImmunityInfo {
 }
 
 span.AbilityInfo {
+	color: #b300b0;
+	font-size: 11px;
+}
+
+span.SpeedInfo {
 	color: #CC6600;
 	font-size: 11px;
 }
 
+span.GoodConditionInfo {
+	color: #0070CA;
+	font-size: 11px;
+}
+
+span.BadConditionInfo {
+	color: #FF0000;
+	font-size: 11px;
+}
+
+span.InitInfo {
+	color: #282828;
+	font-size: 11px;
+}
 span.profileinfo{
 	font-size: 11px;
 }
@@ -80,7 +99,7 @@ select.CharacterInfo {
 }
 
 span.class_info {
-	color: #2a2323;
+	color: #669999;
 	font-weight: bold;
 	font-size: 11px;
 	text-align: center;
@@ -142,4 +161,162 @@ span.class_info {
         word-break: break-all;
 	word-break: break-word;
 	word-wrap: break-word; /* Internet Explorer 5.5+ */
+}
+
+.table-hover > tbody > tr:hover {
+  background-color: #ccf5ff;
+}
+
+span.CharacterTableInfo{
+	font-size: 14px;
+        font-weight: bold;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+span.CharacterTableHover{
+	font-size: 18px;
+        font-weight: bold;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+
+span.vtusernameTITLE {
+	font-size: 18px;
+        font-weight: bold;
+	font-family: Arial, Helvetica, sans-serif;
+	display: block;
+	margin: 3px 0;
+}
+
+span.ranktitleTITLE {
+	color: #2a2323;
+	font-weight: bold;
+	font-size: 14px;
+        text-align: center;
+}
+span.playerinfoTITLE {
+	color: #888888 ;
+	font-size: 12px;
+        text-align: center;
+}
+
+span.ACInfoTITLE {
+	color: #000099;
+	font-size: 13px;
+}
+
+span.SAVEInfoTITLE {
+	color: #005e80;
+	font-size: 13px;
+}
+
+span.HeroPointInfoTITLE {
+	color: #666600;
+	font-size: 13px;
+}
+
+span.HitPointInfoTITLE {
+	color: #006600;
+	font-size: 13px;
+}
+
+span.RedHitPointInfoTITLE {
+	color: #ff3333;
+	font-size: 13px;
+}
+
+span.resist_infoTITLE {
+        color: #625D5D;
+	font-size: 13px;}
+
+span.ImmunityInfoTITLE {
+	color: #7F525D;
+	font-size: 13px;
+}
+
+span.SpellinfoTITLE {
+	color: #ff66d9;
+	font-size: 13px;
+}
+
+span.AbilityInfoTITLE {
+	color: #b300b0;
+	font-size: 13px;
+}
+
+span.SpeedInfoTITLE {
+	color: #CC6600;
+	font-size: 13px;
+}
+
+span.GoodConditionInfoTITLE {
+	color: #0070CA;
+	font-size: 13px;
+}
+
+span.BadConditionInfoTITLE {
+	color: #FF0000;
+	font-size: 13px;
+}
+
+span.InitInfoTITLE {
+	color: #804d00;
+	font-size: 13px;
+}
+span.profileinfoTITLE{
+	font-size: 13px;
+}
+
+span.CharacterInfoTITLE {
+     font-size: 16px;         
+}
+
+span.class_infoTITLE {
+	color: #2a2323;
+	font-weight: bold;
+	font-size: 13px;
+	text-align: center;
+}
+
+.progressHP {
+  overflow: hidden;
+  height: 18px;
+  margin-bottom: 0px;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.progressNL {
+  height: 18px;
+  margin-bottom: 0px;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.progress-bar-full {
+  background-color: #006600;
+}
+
+.progress-bar-yellow {
+  background-color: #FA6539;
+}
+.progress-bar-dying {
+  background-color: #FF0000;;
+}
+
+div#DisplayHoverText span#default {
+    display:inline;
+}
+div#DisplayHoverText:hover span#default {
+    display:none;
+}
+div#DisplayHoverText span#revealed {
+    display:none;
+}
+div#DisplayHoverText:hover span#revealed {
+    display:inline;
 }

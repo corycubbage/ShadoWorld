@@ -1,0 +1,29 @@
+services:
+    slickthemes.slickpanel.controller:
+        class: slickthemes\slickpanel\controller\slickpanel
+        arguments:
+            - @auth
+            - @config
+            - @template	
+            - @user
+            - @controller.helper
+            - %core.root_path%
+            - %core.php_ext%
+            - @slickthemes.slickpanel.controller.userconfig
+    slickthemes.slickpanel.controller.userconfig:
+        class: slickthemes\slickpanel\controller\userconfig
+        arguments:
+            - @auth
+            - @config
+            - @request
+            - @user
+            - @controller.helper
+    slickthemes.slickpanel.listener:
+        class: slickthemes\slickpanel\event\slickpanel_listener
+        arguments:
+            - @config
+            - @template
+            - @user
+            - @controller.helper
+        tags:
+            - { name: event.listener }

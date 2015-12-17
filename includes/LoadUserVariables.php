@@ -12,11 +12,13 @@ while ($row = $db->sql_fetchrow($result_post_data)) { //Retrieve all variables f
     $seleted_non_lethal = $row['seleted_non_lethal'];
     $seleted_bad_condition = $row['seleted_bad_condition'];
     $seleted_good_condition = $row['seleted_good_condition'];
-
+    
     $spellclasstype = $row['spell_class_type'];
     $levels = $row['level'];
     $levels_min = $row['level_min'];
     $levels_max = $row['level_max'];
+    $spell_data = $row['spell'];
+    $spell_description = $row['spell_description'];
 
     $ability_namey = $row['ability_name'];
     $ability_desy = $row['abilities_description'];
@@ -35,6 +37,10 @@ while ($row = $db->sql_fetchrow($result_post_data)) { //Retrieve all variables f
     $type = $row['type'];
     $weapon_name = $row['weapon_name'];
     $user_spell = $row['spell'];                                                //CVC - 12/05/15 - Appears to be the list of spells the user has
+    
+    $INIT = $row['INIT'];
+    $SPEED = $row['SPEED'];
+    $Vuser_id = $row['user_id'];
 	}
         
 $select_hit = "SELECT * from " . VARIABLES_TABLE;
@@ -50,9 +56,9 @@ while ($row = $db->sql_fetchrow($result1)) {
     $negative_condition = $row['negative_condition'];                           //CVC - 11/28/15 - Builds negative condition select box, loading all negative conditions
     $positive_condition = $row['positive_condition'];                           //CVC - 11/28/15 - Builds positive condition select box, loading all negative conditions
 
-    $level = $row['level'];                                                     //CVC - 11/28/15 - Builds current spell level dropdown selection criteria, {"0":"0","1":1,"2":2,"3":3,"4":4,"5":5,"6":6,"7":7,"8":"8","9":"9"}
-    $level_min = $row['level_min'];                                             //CVC - 11/28/15 - Builds spell level current value dropdown selection criteria, between 0 - 99
-    $level_max = $row['level_max'];                                             //CVC - 11/28/15 - Builds spell level maximum value dropdown selection criteria, between 0 - 99
+    $VariableTableSpellLevels = $row['level'];                                                     //CVC - 11/28/15 - Builds current spell level dropdown selection criteria, {"0":"0","1":1,"2":2,"3":3,"4":4,"5":5,"6":6,"7":7,"8":"8","9":"9"}
+    $VariableTableSpellCurrent = $row['level_min'];                                             //CVC - 11/28/15 - Builds spell level current value dropdown selection criteria, between 0 - 99
+    $VariableTableSpellMax = $row['level_max'];                                             //CVC - 11/28/15 - Builds spell level maximum value dropdown selection criteria, between 0 - 99
 
     $min_ability = $row['min_ability'];
     $max_ability = $row['max_ability'];
@@ -87,17 +93,17 @@ sort($positive_condition_data);
 $negative_condition_data_count = count($negative_condition_data);
 $positive_condition_data_count = count($positive_condition_data);
 
-$static_spell_level_list = json_decode($level, true);                                        //CVC - 11/28/15 - $static_spell_level_list is the decoded array of possible spell levels: [0] => 0 [1] => 1 [2] => 2 [3] => 3 [4] => 4 [5] => 5 [6] => 6 [7] => 7 [8] => 8 [9] => 9
-sort($static_spell_level_list);                                                              //CVC - 11/28/15 - Sort them alphanumerically 
-$level_count = count($static_spell_level_list);                                              //CVC - 11/28/15 - Should be ten, 0-9.
+$static_spell_levels = json_decode($VariableTableSpellLevels, true);                          
+sort($static_spell_levels);                                                                   
+$TotalSpellLevelCount = count($static_spell_levels);                             
 
-$static_spell_current_data = json_decode($level_min, true);                                //CVC - 11/28/15 - $static_spell_level_list is the decoded array of possible spells per levels: [0] => 0 [1] => 1 [2] => 2 ... [99] => 99
-sort($static_spell_current_data);                                                          //CVC - 11/28/15 - Sort them alphanumerically 
-$static_spell_current_data_count = count($static_spell_current_data);                                 //CVC - 11/28/15 - Should be 99, 0-99.
+$static_spell_current = json_decode($VariableTableSpellCurrent, true);                          
+sort($static_spell_current);                                                                   
+$TotalSpellCurrentCount = count($static_spell_current);                             
 
-$static_spell_max_data = json_decode($level_max, true);
-sort($static_spell_max_data);
-$static_spell_max_data_count = count($static_spell_max_data);
+$static_spell_max = json_decode($VariableTableSpellMax, true);                          
+sort($static_spell_max);                                                                   
+$TotalSpellMaxCount = count($static_spell_max);                             
 
 $min_ability_data = json_decode($min_ability, true);
 sort($min_ability_data);
@@ -216,10 +222,158 @@ if(request_var('mode','') == 'post')
     
 }
                                
+// CVC - 12/15/15 - *** LOAD ALL SPELLS ***
+// Load all spells from the database and check to see if the user has any spells saved.  If they do, mark them selected.
+$decodedSpellLevels = json_decode($levels, true);                              
+$decodedSpellType = json_decode($spellclasstype, true);                              
+$decodedSpellCurrent = json_decode($levels_min, true);                              
+$decodedSpellMax = json_decode($levels_max, true);                              
+$decodedSpellList = json_decode($spell_data, true);                              
+$decodedSpellDescription = json_decode($spell_description, true);                              
+$TotalSpellLevelCount = count($static_spell_levels);                             
+$TotalSpellCurrentCount = count($static_spell_current);                             
+$TotalSpellMaxCount = count($static_spell_max);  
+$TotalSpellLevels=0;
+  
+if ($decodedSpellLevels) {                                                     //User has spell levels
+    
+    $SpellTableData = '';
+    $s_level_data = '';
+    
+    for ($i = 0; $i < $TotalSpellLevelCount; $i++) {
+        $s_level_min_data = '';
+        $s_level_max_data = '';
+        $s_spell_data = '';
+        $s_level_type_data = '';
+        $s_selectedspells_data = '';
+        
+        if ($decodedSpellLevels[$i] == $i) {
+            $s_level_data = "<option value=\"$decodedSpellLevels[$i]\" selected=\"selected\">$decodedSpellLevels[$i]</option>";
+            $level =$decodedSpellLevels[$i];
+         
+        for ($si = 0; $si < $TotalSpellCurrentCount; $si++) {                       //Build Current dropdown and select current level
+            if ($decodedSpellCurrent[$i] == $si) {
+                $s_level_min_data .= "<option value=\"$si\" selected=\"selected\">$si</option>";
+            }
+            else {
+                $s_level_min_data .= "<option value=\"$si\">$si</option>";
+            }
+        }
+        for ($si = 0; $si < $TotalSpellMaxCount; $si++) {                       //Build Max dropdown and select current max level
+            if ($decodedSpellMax[$i] == $si) {
+                $s_level_max_data .= "<option value=\"$si\" selected=\"selected\">$si</option>";
+            }
+            else {
+                $s_level_max_data .= "<option value=\"$si\">$si</option>";
+            }
+        }
+
+        if ($decodedSpellType[$i] == 0) {
+                $s_level_type_data = "<option value='Bard'>Bard</option>";
+                $spell_type = "Bard";  
+        }
+        if ($decodedSpellType[$i] == 1) {
+                $s_level_type_data .= "<option value='Cleric'>Cleric</option>";
+                $spell_type = "Cleric";  
+        }
+        if ($decodedSpellType[$i] == 2) {
+                $s_level_type_data .= "<option value='Druid'>Druid</option>";
+                $spell_type = "Druid";  
+        }
+        if ($decodedSpellType[$i] == 3) {
+                $s_level_type_data .= "<option value='Paladin'>Paladin</option>";
+                $spell_type = "Paladin";  
+        }
+        if ($decodedSpellType[$i] == 4) {
+                $s_level_type_data .= "<option value='Ranger'>Ranger</option>";
+                $spell_type = "Ranger";  
+        }
+        if ($decodedSpellType[$i] == 5) {
+                $s_level_type_data .= "<option value='Sorcerer'>Wizard</option>";
+                $spell_type = "Wizard";  
+        }
+        if ($decodedSpellType[$i] == 6) {
+                $s_level_type_data .= "<option value='Wizard'>Wizard</option>";
+                $spell_type = "Wizard;";  
+        }    
+    
+        if ($spells_array) {
+            unset($spells_array);
+        }                
+        include('./CreateSpellLists.php');
+        $TotalSpellListCount = count($spells_array);                               //Total spells in the select box for spells of this level
+        
+         for ($si = 0; $si < $TotalSpellLevelCount; $si++) {                       //Increment through all possible spell levels (10)
+             if ($decodedSpellList[$si]) {                                         //Does the user have any saved spells for this level?
+                $TotalSpellListPerLevelCount = count($decodedSpellList[$si]);     //Total number of spells the user has for this level              
+                $s_selectedspells_data_count = 0;
+                
+                for ($spellsinbookinc = 0; $spellsinbookinc < $TotalSpellListCount; $spellsinbookinc++) {           //Iterate through all spell spells in the spell list for this level                     
+                    for ($ssi = 0; $ssi < $TotalSpellListPerLevelCount; $ssi++) {                                           //Iterate through all user spells in the spell list for this level                     
+                        $spellfound = 0; 
+                         if ($spells_array[$spellsinbookinc] == $decodedSpellList[$si][$ssi] ) {                            //Spell found in user list, mark as selected
+                             //echo nl2br ("===========> Matched spell: " . $spells_array[$spellsinbookinc] . "\n");
+                             $s_spell_data .= "<option value=\"$spells_array[$spellsinbookinc]\" selected = \"selected\">$spells_array[$spellsinbookinc]</option>";
+                             $spellfound = 1;
+                             
+                             if ($s_selectedspells_data_count ==0) {
+                                 $s_selectedspells_data.= $spells_array[$spellsinbookinc];
+                             }
+                             Else {
+                                     $s_selectedspells_data .= ", " . $spells_array[$spellsinbookinc];                                     
+                             }
+                             $s_selectedspells_data_count++;
+                             
+                         }
+                        
+                    }                
+                    
+                    if (!$spellfound == 1) {                                                                                      //No matches for this spell, add as unselected.
+                        //echo $si;
+                        //echo nl2br ("X No matches, $spells_array[$spellsinbookinc] not selected.\n");
+                        $s_spell_data .= "<option value=\"$spells_array[$spellsinbookinc]\">$spells_array[$spellsinbookinc]</option>";
+                        
+                    }
+                    
+                if ($s_selectedspells_data_count == $TotalSpellListPerLevelCount) {
+                    //echo nl2br ("Found all the spells for level $si!\n");
+                }
+              }
+              
+              $s_selectedspells_data = "(" . $s_selectedspells_data_count . ") spells saved: " . $s_selectedspells_data;
+            }
+             Else {
+                if ($si == $i){
+                    echo nl2br("No Spells for level: $si\n");     
+                    if ($s_selectedspells_data_count < 1) {
+                            for ($spellsinbookinc = 0; $spellsinbookinc < $TotalSpellListCount; $spellsinbookinc++) {           //Iterate through all spell spells in the spell list for this level                     
+                               $s_spell_data .= "<option value=\"$spells_array[$spellsinbookinc]\">$spells_array[$spellsinbookinc]</option>";
+                            }
+                        }
+                    }
+             }
+          }
+        
+    $SpellTableData .= '<table><tr><td><input id="5" class="btn btn-info-red" type="button" name="' . $post_id . '_' . $Vuser_id . '_' . $i . '" value="-" addaditinal="" onclick="return remove_extra_level(this);"></td>';
+    $SpellTableData .= '<td>&nbsp;&nbsp;&nbsp;</td><td><table><tr><td><label for="select_type' . $i . '">Type:</td><td><select name="select_type' . $i . '" id="select_type' . $i . '" style="width:3em;">' . $s_level_type_data . '</select></label></td><tr>';
+    $SpellTableData .= '<tr><td><label for="select_lvl' . $i . '">Level:</td><td><select name="select_level' . $i . '" id="select_level' . $i . '" style="width:3em;">' . $s_level_data . '</select></label></td></tr>';
+    $SpellTableData .= '<tr><td>Current:</td><td><select name="select_level_min' . $i . '" id="select_level_min' . $i . '" style="width:3em;">' . $s_level_min_data . '</select></td></tr>';
+    $SpellTableData .= '<tr><td>Max:</td><td><select name="select_level_max' . $i . '" id="select_level_max' . $i . '" style="width:3em;">' . $s_level_max_data . '</select></td></tr></table></td>';
+    $SpellTableData .= '<td>&nbsp;&nbsp;&nbsp;<select name="spell_level'.$i.'[]" id="spell_level' . $i . '" class="spell_level" multiple>'.$s_spell_data.'</select>&nbsp;&nbsp;</td>';
+    $SpellTableData .= '<td><label for="selectedspells_lvl' . $i . '"><input type="text" name="selectedspells_level"' . $i . '" id="selectedspells_level"' . $i . '" value="'. $s_selectedspells_data .'" size="70"></input></label></td>';
+    $SpellTableData .= '</tr></table><br>';
+    $TotalSpellLevels++;
+        }
+
+    }
+}
+//echo $SpellTableData;
+unset($spells_arry);
+$value_tracker = $TotalSpellLevels;
+$_SESSION["SpellLevel"] = $TotalSpellLevels;
+
 /*
-//CVC - 11/28/15 - Determine if there are any spell levels defined on this character.  If so, set $variable_level to true and select that level, if not move on.
-$decoded_user_levels = json_decode($levels, true);                              //CVC - 11/28/15 - $levels = Array of decoded spell levels the selected user has, ( [0] => 0 [1] => 1 )
-$s_level_data = '';                                                             //Clear out selected level data
+//Clear out selected level data
 if ($decoded_user_levels[0] != '') {                                           
     for ($i = 0; $i < $level_count; $i++) {                                     //Iterate all ten levels of spells
         if (count($decoded_user_levels) == 1) {                                            
@@ -860,6 +1014,20 @@ for ($hr = 0; $hr < count($hero_points_data); $hr++) {
     }
 
     $s_hero_points_data .= "<option value=\"$hero_points_data[$hr]\" $selected >$hero_points_data[$hr]</option>";
+}
+// Build Init Dropdown select
+$InitSelect_data = json_decode($hero_points, true);
+sort($InitSelect_data);
+
+$s_init_data = '';
+for ($hr = 0; $hr < count($InitSelect_data); $hr++) {
+    if ($InitSelect_data[$hr] == $INIT) {
+        $selected = 'selected="selected"';
+    } else {
+        $selected = '';
+    }
+
+    $s_init_data .= "<option value=\"$InitSelect_data[$hr]\" $selected >$InitSelect_data[$hr]</option>";
 }
 
 $s_critical_multiplier = "<select name='critical_multiplier'  id='critical_multiplier'>";
