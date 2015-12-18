@@ -57,20 +57,27 @@ for ($i = 0; $i < $spell1_count; $i++) {
    $s_spell1_data .= "<option value=''></option>";
 }
 
-$s_level_type_data = "<option value='Bard'>Bard</option>";
+$s_level_type_data .= "<option value='Alchemist'>Alchemist</option>";
+$s_level_type_data .= "<option value='Bard'>Bard</option>";
+$s_level_type_data .= "<option value='Bloodrager'>Bloodrager</option>";
 $s_level_type_data .= "<option value='Cleric'>Cleric</option>";
 $s_level_type_data .= "<option value='Druid'>Druid</option>";
+$s_level_type_data .= "<option value='Elementalist'>Elementalist</option>";
+$s_level_type_data .= "<option value='Inquisitor'>Inquisitor</option>";
+$s_level_type_data .= "<option value='Magus'>Magus</option>";
+$s_level_type_data .= "<option value='Oracle'>Oracle</option>";
 $s_level_type_data .= "<option value='Paladin'>Paladin</option>";
 $s_level_type_data .= "<option value='Ranger'>Ranger</option>";
-$s_level_type_data .= "<option value='Sorcerer'>Wizard</option>";
+$s_level_type_data .= "<option value='Shaman'>Shaman</option>";
+$s_level_type_data .= "<option value='Sorcerer'>Sorcerer</option>";
+$s_level_type_data .= "<option value='Summoner'>Summoner</option>";
+$s_level_type_data .= "<option value='Witch'>Witch</option>";
 $s_level_type_data .= "<option value='Wizard'>Wizard</option>";
 
 $user_id = $_REQUEST['user_id'];
-$id = $_SESSION["SpellLevel"];
+$id = $_REQUEST['Id'];
+$id = $id+4;
 
-  $id=$id++;
- 
-echo '<table><td>' . $id . '</td></table>';
 echo '<table><tr><td><input id="5" class="btn btn-info-red" type="button" name="' . $_REQUEST['post_id'] . '_' . $_REQUEST['user_id'] . '_' . $id . '" value="-" addaditinal="" onclick="return remove_extra_level(this);"></td>';
 echo '<td><label for="select_type' . $id . '">Type: <select name="select_type' . $id . '" id="select_type' . $id . '" style="width:3em;">' . $s_level_type_data . '</select></label></td>';
 echo '<td>&nbsp;&nbsp;&nbsp;<select name="spell_level'.$id.'[]" id="spell_level' . $id . '" class="spell_level" multiple>'.$s_spell1_data.'</select>&nbsp;&nbsp;</td><td>';

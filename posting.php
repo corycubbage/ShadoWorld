@@ -350,8 +350,21 @@ if ($groupMembers_count > 0 )
         $curhp = (int) $cur_hp;
         $nlhp = (int) $nl_hp;
         $maxhp = (int) $max_hp;
-        $HPPercent = (100*($curhp/$maxhp));
-        $NLHPPercent = (100*($nlhp/$maxhp));
+        if ((!$curhp) || (!$maxhp)) {
+        $HPPercent = 0;
+        }
+        else{
+            $HPPercent = (100*($curhp/$maxhp));
+        }
+        
+        if ((!$nlhp) || (!$maxhp)) {
+            $NLHPPercent = 0;
+        }
+        else{
+            $NLHPPercent = (100*($nlhp/$maxhp));
+        }
+        
+
         
         $ProgresBarText = "uhoh";
         if ($HPPercent == 100) {
@@ -559,7 +572,7 @@ if ($groupMembers_count > 0 )
         
         //Init ====================================================
         $Groupinit = $groupMembers_data[$gm]['INIT'];
-        if($Groupinit)
+        if(isset($Groupinit))
         {
             $groupMemberStats .= "<center><span class='InitInfo' title='$curruser Inititive: $Groupinit'>+".$Groupinit."</span></center>";
         }        
@@ -1823,7 +1836,7 @@ if ($submit || $preview || $refresh)
 				//CVC - User Variables
 				'PLAYERINFO' => request_var('PLAYERINFO',''),                              
 				'CLASS_INFO' => request_var('CLASS_INFO',''),                              
-				'AC' => request_var('AC',''),
+				'AC' => $SavedAC,                           //request_var('AC',''),
 				'selected_current_hit' => request_var('select_current_count',''),                
                                 'selected_maximum_hit' => request_var('select_maximum_count',''),
                                 'seleted_non_lethal' => request_var('select_non_lethal',''),
@@ -1834,21 +1847,27 @@ if ($submit || $preview || $refresh)
                                 'level_min' => $lmin,
                                 'level_max' => $lmax,
                                 'spell_decription' => $spell_desc1,
-                                'ability_name' => $a,
-                                'min_ability' => $amin,
-                                'max_ability' => $amax,
+                                'ability_name' => $SavedAbilityName,
+                                'min_ability' => $SavedAbilityCurrent,
+                                'max_ability' => $SavedAbilityMax,
+                                'abilities_description' => $SavedAbilityDesc,
                                 'gear' => $gear_quality,
                                 'quick_stats' =>  request_var('quick_stats',''),
                                 'hero_point' =>  request_var('select_hero_points',''),
                                 'quick_skill' => $skill_quality,
-                                'spell' => $spell_variable1,
-                                //'img_title' => $image_name,               //Unused CVC 11/26/15
-                                //'link_path' => $image_url,                //Unused CVC 11/26/15
+                                'spell' => $final_spell_list,
+                                'OFFENSE' => $offense_buttons,
+                                'PLAYERINFO' => $PLAYERINFO,
+                                'CLASS_INFO' => $CLASS_INFO,
+                                'SPEED' => $SPEED,
+                                'INIT' => $INIT,
+                                'SAVES' => $SavedSaves,
+                                'RESISTIMMUNITY' => $SavedResitImmunity,
+                                'ability_damage' => $SavedAbilityDamage,
                                 'gear_description' => $gear_desc,
                                 'skill_description' => $skill_desc,
                                 'positive_condition_description' => $pc_desc,
                                 'negative_concdition_description' => $nc_desc,
-                                'abilities_description' => $abilities_desc,
                                 //CVC - User Variables
                                         );
 			                        
@@ -1857,8 +1876,48 @@ if ($submit || $preview || $refresh)
                     $chekcsum = md5($message_parser->message);
                     //print_r($dmessage); exit;
 
-                    debug_to_console ("Writing User Variables to DB.");
-                    $data_update_post = array(                                                                                                                     
+                    // *************************************
+                    // Data to be updated on an EDIT only //
+                    // *************************************
+                    $data_update_post = array(   
+                        
+                        //CVC - Replaced 12/17/15
+                        'PLAYERINFO' => request_var('PLAYERINFO',''),                              
+                        'CLASS_INFO' => request_var('CLASS_INFO',''),                              
+                        'AC' => $SavedAC,
+                        'selected_current_hit' => request_var('select_current_count',''),                
+                        'selected_maximum_hit' => request_var('select_maximum_count',''),
+                        'seleted_non_lethal' => request_var('select_non_lethal',''),
+                        'seleted_bad_condition' =>  json_encode(request_var('negative_condition', array('' => '')), JSON_FORCE_OBJECT),
+                        'seleted_good_condition' => json_encode(request_var('positive_condition', array('' => '')), JSON_FORCE_OBJECT),
+                        'spell_class_type' => $sct,                     //CVC - Added 12/05/15
+                        'level' => $l,
+                        'level_min' => $lmin,
+                        'level_max' => $lmax,
+                        'spell_decription' => $spell_desc1,
+                        'ability_name' => $SavedAbilityName,
+                        'min_ability' => $SavedAbilityCurrent,
+                        'max_ability' => $SavedAbilityMax,
+                        'abilities_description' => $SavedAbilityDesc,
+                        'gear' => $gear_quality,
+                        'quick_stats' =>  request_var('quick_stats',''),
+                        'hero_point' =>  request_var('select_hero_points',''),
+                        'quick_skill' => $skill_quality,
+                        'spell' => $final_spell_list,
+                        'PLAYERINFO' => $PLAYERINFO,
+                        'CLASS_INFO' => $CLASS_INFO,
+                        'SPEED' => $SPEED,
+                        'INIT' => $INIT,
+                        'SAVES' => $SavedSaves,
+                        'RESISTIMMUNITY' => $SavedResitImmunity,
+                        'ability_damage' => $SavedAbilityDamage,
+                        'gear_description' => $gear_desc,
+                        'skill_description' => $skill_desc,
+                        'positive_condition_description' => $pc_desc,
+                        'negative_concdition_description' => $nc_desc,
+                        //CVC - User Variables
+                    );
+                        /*
                         'AC'                                                    => request_var('AC',''),
                         'PLAYERINFO'                                            => request_var('PLAYERINFO',''),
                         'CLASS_INFO'                                            => request_var('CLASS_INFO',''),
@@ -1870,19 +1929,22 @@ if ($submit || $preview || $refresh)
                         'spell_class_type'                                      => $sct,                     //CVC - Added 12/05/15
                         'spell'                                                 => $spell_variable1,
                         'spell_decription'                                      => $spell_desc1,
+                        'SPEED'                                                 => $SPEED,
+                        'INIT'                                                  => $INIT,
                         'level'                                                 => $l,
                         'level_min'                                             => $lmin,
                         'level_max'                                             => $lmax,
-                        'ability_name'                                          => $a,
-                        'min_ability'                                           => $amin,
-                        'max_ability'                                           => $amax,
+                        'ability_name'                                          => $SavedAbilityName,
+                        'min_ability'                                           => $SavedAbilityCurrent,
+                        'max_ability'                                           => $SavedAbilityMax,
+                        'abilities_description'                                 => $SavedAbilityDesc,
                         'gear'                                                  => $gear_quality,
                         'quick_stats'                                           => request_var('quick_stats',''),
                         'hero_point'                                            => request_var('select_hero_points',''),
                         'quick_skill'                                           => $skill_quality,
-                        'abilities_description'                                 => $abilities_desc,
                     );
-
+                    */
+                        
                     $sql = 'UPDATE ' . USER_VARIABLES_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $data_update_post) . ' WHERE user_id = ' . $poster_id;
                     $db->sql_query($sql);
                     // to update post table
@@ -2010,7 +2072,7 @@ if ($submit || $preview || $refresh)
 				trigger_error($message);
 			}
                         
-                        // redirect($redirect_url);              //SUBMIT THE PAGE and REDIRECT BACK TO PREVIOUS -- CVC 11/26/16
+                       // redirect($redirect_url);              //SUBMIT THE PAGE and REDIRECT BACK TO PREVIOUS -- CVC 11/26/16
 		}
 	}
 }
@@ -2280,7 +2342,7 @@ $template->assign_vars(array(
     'S_SPELL_COUNT' => $spell_variable,
     //'S_SPELL_VARIABLE' => $spell_one,
     'S_SPELL_VARIABLE' => $SpellTableData,
-    'S_EDIT_ABILITY_NAME' => $edit_ability_namey,
+    'S_EDIT_ABILITY_NAME' => $AbilityTableData,
     'S_EDIT_MIN_ABILITY' => $selectbox_min_ability,
     'S_EDIT_MAX_ABILITY' => $selectbox_max_ability,
     'S_INCREMENR_SPELL' => $increment_variable_spell,
@@ -2324,7 +2386,6 @@ $template->assign_vars(array(
     //'LEVELS' => $SpellTableData,                                               //CVC - 12/15/15
     'ABILITY' => $ability1,
     'HERO_POINT' => $heropoint,
-    'VALUE_TRACKER' => $value_tracker,
     'SPEED' => $SPEED,                                                          //CVC - 12/14/15 (Added)
     'INIT' => $INIT,                                                            //CVC - 12/14/15 (Added)
     'OFFENSE' => $offense_buttons,
@@ -2452,7 +2513,7 @@ $page_data = array(
         'S_SPELL_COUNT' => $spell_variable,
         //'S_SPELL_VARIABLE' => $spell_one,
         'S_SPELL_VARIABLE' => $SpellTableData,
-        'S_EDIT_ABILITY_NAME' => $edit_ability_namey,
+        'S_EDIT_ABILITY_NAME' => $AbilityTableData,
         'S_EDIT_MIN_ABILITY' => $selectbox_min_ability,
         'S_EDIT_MAX_ABILITY' => $selectbox_max_ability,
         'S_INCREMENR_SPELL' => $increment_variable_spell,
@@ -2485,9 +2546,9 @@ $page_data = array(
         'WILL' => $WILL,                                                            //CVC - 12/04/15 (Added)
         'RESIST' => $RESIST,                                                        //CVC - 12/04/15 (Added)
         'IMMUNITY' => $IMMUNITY,                                                    //CVC - 12/04/15 (Added)
-        'VALUE_TRACKER' => $value_tracker,
         'SPEED' => $SPEED,
         'INIT' => $INIT,
+        'SAVES' => $SavedSaves,
         'SELECTED_CURRENT_HIT' => $selected_current_hit,
         'SELECTED_CURRENT_USERNAME' => request_var('useraccount',''),
         'SELECTED_MAXIMUM_HIT' => $selected_maximum_hit,

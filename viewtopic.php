@@ -1829,7 +1829,7 @@ $Decoded_RESISTIMMUNITY_count = count($DecodedRESISTIMMUNITY);
     $max_ability = json_decode($row['max_ability'], true);
     $ad = json_decode($row['abilities_description'], true); 
 
-    
+    $ability ='';
     if (count($ability_name) > 1 && ($ability_name != null)) {
         $ability = '';
         for ($a = 0; $a < count($ability_name); $a++) {

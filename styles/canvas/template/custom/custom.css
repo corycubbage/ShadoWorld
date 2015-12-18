@@ -224,6 +224,10 @@ span.RedHitPointInfoTITLE {
 	color: #ff3333;
 	font-size: 13px;
 }
+span.RedHitPointInfo {
+	color: #ff3333;
+	font-size: 11px;
+}
 
 span.resist_infoTITLE {
         color: #625D5D;

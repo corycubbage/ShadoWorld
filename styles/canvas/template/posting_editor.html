@@ -118,7 +118,12 @@
                                     </table>
                                     <br>
                                     <table>
-                                    <tr><td><b>Current AC</b>:</td><td><input type='text' name='AC' id='AC' value="{AC}" size="2"></td>
+                                    <tr>
+                                    <td><b>Ability Damage</b>:</td><td><input type='text' name='AbilityDamage' id='AbilityDamage' value="{AbilityDamage}" size="2"></td>
+                                    <td><b>Damage Type</b>:</td><td><input type='text' name='DamageType' id='DamageType' value="{DamageType}" size="2"></td></tr>
+                                    
+                                    <tr>
+                                    <td><b>Current AC</b>:</td><td><input type='text' name='AC' id='AC' value="{AC}" size="2"></td>
                                     <td><b>Touch AC</b>:</td><td><input type='text' name='TAC' id='TAC' value="{TAC}" size="2"></td>
                                     <td><b>Flat-Footed AC</b>:</td><td><input type='text' name='FFAC' id='FFAC' value="{FFAC}" size="2"></td></tr>
                                     
@@ -150,7 +155,6 @@
 
                                   <!-- IF S_VARIABLE_LEVEL == yes-->                                         
                                     <input type="hidden" name="increment_variable_spell" id="increment_variable_spell" value="1">                                         
-                                    <input type="hidden" name="level_tracker" id="level_tracker" value="{VALUE_TRACKER}">                                         
                                     {S_SPELL_VARIABLE}
                                     <div id="additionalspell"></div>
                                   <!-- ENDIF -->
@@ -163,10 +167,6 @@
                                       <!-- </dd> -->
 
                                   <!-- ENDIF -->
-
-                                  <!-- <div id="addspelldescription" name="addspelldescription">
-                                      <input type="button" id="add_spell_description" name="add_desc"  value="Add Description" onclick="addspelldecription();" style="margin-left:599px;margin-top:-375px;" class="btn btn-info" />
-                                  </div> -->
 
                                   <!-- IF S_VARIABLE_LEVEL == null-->
                                       <div id="additionalspell"></div>
@@ -205,18 +205,8 @@
                           <center><input id="variable_speability" class="btn btn-info-green" type="button" name="variable_speability" value="Add Additional Ability"></center>
 
                           <!-- IF S_VARIABLE_ABILITY == yes-->
-                              <!-- CVC - 11/29/15
-                                  <div>  
-                                      <input type="hidden" name="increment_variable_ability" id="increment_variable_ability" value="1">
-                                      <table><tr><td> <input type="button" name="{LAST_LEVEL_NAME}" id="0" value="-" class="btn btn-info-red" onclick="return remove_ability(this);">  </td><td>
-                                          &nbsp;{S_EDIT_ABILITY_NAME} </td><td>
-                                          <label for="minmax_ability">&nbsp;&nbsp;Current/Max :</label> 
-                                          <select name="min_ability" id="min_ability" style="width:3em;">{S_MIN_ABILITY}</select>/<select name="max_ability" id="max_ability" style="width:3em;">{S_MAX_ABILITY}</select></label>
-                                      </td></tr></table>
-
-                                      <div id="additionalability"></div>
-                                  </div>
-                              --> 
+                                {S_EDIT_ABILITY_NAME}
+                                <div id="additionalability"></div>
                           <!-- ENDIF -->
 
                           <!-- IF S_VARIABLE_ABILITY == no-->

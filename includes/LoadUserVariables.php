@@ -1,4 +1,5 @@
     <?php
+    
 
 while ($row = $db->sql_fetchrow($result_post_data)) { //Retrieve all variables from the post data`
 
@@ -107,11 +108,11 @@ $TotalSpellMaxCount = count($static_spell_max);
 
 $min_ability_data = json_decode($min_ability, true);
 sort($min_ability_data);
-$min_ability_data_count = count($min_ability_data);
+$TotalAbilityCurrentCount = count($min_ability_data);
 
 $max_ability_data = json_decode($max_ability, true);
 sort($max_ability_data);
-$max_ability_data_count = count($max_ability_data);
+$TotalAbilityMaxCount = count($max_ability_data);
 
 $gear_data1 = json_decode($gear, true);
 $gear_data = array_map('ucfirst', $gear_data1);
@@ -235,484 +236,245 @@ $TotalSpellCurrentCount = count($static_spell_current);
 $TotalSpellMaxCount = count($static_spell_max);  
 $TotalSpellLevels=0;
   
+
+//print_r($decodedSpellLevels);
 if ($decodedSpellLevels) {                                                     //User has spell levels
     
     $SpellTableData = '';
     $s_level_data = '';
     
-    for ($i = 0; $i < $TotalSpellLevelCount; $i++) {
+    //for ($i = 0; $i < $TotalSpellLevelCount; $i++) {
+    for ($i = 0; $i < 20; $i++) {
         $s_level_min_data = '';
         $s_level_max_data = '';
         $s_spell_data = '';
         $s_level_type_data = '';
         $s_selectedspells_data = '';
         
-        if ($decodedSpellLevels[$i] == $i) {
+        //if ($decodedSpellLevels[$i] == $i) 
+        if (isset($decodedSpellLevels[$i])) 
+        {
+            //echo nl2br("Level is present: " . $decodedSpellLevels[$i] . "\n");
             $s_level_data = "<option value=\"$decodedSpellLevels[$i]\" selected=\"selected\">$decodedSpellLevels[$i]</option>";
             $level =$decodedSpellLevels[$i];
-         
-        for ($si = 0; $si < $TotalSpellCurrentCount; $si++) {                       //Build Current dropdown and select current level
-            if ($decodedSpellCurrent[$i] == $si) {
-                $s_level_min_data .= "<option value=\"$si\" selected=\"selected\">$si</option>";
-            }
-            else {
-                $s_level_min_data .= "<option value=\"$si\">$si</option>";
-            }
-        }
-        for ($si = 0; $si < $TotalSpellMaxCount; $si++) {                       //Build Max dropdown and select current max level
-            if ($decodedSpellMax[$i] == $si) {
-                $s_level_max_data .= "<option value=\"$si\" selected=\"selected\">$si</option>";
-            }
-            else {
-                $s_level_max_data .= "<option value=\"$si\">$si</option>";
-            }
-        }
-
-        if ($decodedSpellType[$i] == 0) {
-                $s_level_type_data = "<option value='Bard'>Bard</option>";
-                $spell_type = "Bard";  
-        }
-        if ($decodedSpellType[$i] == 1) {
-                $s_level_type_data .= "<option value='Cleric'>Cleric</option>";
-                $spell_type = "Cleric";  
-        }
-        if ($decodedSpellType[$i] == 2) {
-                $s_level_type_data .= "<option value='Druid'>Druid</option>";
-                $spell_type = "Druid";  
-        }
-        if ($decodedSpellType[$i] == 3) {
-                $s_level_type_data .= "<option value='Paladin'>Paladin</option>";
-                $spell_type = "Paladin";  
-        }
-        if ($decodedSpellType[$i] == 4) {
-                $s_level_type_data .= "<option value='Ranger'>Ranger</option>";
-                $spell_type = "Ranger";  
-        }
-        if ($decodedSpellType[$i] == 5) {
-                $s_level_type_data .= "<option value='Sorcerer'>Wizard</option>";
-                $spell_type = "Wizard";  
-        }
-        if ($decodedSpellType[$i] == 6) {
-                $s_level_type_data .= "<option value='Wizard'>Wizard</option>";
-                $spell_type = "Wizard;";  
-        }    
-    
-        if ($spells_array) {
-            unset($spells_array);
-        }                
-        include('./CreateSpellLists.php');
-        $TotalSpellListCount = count($spells_array);                               //Total spells in the select box for spells of this level
-        
-         for ($si = 0; $si < $TotalSpellLevelCount; $si++) {                       //Increment through all possible spell levels (10)
-             if ($decodedSpellList[$si]) {                                         //Does the user have any saved spells for this level?
-                $TotalSpellListPerLevelCount = count($decodedSpellList[$si]);     //Total number of spells the user has for this level              
-                $s_selectedspells_data_count = 0;
-                
-                for ($spellsinbookinc = 0; $spellsinbookinc < $TotalSpellListCount; $spellsinbookinc++) {           //Iterate through all spell spells in the spell list for this level                     
-                    for ($ssi = 0; $ssi < $TotalSpellListPerLevelCount; $ssi++) {                                           //Iterate through all user spells in the spell list for this level                     
-                        $spellfound = 0; 
-                         if ($spells_array[$spellsinbookinc] == $decodedSpellList[$si][$ssi] ) {                            //Spell found in user list, mark as selected
-                             //echo nl2br ("===========> Matched spell: " . $spells_array[$spellsinbookinc] . "\n");
-                             $s_spell_data .= "<option value=\"$spells_array[$spellsinbookinc]\" selected = \"selected\">$spells_array[$spellsinbookinc]</option>";
-                             $spellfound = 1;
-                             
-                             if ($s_selectedspells_data_count ==0) {
-                                 $s_selectedspells_data.= $spells_array[$spellsinbookinc];
-                             }
-                             Else {
-                                     $s_selectedspells_data .= ", " . $spells_array[$spellsinbookinc];                                     
-                             }
-                             $s_selectedspells_data_count++;
-                             
-                         }
-                        
-                    }                
-                    
-                    if (!$spellfound == 1) {                                                                                      //No matches for this spell, add as unselected.
-                        //echo $si;
-                        //echo nl2br ("X No matches, $spells_array[$spellsinbookinc] not selected.\n");
-                        $s_spell_data .= "<option value=\"$spells_array[$spellsinbookinc]\">$spells_array[$spellsinbookinc]</option>";
-                        
-                    }
-                    
-                if ($s_selectedspells_data_count == $TotalSpellListPerLevelCount) {
-                    //echo nl2br ("Found all the spells for level $si!\n");
+            
+            for ($si = 0; $si < $TotalSpellCurrentCount; $si++) {                       //Build Current dropdown and select current level
+                if ($decodedSpellCurrent[$i] == $si) {
+                    $s_level_min_data .= "<option value=\"$si\" selected=\"selected\">$si</option>";
                 }
-              }
-              
-              $s_selectedspells_data = "(" . $s_selectedspells_data_count . ") spells saved: " . $s_selectedspells_data;
+                else {
+                    $s_level_min_data .= "<option value=\"$si\">$si</option>";
+                }
             }
-             Else {
-                if ($si == $i){
-                    echo nl2br("No Spells for level: $si\n");     
-                    if ($s_selectedspells_data_count < 1) {
+            for ($si = 0; $si < $TotalSpellMaxCount; $si++) {                       //Build Max dropdown and select current max level
+                if ($decodedSpellMax[$i] == $si) {
+                    $s_level_max_data .= "<option value=\"$si\" selected=\"selected\">$si</option>";
+                }
+                else {
+                    $s_level_max_data .= "<option value=\"$si\">$si</option>";
+                }
+            }
+            
+            $decodedStype = $decodedSpellType[$i];
+         
+            switch ($decodedStype) {
+                        case "0": 
+                            $s_level_type_data = "<option value='Alchemist'>Alchemist</option>";
+                            $spell_type = "Alchemist"; 
+                            break;
+                        case "1": 
+                            $s_level_type_data = "<option value='Bard'>Bard</option>";
+                            $spell_type = "Bard"; 
+                            break;
+                        case "2": 
+                            $s_level_type_data = "<option value='Bloodrager'>Bloodrager</option>";
+                            $spell_type = "Bloodrager"; 
+                            break;
+                        case "3": 
+                            $s_level_type_data .= "<option value='Cleric'>Cleric</option>";
+                            $spell_type = "Cleric";  
+                            break;
+                        case "4": 
+                            $s_level_type_data .= "<option value='Druid'>Druid</option>";
+                            $spell_type = "Druid"; 
+                            break;                   
+                        case "5": 
+                            $s_level_type_data .= "<option value='Elementalist'>Elementalist</option>";
+                            $spell_type = "Elementalist"; 
+                            break;                                
+                        case "6": 
+                            $s_level_type_data .= "<option value='Inquisitor'>Inquisitor</option>";
+                            $spell_type = "Inquisitor"; 
+                            break;                                          
+                        case "7": 
+                            $s_level_type_data .= "<option value='Magus'>Magus</option>";
+                            $spell_type = "Magus"; 
+                            break;
+                        case "8": 
+                            $s_level_type_data .= "<option value='Paladin'>Paladin</option>";
+                            $spell_type = "Paladin"; 
+                            break;         
+                        case "9": 
+                            $s_level_type_data .= "<option value='Paladin'>Paladin</option>";
+                            $spell_type = "Paladin"; 
+                            break;                                                                  
+                        case "10": 
+                            $s_level_type_data .= "<option value='Ranger'>Ranger</option>";
+                            $spell_type = "Ranger"; 
+                            break;                                                                  
+                        case "11": 
+                            $s_level_type_data .= "<option value='Shaman'>Shaman</option>";
+                            $spell_type = "Shaman"; 
+                            break;                                                                  
+                        case "12": 
+                            $s_level_type_data .= "<option value='Sorcerer'>Sorcerer</option>";
+                            $spell_type = "Sorcerer"; 
+                            break;
+                        case "13": 
+                            $s_level_type_data .= "<option value='Summoner'>Summoner</option>";
+                            $spell_type = "Summoner"; 
+                            break;                                                                  
+                        case "14": 
+                            $s_level_type_data .= "<option value='Witch'>Witch</option>";
+                            $spell_type = "Witch"; 
+                            break;                                                                  
+                        case "15": 
+                            $s_level_type_data .= "<option value='Wizard'>Wizard</option>";
+                            $spell_type = "Wizard"; 
+                            break;                                          
+                        } 
+           
+            if ($spells_array) {
+                unset($spells_array);
+            }                
+            include('./CreateSpellLists.php');
+            $TotalSpellListCount = count($spells_array);                               //Total spells in the select box for spells of this level
+            //echo "Spell level: $i has $TotalSpellListCount spells.";
+
+            for ($si = 0; $si < $TotalSpellLevelCount; $si++) {                       //Increment through all possible spell levels (10)
+                //JGL - this check was  not working as intended but unsure if this is the proper way to handle.
+                //if ($decodedSpellList[$si]) {
+                //echo nl2br("Si: $si\n");
+                //echo nl2br("decodedSpellList[si]: $decodedSpellList[$si]\n");
+                //if ($decodedSpellList[$si] && $si == $i) {                                         //Does the user have any saved spells for this level?
+                 if ((isset($decodedSpellLevels[$i]) && $si == $i)) {
+                    $TotalSpellListPerLevelCount = count($decodedSpellList[$si]);     //Total number of spells the user has for this level              
+                    $s_selectedspells_data_count = 0;
+
+                    for ($spellsinbookinc = 0; $spellsinbookinc < $TotalSpellListCount; $spellsinbookinc++) {           //Iterate through all spell spells in the spell list for this level                     
+                        if ($s_selectedspells_data_count != $TotalSpellListPerLevelCount)  //skip check if we're done finding selected spells
+                        {
+                            for ($ssi = 0; $ssi < $TotalSpellListPerLevelCount; $ssi++) {                                           //Iterate through all user spells in the spell list for this level                     
+                                if ($spells_array[$spellsinbookinc] == $decodedSpellList[$si][$ssi] ) {                            //Spell found in user list, mark as selected
+                                     //echo nl2br ("===========> Matched spell: " . $spells_array[$spellsinbookinc] . "\n");
+                                     $s_spell_data .= "<option value=\"$spells_array[$spellsinbookinc]\" selected = \"selected\">$spells_array[$spellsinbookinc]</option>";
+                                     $spellfound = 1;
+
+                                     if ($s_selectedspells_data_count ==0) {
+                                         $s_selectedspells_data.= $spells_array[$spellsinbookinc];
+                                     }
+                                     Else {
+                                             $s_selectedspells_data .= ", " . $spells_array[$spellsinbookinc];                                     
+                                     }
+                                     $s_selectedspells_data_count++;                             
+                                }                        
+                            }                
+                        }
+                        if (!$spellfound == 1) {                                                                                      //No matches for this spell, add as unselected.
+                            //echo $si;
+                            //echo nl2br ("X No matches, $spells_array[$spellsinbookinc] not selected.\n");
+                            $s_spell_data .= "<option value=\"$spells_array[$spellsinbookinc]\">$spells_array[$spellsinbookinc]</option>";                        
+                        } 
+                        $spellfound = 0;
+                    }              
+                    $s_selectedspells_data = "(" . $s_selectedspells_data_count . ") spells saved: " . $s_selectedspells_data;
+                }
+                Else 
+                {
+                    if ($si == $i)
+                    {
+                        //echo nl2br("No saved spells for level: $si\n");     
+                        if ($s_selectedspells_data_count < 1) {
                             for ($spellsinbookinc = 0; $spellsinbookinc < $TotalSpellListCount; $spellsinbookinc++) {           //Iterate through all spell spells in the spell list for this level                     
-                               $s_spell_data .= "<option value=\"$spells_array[$spellsinbookinc]\">$spells_array[$spellsinbookinc]</option>";
+                                $s_spell_data .= "<option value=\"$spells_array[$spellsinbookinc]\">$spells_array[$spellsinbookinc]</option>";
                             }
                         }
                     }
-             }
-          }
-        
-    $SpellTableData .= '<table><tr><td><input id="5" class="btn btn-info-red" type="button" name="' . $post_id . '_' . $Vuser_id . '_' . $i . '" value="-" addaditinal="" onclick="return remove_extra_level(this);"></td>';
-    $SpellTableData .= '<td>&nbsp;&nbsp;&nbsp;</td><td><table><tr><td><label for="select_type' . $i . '">Type:</td><td><select name="select_type' . $i . '" id="select_type' . $i . '" style="width:3em;">' . $s_level_type_data . '</select></label></td><tr>';
-    $SpellTableData .= '<tr><td><label for="select_lvl' . $i . '">Level:</td><td><select name="select_level' . $i . '" id="select_level' . $i . '" style="width:3em;">' . $s_level_data . '</select></label></td></tr>';
-    $SpellTableData .= '<tr><td>Current:</td><td><select name="select_level_min' . $i . '" id="select_level_min' . $i . '" style="width:3em;">' . $s_level_min_data . '</select></td></tr>';
-    $SpellTableData .= '<tr><td>Max:</td><td><select name="select_level_max' . $i . '" id="select_level_max' . $i . '" style="width:3em;">' . $s_level_max_data . '</select></td></tr></table></td>';
-    $SpellTableData .= '<td>&nbsp;&nbsp;&nbsp;<select name="spell_level'.$i.'[]" id="spell_level' . $i . '" class="spell_level" multiple>'.$s_spell_data.'</select>&nbsp;&nbsp;</td>';
-    $SpellTableData .= '<td><label for="selectedspells_lvl' . $i . '"><input type="text" name="selectedspells_level"' . $i . '" id="selectedspells_level"' . $i . '" value="'. $s_selectedspells_data .'" size="70"></input></label></td>';
-    $SpellTableData .= '</tr></table><br>';
-    $TotalSpellLevels++;
+                }
+            }
+
+            $SpellTableData .= '<table><tr><td><input id="5" class="btn btn-info-red" type="button" name="' . $post_id . '_' . $Vuser_id . '_' . $i . '" value="-" addaditinal="" onclick="return remove_extra_level(this);"></td>';
+            $SpellTableData .= '<td>&nbsp;&nbsp;&nbsp;</td><td><table><tr><td><label for="select_existing_type' . $i . '">Type:</td><td><select name="select_existing_type' . $i . '" id="select_existing_type' . $i . '" style="width:3em;">' . $s_level_type_data . '</select></label></td><tr>';
+            $SpellTableData .= '<tr><td><label for="select_existing_lvl' . $i . '">Level:</td><td><select name="select_existing_level' . $i . '" id="select_existing_level' . $i . '" style="width:3em;">' . $s_level_data . '</select></label></td></tr>';
+            $SpellTableData .= '<tr><td>Current:</td><td><select name="select_existing_level_min' . $i . '" id="select_existing_level_min' . $i . '" style="width:3em;">' . $s_level_min_data . '</select></td></tr>';
+            $SpellTableData .= '<tr><td>Max:</td><td><select name="select_existing_level_max' . $i . '" id="select_existing_level_max' . $i . '" style="width:3em;">' . $s_level_max_data . '</select></td></tr></table></td>';
+            $SpellTableData .= '<td>&nbsp;&nbsp;&nbsp;<select name="spell_existing_level'.$i.'[]" id="spell_existing_level' . $i . '" class="spell_existing_level" multiple>'.$s_spell_data.'</select>&nbsp;&nbsp;</td>';
+            $SpellTableData .= '<td><label for="selected_existingspells_lvl' . $i . '"><input type="text" name="selected_existingspells_level"' . $i . '" id="selected_existingspells_level"' . $i . '" value="'. $s_selectedspells_data .'" size="70"></input></label></td>';
+            $SpellTableData .= '</tr></table><br>';
+            $TotalSpellLevels++;
         }
 
     }
 }
 //echo $SpellTableData;
-unset($spells_arry);
-$value_tracker = $TotalSpellLevels;
-$_SESSION["SpellLevel"] = $TotalSpellLevels;
+unset($spells_array);
 
-/*
-//Clear out selected level data
-if ($decoded_user_levels[0] != '') {                                           
-    for ($i = 0; $i < $level_count; $i++) {                                     //Iterate all ten levels of spells
-        if (count($decoded_user_levels) == 1) {                                            
-            $variable_level = 'yes';                                            
-            if ($static_spell_level_list[$i] == $decoded_user_levels[0]) {                               
-                $selected = ' selected="selected"';
-                $s_level_data .= "<option value=\"$static_spell_level_list[$i]\"$selected>$static_spell_level_list[$i]</option>";
-            } else {
-                $selected = '';
-                $s_level_data .= "<option value=\"$static_spell_level_list[$i]\"$selected>$static_spell_level_list[$i]</option>";
-            }
-        }
-    }
-}
+// CVC - 12/17/15 - Load Abilities
+// **** ABILITIES *****
 
-//echo nl2br ("User spells: " . $user_spell . "\n");
-
-$decoded_user_spell_list = json_decode($user_spell, true);
-//echo "decoded_user_spell_list: ";
-//print_r ($decoded_user_spell_list);
-
-$splct = count($decoded_user_spell_list);
-//echo nl2br ("\nSpell count: " . $splct);
-$spell_class_type = json_decode($levels, true);                                          //CVC - Array of all spell levels the current user has.
-//echo nl2br ("\nspell_class_type: ");
-//print_R ($spell_class_type);
-//echo nl2br ("\nspells: ");
-//print_R ($spells);
-$spells1 = json_decode($spells, true);                                          //CVC - Array of all spells
-//echo nl2br ("\nSpells1 decoded: ");
-//print_R ($spells1);
-
-$spl_count = 0;
-$spell_options = array();
-$arr = @array_unique($spell_class_type);                                                           //Array ( [0] => 0 [1] => 1 )
-$sel = array();
-if ($arr) {
-    foreach ($arr as $key => $val) {
-        $spell_options_create = '';
-        //echo "-*-: ";
-        //print_r($decoded_user_spell_list[0]['name']);
-        //echo "-*-: ";
-        //print_r($spells1);
-        if (@key_exists($val, $decoded_user_spell_list)) {
-            $all_spell = @array_values(array_unique(array_merge($decoded_user_spell_list[$val]['name'], $spells1)));
-            for ($spl = 0; $spl < count($all_spell); $spl++) {
-                foreach ($decoded_user_spell_list[$val]['name'] as $k => $v) {
-                    if ($all_spell[$spl] == $v) {
-                        $selected = 'selected="selected"';
-                        break;
-                    } else {
-                        $selected = '';
-                    }
-                }
-
-                $spell_options_create .= "<option " . $selected . ">" . $all_spell[$spl] . "</option>";
-            }
-            if ($spl_count == 0) {
-                $sel[$val] = "<select name='spell_level[]' multiple id=spell_level>" . $spell_options_create . "</select>";
-            } else {
-                $sel[$val] = "<select name='spell_level" . $spl_count . "[]' multiple id='spell_level" . $spl_count . "'>" . $spell_options_create . "</select>";
-            }
-			$spl_count ++;
-		} else {
-            for ($spl = 0; $spl < count($spells1); $spl++) {
-                $spell_options_create .= "<option>" . $spells1[$spl] . "</option>";
-            }
-            if ($spl_count == 0) {
-                $sel[$val] = "<select name='spell_level[]' multiple id=spell_level>" . $spell_options_create . "</select>";
-            } else {
-                $sel[$val] = "<select name='spell_level" . $spl_count . "[]' multiple id='spell_level" . $spl_count . "'>" . $spell_options_create . "</select>";
-            }
-            $spl_count ++;
-        }
-    }
-}
-//debug_to_console($spell_options_create);
-
-$selectbox_level = '';
-
-if (count($decoded_user_levels) > 1) {
-    $increment_variable_spell = '<input type="hidden" name="increment_variable_spell" id="increment_variable_spell" value="' . count($decoded_user_levels) . '">';
-    $variable_level = 'no';
-    for ($j = 0; $j < count($decoded_user_levels); $j++) {
-
-        $selectstart = '';
-        $selectends = '';
-        $select = '';
-        $s_level_data_all_options = '';
-
-        if ($j == 0) {
-            $lvl = '';
-        } else {
-            $lvl = $j;
-        }
-        
-        
-        //$selectstart .= 'Level : <select name="select_level' . $lvl . '" id="select_level' . $lvl . '" style="width:5em;" onchange="levelfunction(this)" level="' . $lvl . '" disabled>';
-        $selectstart .= 'Level : <select name="select_level' . $lvl . '" id="select_level' . $lvl . '" style="width:5em;" onchange="levelfunction(this)">';
-
-        for ($i = 0; $i < $level_count; $i++) {
-            if ($static_spell_level_list[$i] == $decoded_user_levels[$j]) {
-
-                $selected = 'selected="selected"';
-            } else {
-                $selected = '';
-            }
-            $s_level_data_all_options .= "<option value=\"$static_spell_level_list[$i]\" $selected >$static_spell_level_list[$i]</option>";
-        }
-
-        $selectends .= '</select>';
-        if ($j != (count($decoded_user_levels) - 1)) {
-            $select .= $selectstart . $s_level_data_all_options . $selectends . "<br><br>";
-        } else {
-            $select .= $selectstart . $s_level_data_all_options . $selectends;
-        }
-        //if ($user_spell != null) {
-        foreach ($sel as $kespel => $valspell) {
-
-            if ($decoded_user_levels[$j] == $kespel) {
-                $box = $valspell;
-                break;
-            } else {
-                $box = '';
-            }
-        }
-        //}
-        $selectbox_level .= "&nbsp;&nbsp;" . $box . "&nbsp;&nbsp;" . $select;
-    }
-}
-//debug_to_console($select);
-//debug_to_console($selectbox_level);
-
-$sel_count = count($sel);
-if ($sel_count > 1) {
-    $spell_variable = 'no';
-} elseif ($sel_count == 1) {
-    $spell_variable = 'yes';
-    $spell_one = $sel[0];
-}
-$levelss_min = json_decode($levels_min, true);
-$s_level_min_select_box = '';
-for ($i = 0; $i < $static_spell_current_data_count; $i++) {
-    if (count($levelss_min) == 1) {
-        if ($static_spell_current_data[$i] == $levelss_min[0]) {
-            $selected = ' selected="selected"';
-        } else {
-            $selected = '';
-        }
-    }
-    $s_level_min_data .= "<option value=\"$static_spell_current_data[$i]\"$selected>$static_spell_current_data[$i]</option>";
-}
-$selectbox_level_min = '';
-if (count($levelss_min) > 1) {
-
-    for ($j = 0; $j < count($levelss_min); $j++) {
-        $selectstart = '';
-        $selectends = '';
-        $select = '';
-        $s_level_data_all_options = '';
-        if ($j == 0) {
-            $lvl = '';
-        } else {
-            $lvl = $j;
-        }
-
-        $selectstart .= '&nbsp&nbsp Current/Max  : <select name="select_level_min' . $lvl . '" id="select_level_min' . $lvl . '" style="width:5em;;">';
-
-        for ($i = 0; $i < $static_spell_current_data_count; $i++) {
-            if ($static_spell_current_data[$i] == $levelss_min[$j]) {
-                $selected = 'selected="selected"';
-            } else {
-                $selected = '';
-            }
-            $s_level_data_all_options .= "<option value=\"$static_spell_current_data[$i]\" $selected >$static_spell_current_data[$i]</option>";
-        }
-        $selectends .= '</select>';
-        if ($j != (count($levelss_min) - 1)) {
-            $select .= $selectstart . $s_level_data_all_options . $selectends . "/" . "<br><br><br><br>";
-        } else {
-            $select .= $selectstart . $s_level_data_all_options . $selectends . "/";
-        }
-
-        $selectbox_level_min .= $select;
-    }
-}
-
-$levelss_max = json_decode($levels_max, true);
-$s_level_max_data = '';
-for ($i = 0; $i < $static_spell_max_data_count; $i++) {
-    if (count($levelss_max) == 1) {
-        if ($static_spell_max_data[$i] == $levelss_max[0]) {
-            $selected = ' selected="selected"';
-        } else {
-            $selected = '';
-        }
-    }
-
-    $s_level_max_data .= "<option value=\"$static_spell_max_data[$i]\"$selected>$static_spell_max_data[$i]</option>";
-}
-$delete_last_level_ability = $post_id . '_' . $user->data["user_id"] . '_' . '0';
-
-
-$selectbox_level_max = '';
-$button_level = '';
-if (count($levelss_max) > 1) {
-
-    for ($j = 0; $j < count($levelss_max); $j++) {
-        $selectstart = '';
-        $selectends = '';
-        $select = '';
-
-        $s_level_data_all_options = '';
-        if ($j == 0) {
-            $lvl = '';
-        } else {
-            $lvl = $j;
-        }
-
-        $selectstart .= '<select name="select_level_max' . $lvl . '" id="select_level_max' . $lvl . '" style="width:5em;;">';
-
-        for ($i = 0; $i < $static_spell_max_data_count; $i++) {
-            if ($static_spell_max_data[$i] == $levelss_max[$j]) {
-                $value = $static_spell_max_data[$i];
-                $ivalue = $j;
-                $selected = 'selected="selected"';
-            } else {
-                $selected = '';
-            }
-            $s_level_data_all_options .= "<option value=\"$static_spell_max_data[$i]\" $selected >$static_spell_max_data[$i]</option>";
-        }
-
-        $name = $post_id . '_' . $user->data["user_id"] . '_' . $ivalue;
-        $selectends .= '</select>';
-
-        
-        ///if ($_REQUEST['mode'] == 'edit') {
-		if (request_var('mode','') == 'edit') {
-            if ($j < (count($levelss_max) - 1)) {
-
-                //$style = 'style="height: 53px;"';
-                $style = 'style="height: 100px;"';
-            } else {
-                $style = '';
-            }
-        }
-        //if ($_REQUEST['mode'] == 'post') {
-		if (request_var('mode','') == 'post') {
-            if ($j < (count($levelss_max) - 1)) {
-                //$style = 'style="height: 51px;"';
-                $style = 'style="height: 100px;"';
-            } else {
-                $style = '';
-            }
-        }
-        $button_level .= '<div ' . $style . '><input type="button" name=' . $name . ' id=' . $value . ' value="-" class="btn btn-info-red" onclick="return remove_level(this);"></div>';
-        if ($j != (count($levelss_max) - 1)) {
-            $select .= $selectstart . $s_level_data_all_options . $selectends . "<br><br><br><br>";
-        } else {
-            $select .= $selectstart . $s_level_data_all_options . $selectends;
-        }
-
-        $selectbox_level_max .= $select;
-    }
-}
- 
-
-/*
-$s_level_data = '';
-for ($i = 0; $i < $level_count; $i++) {
-    //$selected = ($i == $data['positive_condition']) ? ' selected="selected"' : '';
-    $s_level_data .= "<option value=\"$static_spell_level_list[$i]\">$static_spell_level_list[$i]</option>";
-}
-
+$DecodedAbilityName = json_decode($ability_namey, true);
+$DecodedAbilityDesc = json_decode($ability_desy, true);
+$DecodedAbilityCurrent = json_decode($min_abilityy , true);
+$DecodedAbilityMax = json_decode($max_abilityy , true);    
 $s_level_min_data = '';
-for ($i = 0; $i < $level_count; $i++) {
-    //  $selected = ($i == $data['positive_condition']) ? ' selected="selected"' : '';
-    $s_level_min_data .= "<option value=\"$static_spell_current_data[$i]\">$static_spell_current_data[$i]</option>";
-}
-
 $s_level_max_data = '';
-for ($i = 0; $i < $level_count; $i++) {
-    // $selected = ($i == $data['positive_condition']) ? ' selected="selected"' : '';
-    $s_level_max_data .= "<option value=\"$static_spell_max_data[$i]\">$static_spell_max_data[$i]</option>";
-}
+$AbilityNameData = '';
 
-$s_spell1_data = '';
-for ($i = 0; $i < $spell1_count; $i++) {
-    // $selected = ($i == $data['positive_condition']) ? ' selected="selected"' : '';
-   // $s_spell1_data .= "<option value=\"$spell_data[$i]\">$spell_data[$i]</option>";
-   $s_spell1_data .= "<option value=''></option>";
-}
-
-$starting_spells = '<table><tr><td><input id="5" class="btn btn-info-red" type="button" name="' . request_var('post_id','') . '_' . request_var('user_id','') . '_' . request_var('Id','') . '" value="-" addaditinal="" onclick="return remove_extra_level(this);"></td><td>&nbsp;&nbsp;&nbsp;<select name="spell_level'.$id.'[]" id="spell_level' . $id . '" class="spell_level" multiple>'.$s_spell1_data.'</select>&nbsp;&nbsp;</td><td>';
-$starting_spells = $starting_spells . '<label for="select_lvl' . $id . '">Level: <select name="select_level' . $id . '" id="select_level' . $id . '" style="width:3em;">' . $s_level_data . '</select></label>';
-$starting_spells = $starting_spells . '<label for="select_lvl_ct' . $id . '">&nbsp;&nbsp;Current/Max : <select name="select_level_min' . $id . '" id="select_level_min' . $id . '" style="width:3em;">' . $s_level_min_data . '</select>/ <select name="select_level_max' . $id . '" id="select_level_max' . $id . '" style="width:3em;">' . $s_level_min_data . '</select></label> <br><br></td>';
-$starting_spells = $starting_spells . '</tr></table><br>';
-// Cory's cut end
-*/
-
-
-
-$ability_names = json_decode($ability_namey, true);
-$ability_descs = json_decode($ability_desy, true);
-
-if ($ability_names[0] != '') {
-    $edit_ability_namey = '';
-    if (count($ability_names) != 0) {
-        for ($j = 0; $j < count($ability_names); $j++) {
-            $selectstart = '';
-            $selectends = '';
-            $select = '';
-            if ($j == 0) {
-                $lvl = '';
-                $nl = '<br>';
-            } else {
-                $lvl = $j;
-                $nl = '';
-            }
-            $name = $ability_names[$j];
-            $selectstart .= '' . $nl . 'Name : <input type="text" name=ability' . $lvl . ' value=' . str_replace(" ", "&nbsp;", $name) . ' ><br>';
-            foreach($ability_descs as $key=>$data1){
-	
-	if($name == $key){
-		
-              $selectstart .= '' . $nl . '<div style="position:absolute;margin-top:-2px"><label style="float:left">Description : </label><input type="text" name=abilities_description' . $lvl . ' value=' . str_replace(" ", "&nbsp;", $data1) . ' ></div><br>';
-             } 
-             }
-            //if($_REQUEST['mode'] == 'post')
-			if(request_var('mode','') == 'post')
-            {
-				$edit_ability_namey = '';
-			}else{
-				$edit_ability_namey .= $selectstart;	
-			}
+if ($DecodedAbilityName[0] != '') {    
+    if (count($DecodedAbilityName) != 0) {
+        for ($i = 0; $i < count($DecodedAbilityName); $i++) {
             
+            for ($si = 0; $si < $TotalAbilityCurrentCount; $si++) {                       //Build Current dropdown and select current level
+                if ($DecodedAbilityCurrent[$i] == $si) {
+                $s_level_min_data .= "<option value=\"$si\" selected=\"selected\">$si</option>";
+                }
+            else {
+                $s_level_min_data .= "<option value=\"$si\">$si</option>";
+                }
+            }
+            for ($si = 0; $si < $TotalAbilityMaxCount; $si++) {                       //Build Max dropdown and select current max level
+                if ($DecodedAbilityMax[$i] == $si) {
+                    $s_level_max_data .= "<option value=\"$si\" selected=\"selected\">$si</option>";
+                }
+                
+                else {
+                    $s_level_max_data .= "<option value=\"$si\">$si</option>";
+                }
+            }
+            
+            $AbilityNameData = $DecodedAbilityName[$i];
+            //echo $AbilityNameData;
+        $AbilityTableData .= '<br><table><tr><td><input id="5" class="btn btn-info-red" type="button" name="ab'. $post_id . '_' . $Vuser_id . '_' . $i .'" value="-" addaditinal="" onclick="return remove_extra_ability(this);"></td>';
+        $AbilityTableData .= '<td>&nbsp;&nbsp;</td><td><table><td>Name:</td><td>&nbsp;&nbsp;</td><td><input type="text" name="existing_ability'.$i.'" class="ability" id="existing_ability'.$i.'" value="' . $AbilityNameData .'" size="40"></input></td>';
+        $AbilityTableData .= '<tr><td>Description:</td><td>&nbsp;&nbsp;</td><td><input type="text" name="existing_abilities_description' . $i . '" id="existing_abilities_description' . $i . '" value="' . $DecodedAbilityDesc[$i] . '" size="40"></td></tr></table></td>';
+        $AbilityTableData .= '<td>&nbsp;&nbsp;</td><td><table><td>Current:</td><td>&nbsp;&nbsp;</td><td><select name="existing_min_ability'.$i.'" id="existing_min_ability'.$i.'" style="width:4em;">'.$s_level_min_data.'</select></td><tr><td>Max:</td><td>&nbsp;&nbsp;</td><td><select name="existing_max_ability'.$i.'" id="existing_max_ability'.$i.'" style="width:4em;">'.$s_level_max_data.'</select></td></tr></table>';       
+        $AbilityTableData .= '</tr></table>';           
         }
     }
 }
+
+unset ($TotalAbilityMaxCount);
+unset ($TotalAbilityCurrentCount);
+unset ($DecodedAbilityName);
+unset ($DecodedAbilityDesc);
+unset ($DecodedAbilityCurrent);
+unset ($DecodedAbilityMax);
+unset ($ability_namey);
+unset ($ability_desy);
+unset ($min_abilityy);
+unset ($max_abilityy);
+
+/* - 12/17/15
 $min_abilityyy = json_decode($min_abilityy, true);
 $s_min_ability = '';
 if ($min_abilityyy[0] != '') {
@@ -849,6 +611,10 @@ if (count($max_abilityyy) > 1) {
         $selectbox_max_ability .= $select;
     }
 }
+ * 
+ * 
+ */
+
 $seleted_gears = json_decode($seleted_gear, true);
 $s_gear_data = '';
 $sel_gear = array();

@@ -25,25 +25,33 @@ while ($row = mysql_fetch_assoc($result1))
     $s_min_ability_data = '';
     for($i = 0;$i<$min_ability_data_count;$i++)
     {
-       // $selected = ($i == $data['positive_condition']) ? ' selected="selected"' : '';
         $s_min_ability_data .= "<option value=\"$min_ability_data[$i]\">$min_ability_data[$i]</option>";
     }
     
     $s_max_ability_data = '';
     for($i = 0;$i<$max_ability_data_count;$i++)
     {
-       // $selected = ($i == $data['positive_condition']) ? ' selected="selected"' : '';
         $s_max_ability_data .= "<option value=\"$max_ability_data[$i]\">$max_ability_data[$i]</option>";
     }
     
 
 $id = $_REQUEST['Id'];
-echo '<table><tr><td><input id="5" class="btn btn-info-red" type="button" name="ab'.$_REQUEST['post_id'].'_'.$_REQUEST['user_id'].'_'.$_REQUEST['Id'].'" value="-" addaditinal="" onclick="return remove_extra_ability(this);"></td><td>';
-echo 'Name:&nbsp;&nbsp;<input type="text" name="ability'.$id.'" class="ability" id="ability'.$id.'">&nbsp;&nbsp;<label for="minmaxability'.$id.'">Current/Max :&nbsp;</label>';
-echo '<select name="min_ability'.$id.'" id="min_ability'.$id.'" style="width:4em;">'.$s_min_ability_data.'</select>/<select name="max_ability'.$id.'" id="max_ability'.$id.'" style="width:4em;">'.$s_max_ability_data.'</select></label>&nbsp;&nbsp;&nbsp;&nbsp;Description:&nbsp;&nbsp;<input type="text" name="abilities_description'.$id.'" id="abilities_description'.$id.'" value="" /></td>';
-echo '</tr></table><br>';
+$id = $id+4;
+
+//echo '<table><tr><td><input id="5" class="btn btn-info-red" type="button" name="ab'.$_REQUEST['post_id'].'_'.$_REQUEST['user_id'].'_'.$_REQUEST['Id'].'" value="-" addaditinal="" onclick="return remove_extra_ability(this);"></td><td>';
+//echo 'Name:&nbsp;&nbsp;<input type="text" name="ability'.$id.'" class="ability" id="ability'.$id.'">&nbsp;&nbsp;<label for="minmaxability'.$id.'">Current/Max :&nbsp;</label>';
+//echo '<select name="min_ability'.$id.'" id="min_ability'.$id.'" style="width:4em;">'.$s_min_ability_data.'</select>/<select name="max_ability'.$id.'" id="max_ability'.$id.'" style="width:4em;">'.$s_max_ability_data.'</select></label>&nbsp;&nbsp;&nbsp;&nbsp;Description:&nbsp;&nbsp;<input type="text" name="abilities_description'.$id.'" id="abilities_description'.$id.'" value="" /></td>';
+//echo '</tr></table><br>';
+
+echo  '<br><table><tr><td><input id="5" class="btn btn-info-red" type="button" name="ab'. $_REQUEST['post_id'] . '_' . $_REQUEST['user_id'] . '_' . $id  .'" value="-" addaditinal="" onclick="return remove_extra_ability(this);"></td>';
+echo  '<td>&nbsp;&nbsp;</td><td><table><td>Name:</td><td><input type="text" name="ability' . $id .'" class="ability" id="ability' . $id .'" size="40"></input></td>';
+echo  '<tr><td>Description:</td><td><input type="text" name="abilities_description' . $id  . '" id="abilities_description' . $id  . '" size="40"></td></tr></table></td>';
+echo  '<td>&nbsp;&nbsp;</td><td><table><td>Current:</td><td><select name="min_ability'.$id .'" id="min_ability'.$id .'" style="width:4em;">'.$s_min_ability_data.'</select></td><tr><td>Max:</td><td><select name="max_ability'.$id .'" id="max_ability'.$id .'" style="width:4em;">'.$s_max_ability_data.'</select></td></tr></table>';       
+echo  '</tr></table>';           
+
+//<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 ?>
-<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+
 <script>
 $(document).ready(function(){
 	$(".ability").blur(function(){

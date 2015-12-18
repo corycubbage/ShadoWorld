@@ -20,13 +20,13 @@ and open the template in the editor.
                     <table class="conditions">
                     <!-- IF postrow.PLAYERINFO --><span class="playerinfo">{postrow.PLAYERINFO}</span><hr><!-- ENDIF -->
                     <!-- HIT POINTS -->
-                    <!-- IF ((postrow.SELECTED_CURRENT_HIT == 0)or !(postrow.SELECTED_CURRENT_HIT == '')) &&  ((postrow.SELECTED_MAXIMUM_HIT == 0)or !(postrow.SELECTED_MAXIMUM_HIT == '')) && ((postrow.SELECTED_NON_LETHAL == 0) or !(postrow.SELECTED_NON_LETHAL == '')) -->
+                    <!-- IF (!(postrow.SELECTED_CURRENT_HIT == '')) &&  ((postrow.SELECTED_MAXIMUM_HIT == 0)or !(postrow.SELECTED_MAXIMUM_HIT == '')) && ((postrow.SELECTED_NON_LETHAL == 0) or !(postrow.SELECTED_NON_LETHAL == '')) -->
                             <table>
-                                <!-- IF !(postrow.SELECTED_CURRENT_HIT == '') or !(postrow.SELECTED_MAXIMUM_HIT == '')-->
-                                    <tr><td width="65"><span class="HitPointInfo"><b>Health: </b></span></td>
-                     
+                            <!-- IF !(postrow.SELECTED_CURRENT_HIT == '') or !(postrow.SELECTED_MAXIMUM_HIT == '')-->
+                                <tr><td width="65"><span class="HitPointInfo"><b>Health: </b></span></td>
+
                                 <!-- IF ((postrow.SELECTED_CURRENT_HIT < postrow.SELECTED_MAXIMUM_HIT) && (postrow.SELECTED_CURRENT_HIT > 0)) -->
-                                    <td width="65"><span class="HitPointInfo">[<b>HP: </b{postrow.SELECTED_CURRENT_HIT}/{postrow.SELECTED_MAXIMUM_HIT}]</span></td>
+                                     <td width="65"><span class="HitPointInfo"><b>[HP: </b>{postrow.SELECTED_CURRENT_HIT}/{postrow.SELECTED_MAXIMUM_HIT}]</b></span></td>
                                 <!-- ENDIF -->
 
                                 <!-- IF (postrow.SELECTED_CURRENT_HIT < 0) -->
@@ -48,8 +48,8 @@ and open the template in the editor.
                                 <!-- IF (postrow.SELECTED_NON_LETHAL <= 0)-->
                                 </tr></table>
                                 <!-- ENDIF -->
-                            
-                            <!-- ENDIF -->
+
+                             <!-- ENDIF -->
                             
                     <!-- ENDIF -->
 
@@ -74,42 +74,11 @@ and open the template in the editor.
                         </table>
                     <!-- ENDIF -->
 
-                                        <!-- AC -->
-                    <!-- IF ((postrow.AC != '') || (postrow.TAC !='' ) || (postrow.FFAC != ''))-->
-                        <table>
-                        <tr><td width="65"><span class="ACInfo"><strong>Defense: </strong></span></td>
-                        <td><span class="ACInfo">[<strong>AC</strong>: {postrow.AC}] - [<strong>T</strong>: {postrow.TAC}] - [<strong>FF</strong>: {postrow.FFAC}]</span></td></tr>
-                        </table>
-                    <!-- ENDIF -->
-                    
-                    <!-- SAVES -->
-                    <!-- IF ((postrow.REFLEX != '') || (postrow.FORT != '' ) || (postrow.WILL != '' ))-->
-                        <table>
-                        <tr><td width="65"><span class="SAVEInfo"><strong>Saves: </span></strong></td>
-                        <td><span class="SAVEInfo">[<strong>F</strong>: {postrow.FORT}] - [<strong>R</strong>: {postrow.REFLEX}] - [<strong>W</strong>: {postrow.WILL}]</span></td></tr>
-                        </table>
-                    <!-- ENDIF -->
-                    
-                    <!-- IF (postrow.RESIST) -->
-                        <table>
-                        <tr><td width="65"><span class="resist_info"><strong>Resists: </span></strong></td>
-                        <td><span class="resist_info">[{postrow.RESIST}]</span></td></tr>
-                        </table>                        
-                    <!-- ENDIF -->
-
-                    <!-- IF (postrow.IMMUNITY) -->
-                        <table>
-                        <tr><td width="65"><span class="ImmunityInfo"><strong>Immunity: </span></strong></td>
-                        <td><span class="ImmunityInfo">[{postrow.IMMUNITY}]</span></td></tr>
-                        </table>                        
-                    <!-- ENDIF -->
-
-                    <!-- SPELLS -->
                     <!-- IF postrow.LEVELS-->
                     <table>
                     <tr><td width="65"><span class="Spellinfo"><strong>Spells:</strong></td><td>
                     <div id="conditions" style="word-wrap: break-word;">
-                        [{postrow.LEVELS}]</span>
+                        <span class="Spellinfo">[{postrow.LEVELS}]</span>
                     </div>
                     </table>
                     <!-- ENDIF -->
@@ -117,30 +86,14 @@ and open the template in the editor.
                     <!-- SPECIAL ABILITIES -->
                     <!-- IF postrow.ABILITY-->
                     <table>
-                    <tr><td width="65"><span class="profileinfo"><strong><font color="#CC6600">Abilities:</font></strong></span></td><td>
+                    <tr><td width="65"><span class="AbilityInfo"><strong>Abilities:</strong></span></td><td>
                         <div id="conditions" style="word-wrap: break-word;">        	
-                            <span class="profileinfo"><font color="#CC6600">[{postrow.ABILITY}]</font></span>
+                            <span class="AbilityInfo">[{postrow.ABILITY}]</span>
                         </div>
                         </td></tr>
                     </table>
                     <!-- ENDIF -->
 
-                  <!-- IF (postrow.HERO_POINT > 0)-->
-                  <table>
-                  <tr><td width="65"><span class="profileinfo"><font color="#666600"><strong>Hero Pts:</strong></font></span></td>
-                  <td><span class="profileinfo"><font color="#666600">[{postrow.HERO_POINT}]</font></span></tr></td>
-                  </table>
-                  <!-- ENDIF -->
-                  
-                    <table>
-                    <tr><td width="65"><span class="profileinfo"><a id="gear_link_{postrow.POST_ID}" href="javascript:void(0)" name='gear' onclick="return gear(this);" style="text-decoration: none"><font color="#008080">+ Gear</font></a></td>
-                    <td><span class="profileinfo"><div class="gear_{postrow.POST_ID}" style="display: none"> 
-                                                    <!-- IF postrow.GEAR-->
-                                                    [<font color="#000000 ">{postrow.GEAR}</font>]
-                                                    <!-- ELSE -->
-                                                     No gear Available
-                                                    <!-- ENDIF -->
-                                                    </div>
                     </td></tr>
                     </table>
 
