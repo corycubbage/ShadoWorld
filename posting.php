@@ -23,11 +23,6 @@ include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
 include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
 include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
-//require_once($phpbb_root_path . 'includes/FirePHPCore/FirePHP.class.php');
-//debug_to_console ("Loading posting.php");
-//ob_start();
-#get a firePHP variable reference
-//$firephp = FirePHP::getInstance(true);
 
 // Start session management
 $user->session_begin();
@@ -242,7 +237,7 @@ $result_post_data = $db->sql_query($select_post_data);
 
 
 // CVC - 11/23/15 - Moved all of the user variable retrieval and evaluation into functionLoadUserVariables for easier reading
-include ($phpbb_root_path . 'includes/LoadUserVariables.' . $phpEx);                //CVC - 11/23/15
+//include ($phpbb_root_path . 'includes/LoadUserVariables.' . $phpEx);                //CVC - 11/23/15
 
 // *** Select aliases
 $alias_data = getAlias($user->data['user_id']);
@@ -268,16 +263,16 @@ $user_id = $user->data['user_id'];
 for ($al = 0; $al < $alias_count; $al++) {
 	if($alias_data[$al]['user_id'] == $useraccount)             // default account if the user selects one manually
     {
-            $alias_names .= "<option value=" . $alias_data[$al]['user_id'] . " selected='selected'>" . $alias_data[$al][username] . "</option>";
-            $selected_Alias = $alias_data[$al][username];
+            $alias_names .= "<option value=" . $alias_data[$al]['user_id'] . " selected='selected'>" . $alias_data[$al]['username'] . "</option>";
+            $selected_Alias = $alias_data[$al]['username'];
             $selected_Sigdata = $alias_data[$al]['user_sig'];
             $selected_Sig_bbcode = $alias_data[$al]['user_sig_bbcode_uid'];
             $selected_Sig_bitfield = $alias_data[$al]['user_sig_bbcode_bitfield'];       
     }else
 	if(($alias_data[$al]['user_id'] == $defaultUser)) //AND ($useraccount != '')) //default account based on forum settings  ---- commented out by CVC 11/25/15
 	{
-		$alias_names .= "<option value=" . $alias_data[$al]['user_id'] . " selected='selected'>" . $alias_data[$al][username] . "</option>";
-		$selected_Alias = $alias_data[$al][username];
+		$alias_names .= "<option value=" . $alias_data[$al]['user_id'] . " selected='selected'>" . $alias_data[$al]['username'] . "</option>";
+		$selected_Alias = $alias_data[$al]['username'];
 		$selected_Sigdata = $alias_data[$al]['user_sig'];
                 //$selected_Sig = $alias_data[$al]['user_sig'];
                 $selected_Sig_bbcode = $alias_data[$al]['user_sig_bbcode_uid'];
@@ -285,7 +280,7 @@ for ($al = 0; $al < $alias_count; $al++) {
 	}
 	else
 	{
-		$alias_names .= "<option value=" . $alias_data[$al]['user_id'] . ">" . $alias_data[$al][username] . "</option>";
+		$alias_names .= "<option value=" . $alias_data[$al]['user_id'] . ">" . $alias_data[$al]['username'] . "</option>";
                 //debug_to_console ("|-Adding alias: " .  $alias_data[$al]['user_id']);
 	}
 }
@@ -298,10 +293,43 @@ for ($al = 0; $al < $alias_count; $al++) {
         //$parse_sig->bbcode_bitfield = $selected_Sig_bitfield;
         //$parse_sig->format_display($config['allow_sig_bbcode'], $config['allow_sig_links'], $config['allow_sig_smilies']);
         //$selected_Sig = $parse_sig->message;
+        //$selected_Sig  = generate_text_for_display($selected_Sigdata, $selected_Sig_bbcode, $selected_Sig_bitfield,0);
         //unset($parse_sig);
 
-
+/* CVC - 12/19/15 - Temp removed due to users not having the ability to choose another alias
+if ($mode == 'edit') {
+    $sql = 'SELECT poster_id FROM ' . POSTS_TABLE . ' WHERE post_id = ' . $post_id;
+    $result = $db->sql_query($sql);
+    $edit_poster_id = (int) $db->sql_fetchfield('poster_id');
+    $db->sql_freeresult($result);
+    
+    //echo nl2br ("Poster_ID: " . $edit_poster_id."\n");
+    //echo nl2br ("Your ID: " . $user_id."\n");
+    //echo nl2br ("Your DefaultUserID: $defaultUser \n");
+       
+    If ($defaultUser !=$edit_poster_id ){
+        for ($al = 0; $al < $alias_count; $al++) {
+            if ($alias_data[$al]['user_id'] == $edit_poster_id) {
+                //echo nl2br ("DefaultUserID $edit_poster_id is in your alias list, setting it as DefaultUserId.\n");
+                    $alias_names = "<option value=" . $alias_data[$al]['user_id'] . " selected='selected'>" . $alias_data[$al]['username'] . "</option>";
+                    for ($aal = 0; $aal < $alias_count; $aal++) {
+                        if ($aal != $al){
+                            $alias_names .= "<option value=" . $alias_data[$aal]['user_id'] . ">" . $alias_data[$aal]['username'] . "</option>";
+                        }
+                    }
+            }  
+            Else {
+                //echo nl2br ("$edit_poster_id is not in your alias list.\n");
+                
+            }
+        }
+    }
+}
+*/
+        
 // **** ALIAS END
+
+include ($phpbb_root_path . 'includes/LoadUserVariables.' . $phpEx);                //CVC - 11/23/15
 
 //  Get Group Member stats
 $groupMembers_data = getGroupMemberStats($forum_id);
@@ -327,7 +355,12 @@ if ($groupMembers_count > 0 )
     {
         //Username
         //$groupMemberStats .= "<tr><td width='30'><b>";
-        $groupMemberStats .= "<tr><td><b>";
+        if ($groupMembers_data[$gm]['username'] == $selected_Alias) {
+            $groupMemberStats .= "<tr style='background-color: #ffffe5'><td><b>";
+        }
+        else {
+            $groupMemberStats .= "<tr><td><b>";
+        }
         $groupMemberStats .= "<center><span class='CharacterTableInfo'>" . $groupMembers_data[$gm]['username'] . "</span> <span class='playerinfo'>[" . $groupMembers_data[$gm]['PLAYERINFO'] . "]</span><br><span class='class_info'>" . $groupMembers_data[$gm]['CLASS_INFO'] . "</span></center>";
         //$groupMemberStats .= "<div id='DisplayHoverText'><center><span id='default' class='CharacterTableHover'>".$groupMembers_data[$gm]['username']."</span><span id='revealed'><span class='CharacterTableInfo'>" . $groupMembers_data[$gm]['username'] . "</span> <span class='playerinfo'>[" . $groupMembers_data[$gm]['PLAYERINFO'] . "]<br><span class='class_info'>" . $groupMembers_data[$gm]['CLASS_INFO'] . "</span></span></center></span></div>";
         $curruser = $groupMembers_data[$gm]['username'];
@@ -396,10 +429,8 @@ if ($groupMembers_count > 0 )
             $ProgresBarText = $curhp . "/" . $maxhp . " <b>UNCONSCIOUS</b>";
         }        
         $groupMemberStats .= "<div class='progressHP'><div class='progress-bar " . $HPProgresBarColor ."' role='progressbar' aria-valuenow='100' aria-valuemin='0' aria-valuemax='100' style='width:100%' title='HP: $curhp/$maxhp'><b>HP</b>: ".$ProgresBarText."</div></div>";
-
-            //$groupMemberStats .="<center><span class='HitPointInfo'><b>HP:</b>&nbsp;". $cur_hp ."/".$max_hp . "</span></center>";
-            //$groupMemberStats .= "<center><span class='RedHitPointInfo'><b>NL:&nbsp;</b>". $nl_hp ."</span></center>";
-            if ($nlhp > $curhp)                                 //Unconscious
+        
+        if ($nlhp > $curhp)                                 //Unconscious
             {    
             $groupMemberStats .= "<div class='progressNL'><div class='progress-bar progress-bar-danger progress-bar-striped' role='progressbar' aria-valuenow='$nlhp' aria-valuemin='0' aria-valuemax='$maxhp' style='width:100%' title ='Nonlethal damage: $nlhp'><b>STAGGERED</b></div></div>";
             }
@@ -472,12 +503,10 @@ if ($groupMembers_count > 0 )
         {
             if($cond_good_disp != '')
             {
-                //$groupMemberStats .= "<font color='#0070CA '>" . $cond_good_disp .", </font>";
                 $groupMemberStats .= "<center><span class='GoodConditionInfo' title='$curruser Buffs: $cond_good_disp'>$cond_good_disp</span></center>";
             }
             if($cond_bad_disp != '')
             {
-                //$groupMemberStats .= "<font color='#FF0000 '>" . $cond_bad_disp ."</font>";
                 $groupMemberStats .= "<center><span class='BadConditionInfo' title='$curruser Debuffs: $cond_bad_disp'>$cond_bad_disp</span></center>";
             }
         }
@@ -490,23 +519,30 @@ if ($groupMembers_count > 0 )
         $GroupMaxSpells = $groupMembers_data[$gm]['level_max'];
         $GroupSpellsNames = $groupMembers_data[$gm]['level'];
         $GroupSpellsDescs = $groupMembers_data[$gm]['spell_description'];            
+        $GroupSpell = $groupMembers_data[$gm]['spell'];            
         
         $DecodedGroupMinSpells = json_decode($GroupMinSpells, true);
         $DecodedGroupMaxSpells = json_decode($GroupMaxSpells, true);  
         $DecodedSpellsNames = json_decode($GroupSpellsNames, true);
         $DecodedSpellsDescs = json_decode($GroupSpellsDescs, true);  
+        $DecodedGroupSpells = json_decode($GroupSpell, true);  
         
         $GroupSpellsName = '';
         if ($DecodedSpellsNames[0] != '') {
             if (count($DecodedSpellsNames) != 0) {
                 for ($j = 0; $j < count($DecodedSpellsNames); $j++) {
-                    
+                    if (isset($DecodedGroupSpells[$j])) {
+                        $SpellsPerLevel = " [<i>" . count($DecodedGroupSpells[$j]) . "</i>]";
+                    }
+                    else {
+                        $SpellsPerLevel ='';
+                    }
                     if ($j == 0) {
-                        $GroupSpellsName .= "<b> Level " . $DecodedSpellsNames[$j] . "</b>: " . $DecodedGroupMinSpells[$j] . "/" .$DecodedGroupMaxSpells[$j]; 
+                        $GroupSpellsName = '<span class="Spellinfo" title="Level ' . $DecodedSpellsNames[$j] . ' Spells [' . count($DecodedGroupSpells[$j]) . ']: ' . $DecodedSpellsDescs[$j] . '"><b> Level: ' . $DecodedSpellsNames[$j] . '</b>: ' . $DecodedGroupMinSpells[$j] . '/' . $DecodedGroupMaxSpells[$j] . $SpellsPerLevel . ' </span>'; 
                         
                     }
                     else {
-                        $GroupSpellsName .= ", <b> Level " . $DecodedSpellsNames[$j] . "</b>: " . $DecodedGroupMinSpells[$j] . "/" .$DecodedGroupMaxSpells[$j]; 
+                        $GroupSpellsName .= ', <span class="Spellinfo" title="Level ' . $DecodedSpellsNames[$j] . ' Spells [' . count($DecodedGroupSpells[$j]) . ']: ' . $DecodedSpellsDescs[$j] . '"><b> Level: ' . $DecodedSpellsNames[$j] . '</b>: ' . $DecodedGroupMinSpells[$j] . '/' . $DecodedGroupMaxSpells[$j] . $SpellsPerLevel . '</span> '; 
                         
                     }
         }
@@ -514,7 +550,7 @@ if ($groupMembers_count > 0 )
 }          
         if($GroupSpellsName)
             {
-                $groupMemberStats .= "<center><span class='Spellinfo' title='$curruser spells: $GroupSpellsName'>$GroupSpellsName</span></center>";
+                $groupMemberStats .= "<center>" . $GroupSpellsName  . "</center>";
             }
         
         //end levels =================================================================
@@ -537,11 +573,13 @@ if ($groupMembers_count > 0 )
                 for ($j = 0; $j < count($DecodedAbilityNames); $j++) {
                     
                     if ($j == 0) {
-                        $GroupAbiltyName .= "<b>" . $DecodedAbilityNames[$j] . "</b>: " . $DecodedGroupMinAbilities[$j] . "/" .$DecodedGroupMaxAbilities[$j]; 
+                        //$GroupAbiltyName .= "<b>" . $DecodedAbilityNames[$j] . "</b>: " . $DecodedGroupMinAbilities[$j] . "/" .$DecodedGroupMaxAbilities[$j]; 
+                        $GroupAbiltyName .= '<span class="AbilityInfo" title="' . $DecodedAbilityNames[$j] . ': ' . $DecodedAbilityDescs[$j] . '"><b>' . $DecodedAbilityNames[$j] . ': </b>: ' . $DecodedGroupMinAbilities[$j] . '/' . $DecodedGroupMaxAbilities[$j] . '</span> '; 
                         
                     }
                     else {
-                        $GroupAbiltyName .= ", <b>" . $DecodedAbilityNames[$j] . "</b>: " . $DecodedGroupMinAbilities[$j] . "/" .$DecodedGroupMaxAbilities[$j]; 
+                        //$GroupAbiltyName .= ", <b>" . $DecodedAbilityNames[$j] . "</b>: " . $DecodedGroupMinAbilities[$j] . "/" .$DecodedGroupMaxAbilities[$j]; 
+                        $GroupAbiltyName .= ', <span class="AbilityInfo" title="' . $DecodedAbilityNames[$j] . ': ' . $DecodedAbilityDescs[$j] . '"><b>' . $DecodedAbilityNames[$j] . ': </b>: ' . $DecodedGroupMinAbilities[$j] . '/' . $DecodedGroupMaxAbilities[$j] . '</span> '; 
                         
                     }
         }
@@ -549,7 +587,9 @@ if ($groupMembers_count > 0 )
 }          
         if($GroupAbiltyName)
             {
-                $groupMemberStats .= "<center><span class='AbilityInfo' title='$curruser abilities: $GroupAbiltyName'>$GroupAbiltyName</span></center>";
+                //$groupMemberStats .= "<center><span class='AbilityInfo' title='$curruser abilities: $GroupAbiltyName'>$GroupAbiltyName</span></center>";
+                $groupMemberStats .= "<center>" . $GroupAbiltyName  . "</center>";
+                
             }
         
         $groupMemberStats .= "</td>";        
@@ -682,7 +722,35 @@ if ($groupMembers_count > 0 )
     $groupMemberStats.="</div>";
     
 }   
-// **** end get group member stats        
+// **** end get group member stats    
+unset($GroupRESIST);
+unset($GroupIMMUNITY);
+unset($GroupWILL);
+unset($GroupREFLEX);
+unset($GroupFORT);
+unset($GroupAC);
+unset($GroupTAC);
+unset($GroupFFAC);
+unset($GroupMinAbilities);
+unset($GroupMaxAbilities);
+unset($GroupAbilityNames);
+unset($GroupAbilityDescs);
+unset($DecodedGroupMinAbilities);
+unset($DecodedGroupMaxAbilities);
+unset($DecodedAbilityNames);
+unset($DecodedAbilityDescs);
+unset($GroupMinSpells);
+unset($GroupMaxSpells);
+unset($GroupSpellsNames);
+unset($GroupSpellsDescs);
+unset($DecodedGroupMinSpells);
+unset($DecodedGroupMaxSpells);        
+unset($DecodedSpellsNames);
+unset($DecodedSpellsDescs);
+unset($groupMembers_data);     
+
+
+
 
 if (!$post_data)
 {
@@ -1846,7 +1914,6 @@ if ($submit || $preview || $refresh)
                                 'level' => $l,
                                 'level_min' => $lmin,
                                 'level_max' => $lmax,
-                                'spell_decription' => $spell_desc1,
                                 'ability_name' => $SavedAbilityName,
                                 'min_ability' => $SavedAbilityCurrent,
                                 'max_ability' => $SavedAbilityMax,
@@ -1856,6 +1923,7 @@ if ($submit || $preview || $refresh)
                                 'hero_point' =>  request_var('select_hero_points',''),
                                 'quick_skill' => $skill_quality,
                                 'spell' => $final_spell_list,
+                                'spell_description' => $Selected_user_spells,                        
                                 'OFFENSE' => $offense_buttons,
                                 'PLAYERINFO' => $PLAYERINFO,
                                 'CLASS_INFO' => $CLASS_INFO,
@@ -1893,8 +1961,7 @@ if ($submit || $preview || $refresh)
                         'spell_class_type' => $sct,                     //CVC - Added 12/05/15
                         'level' => $l,
                         'level_min' => $lmin,
-                        'level_max' => $lmax,
-                        'spell_decription' => $spell_desc1,
+                        'level_max' => $lmax,                        
                         'ability_name' => $SavedAbilityName,
                         'min_ability' => $SavedAbilityCurrent,
                         'max_ability' => $SavedAbilityMax,
@@ -1904,6 +1971,7 @@ if ($submit || $preview || $refresh)
                         'hero_point' =>  request_var('select_hero_points',''),
                         'quick_skill' => $skill_quality,
                         'spell' => $final_spell_list,
+                        'spell_description' => $Selected_user_spells,                        
                         'PLAYERINFO' => $PLAYERINFO,
                         'CLASS_INFO' => $CLASS_INFO,
                         'SPEED' => $SPEED,
@@ -2072,7 +2140,7 @@ if ($submit || $preview || $refresh)
 				trigger_error($message);
 			}
                         
-                       // redirect($redirect_url);              //SUBMIT THE PAGE and REDIRECT BACK TO PREVIOUS -- CVC 11/26/16
+                       redirect($redirect_url);              //SUBMIT THE PAGE and REDIRECT BACK TO PREVIOUS -- CVC 11/26/16
 		}
 	}
 }
@@ -2090,6 +2158,7 @@ if (!sizeof($error) && $preview)
 	$preview_signature_bitfield = ($mode == 'edit') ? $post_data['user_sig_bbcode_bitfield'] : $user->data['user_sig_bbcode_bitfield'];
 
 	// Signature
+        /*
 	if ($post_data['enable_sig'] && $config['allow_sig'] && $preview_signature && $auth->acl_get('f_sigs', $forum_id))
 	{
 		$parse_sig = new parse_message($preview_signature);
@@ -2105,6 +2174,117 @@ if (!sizeof($error) && $preview)
 	{
 		$preview_signature = '';
 	}
+        */
+        	$preview_signature = '';
+            
+                
+        // ******************************************** 
+        // CVC - 12/17 - Call Alias code again because the user previewed it and wiped it out
+                
+            if(request_var('useraccount',''))
+                    {
+                      $select_post_data = "SELECT * from " . USER_VARIABLES_TABLE . " WHERE user_id=" . request_var('useraccount',''). ' group by user_id';
+                    }
+            else
+            {
+                    //CSHELLY new code 2015.11.16
+                    $defaultUserData = getDefaultUser($user->data['user_id']);
+                    if (is_null($defaultUserData[0]['user_id']))
+                    {
+                        $defaultUser = $user->data['user_id'];
+                    }
+                    else
+                    {
+                            $defaultUser = $defaultUserData[0]['user_id'];
+                    }
+                    $select_post_data = "SELECT * from " . USER_VARIABLES_TABLE . " WHERE user_id=" .$defaultUser. ' group by user_id';
+            }
+            $result_post_data = $db->sql_query($select_post_data);
+
+
+            // CVC - 11/23/15 - Moved all of the user variable retrieval and evaluation into functionLoadUserVariables for easier reading
+            // CVC - 12/17 - Moving after alias selection
+            // include ($phpbb_root_path . 'includes/LoadUserVariables.' . $phpEx);                //CVC - 11/23/15   
+
+            // *** Select aliases
+            $alias_data = getAlias($user->data['user_id']);
+            // $defaultUserData = getDefaultUser($user->data['user_id']);  //Commented out 11/25/15, seems to be called a second time for some reason?
+            if (is_null($defaultUserData[0]['user_id']))
+            {
+                //debug_to_console ("|- defaultUserData is NULL, setting to current user.");	
+                $defaultUser = $user->data['user_id'];
+            }
+            else
+            {
+                    $defaultUser = $defaultUserData[0]['user_id'];
+            }
+
+            $alias_names = '';
+            $selected_Alias = '';
+            $selected_Sig = '';
+            $alias_count = count($alias_data);
+            $alias_names .="<option value=''>--select subaccount account--</option>";
+            $useraccount = request_var('useraccount','');
+            $user_id = $user->data['user_id'];
+
+            for ($al = 0; $al < $alias_count; $al++) {
+                    if($alias_data[$al]['user_id'] == $useraccount)             // default account if the user selects one manually
+                {
+                        $alias_names .= "<option value=" . $alias_data[$al]['user_id'] . " selected='selected'>" . $alias_data[$al][username] . "</option>";
+                        $selected_Alias = $alias_data[$al]['username'];
+                        $selected_Sigdata = $alias_data[$al]['user_sig'];
+                        $selected_Sig_bbcode = $alias_data[$al]['user_sig_bbcode_uid'];
+                        $selected_Sig_bitfield = $alias_data[$al]['user_sig_bbcode_bitfield'];       
+                }else
+                    if(($alias_data[$al]['user_id'] == $defaultUser)) //AND ($useraccount != '')) //default account based on forum settings  ---- commented out by CVC 11/25/15
+                    {
+                            $alias_names .= "<option value=" . $alias_data[$al]['user_id'] . " selected='selected'>" . $alias_data[$al][username] . "</option>";
+                            $selected_Alias = $alias_data[$al]['username'];
+                            $selected_Sigdata = $alias_data[$al]['user_sig'];
+                            $selected_Sig_bbcode = $alias_data[$al]['user_sig_bbcode_uid'];
+                            $selected_Sig_bitfield = $alias_data[$al]['user_sig_bbcode_bitfield'];
+                    }
+                    else
+                    {
+                            $alias_names .= "<option value=" . $alias_data[$al]['user_id'] . ">" . $alias_data[$al][username] . "</option>";
+                    }
+            }
+
+                    $selected_Sig = strip_bbcode($selected_Sigdata);                       
+                    $selected_Sig  = generate_text_for_display($selected_Sigdata, $selected_Sig_bbcode, $selected_Sig_bitfield,0);
+
+
+            if ($mode == 'edit') {
+                $sql = 'SELECT poster_id FROM ' . POSTS_TABLE . ' WHERE post_id = ' . $post_id;
+                $result = $db->sql_query($sql);
+                $edit_poster_id = (int) $db->sql_fetchfield('poster_id');
+                $db->sql_freeresult($result);
+
+                echo nl2br ("Poster_ID: " . $edit_poster_id."\n");
+                echo nl2br ("Your ID: " . $user_id."\n");
+                echo nl2br ("Your DefaultUserID: $defaultUser \n");
+
+                If ($defaultUser !=$edit_poster_id ){
+                    for ($al = 0; $al < $alias_count; $al++) {
+                        if ($alias_data[$al]['user_id'] == $edit_poster_id) {
+                            //echo nl2br ("DefaultUserID $edit_poster_id is in your alias list, setting it as DefaultUserId.\n");
+                                $alias_names = "<option value=" . $alias_data[$al]['user_id'] . " selected='selected'>" . $alias_data[$al]['username'] . "</option>";
+                                $selected_Alias = $alias_data[$al]['username'];
+                                for ($aal = 0; $aal < $alias_count; $aal++) {
+                                    if ($aal != $al){
+                                        $alias_names .= "<option value=" . $alias_data[$aal]['user_id'] . ">" . $alias_data[$aal]['username'] . "</option>";
+                                    }
+                                }
+                        }  
+                        Else {
+                            //echo nl2br ("$edit_poster_id is not in your alias list.\n");
+
+                        }
+                    }
+                }
+            }
+
+            include ($phpbb_root_path . 'includes/LoadUserVariables.' . $phpEx);                //CVC - 11/23/15    
 
 	$preview_subject = censor_text($post_data['post_subject']);
 
@@ -2575,6 +2755,7 @@ $page_data = array(
         'SELECTED_ALIAS' => $selected_Alias,
         'SELECTED_SIG' => $selected_Sig,
         'GROUP_MEMBERS_STATS' => $groupMemberStats,
+        'GROUPCOUNT' => " (" . $groupMembers_count . " members)",
         //CVC - End User Variables
 );
 

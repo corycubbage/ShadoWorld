@@ -64,6 +64,8 @@ if (request_var('skill_desc','') != '' && request_var('hidden_skill','') != '') 
     $level_minExisting = array();
     $level_maxExisting = array();
     $spellExisting = array();
+    $SelectedUserSpells = array();
+    $SelectedUserSpellsExisting = array();
     
     
         // Find existing and new spell levels
@@ -126,7 +128,8 @@ if (request_var('skill_desc','') != '' && request_var('hidden_skill','') != '') 
                 $levelExisting[] = request_var('select_existing_level' . $i . '','');
                 $level_minExisting[] = request_var('select_existing_level_min' . $i . '','');
                 $level_maxExisting[] = request_var('select_existing_level_max' . $i . '','');    
-                $spellExisting[] = request_var('spell_existing_level'. $i. '', array('' => ''));        
+                $spellExisting[] = request_var('spell_existing_level'. $i. '', array('' => ''));
+                $SelectedUserSpellsExisting[] = request_var('selected_existingspells_level' . $i . '','');
              }
             
              if ((request_var('select_level' . $i . '',''))!='') {                // Newly added spell levels      
@@ -187,8 +190,11 @@ if (request_var('skill_desc','') != '' && request_var('hidden_skill','') != '') 
                 $level_min[] = request_var('select_level_min' . $i . '','');
                 $level_max[] = request_var('select_level_max' . $i . '','');    
                 $spell[] = request_var('spell_level' . $i . '', array('' => ''));    
+                $SelectedUserSpells[] = request_var('selected_spells_level' . $i . '','');
             }
         }   
+        
+        print_r($SelectedUserSpellsExisting);
 
         // *** Testing data 
         //$lmin = "{\"0\":\"1\",\"1\":\"2\",\"2\":\"7\"}";    //{"0":"4","1":"6","2":"8"}
@@ -207,12 +213,14 @@ if (request_var('skill_desc','') != '' && request_var('hidden_skill','') != '') 
             $MergedLevelsMax = array_merge($level_maxExisting, $level_max);
             $MergedLevelsType = array_merge($spell_class_typeExisting, $spell_class_type);
             $MergedLevelsSpellList = array_merge($spellExisting, $spell);
+            $MergedLevelsUserSpells = array_merge($SelectedUserSpellsExisting, $SelectedUserSpells);
             
             $l = json_encode($MergedLevels, JSON_FORCE_OBJECT);    
             $sct = json_encode($MergedLevelsType, JSON_FORCE_OBJECT);
             $lmin = json_encode($MergedLevelsMin, JSON_FORCE_OBJECT);
             $lmax = json_encode($MergedLevelsMax, JSON_FORCE_OBJECT);
             $final_spell_list = json_encode($MergedLevelsSpellList, JSON_FORCE_OBJECT);
+            $Selected_user_spells = json_encode($MergedLevelsUserSpells, JSON_FORCE_OBJECT);
         }
 
         if ((empty($level) && (!empty($levelExisting)))) {                       //Existing levels but no new levels
@@ -221,18 +229,20 @@ if (request_var('skill_desc','') != '' && request_var('hidden_skill','') != '') 
             $lmin = json_encode($level_minExisting, JSON_FORCE_OBJECT);
             $lmax = json_encode($level_maxExisting, JSON_FORCE_OBJECT);
             $final_spell_list = json_encode($spellExisting, JSON_FORCE_OBJECT);
+            $Selected_user_spells = json_encode($SelectedUserSpellsExisting, JSON_FORCE_OBJECT);
         }
         
         if ((!empty($level) && (empty($levelExisting)))) {                       //No existing levels but new levels
-            ECHO "No existing levels but new levels found!";
-            echo "Level";
-            print_r($level);
-            echo nl2br ("\nType: ");
+            //ECHO "No existing levels but new levels found!";
+            //echo "Level";
+            //print_r($level);
+            //echo nl2br ("\nType: ");
             $l =  json_encode($level, JSON_FORCE_OBJECT);
             $sct = json_encode($spell_class_type, JSON_FORCE_OBJECT);
             $lmin = json_encode($level_min, JSON_FORCE_OBJECT);
             $lmax = json_encode($level_max, JSON_FORCE_OBJECT);
             $final_spell_list = json_encode($spell, JSON_FORCE_OBJECT);
+            $Selected_user_spells = json_encode($SelectedUserSpells, JSON_FORCE_OBJECT);
         }        
         
         if ((empty($level) && (empty($levelExisting)))) {                       //No spells at all
@@ -242,9 +252,12 @@ if (request_var('skill_desc','') != '' && request_var('hidden_skill','') != '') 
             $lmin='';
             $sct='';
             $final_spell_list=0;
+            $Selected_user_spells = '';
         }
         
         // Cleanup
+        unset ($SelectedUserSpells);
+        unset ($SelectedUserSpellsExisting);
         unset ($levelExisting);
         unset ($spellExisting);
         unset ($level_minExisting);

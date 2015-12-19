@@ -32,6 +32,13 @@ span.Spellinfo {
 	font-size: 11px;
 }
 
+span.Spellinfo:hover {
+	color: #888888 ;
+        background: #F9EDED;
+	font-size: 11px;
+        text-decoration: underline;
+}
+
 span.ACInfo {
 	color: #0000A0;
 	font-size: 11px;
@@ -149,9 +156,10 @@ span.class_info {
   color: #fff;
 }
 
-.btn-info-green:hover, .btn-info:focus {
-  color: #fff;
-  background: #3bd03b;
+.btn-info-green:hover{
+    color: green; 
+    text-decoration: underline; 
+    background: #F9EDED 
 }
 
 #PostingEditorTable table{
@@ -164,7 +172,7 @@ span.class_info {
 }
 
 .table-hover > tbody > tr:hover {
-  background-color: #ccf5ff;
+  background-color: #ffffb3;
 }
 
 span.CharacterTableInfo{

@@ -211,7 +211,7 @@ for ($i = 0; $i < $positive_condition_data_count; $i++) {
             }
         }
     }
-//if($_REQUEST['mode'] == 'post')
+
 if(request_var('mode','') == 'post')
 	
 {
@@ -387,7 +387,7 @@ if ($decodedSpellLevels) {                                                     /
                         } 
                         $spellfound = 0;
                     }              
-                    $s_selectedspells_data = "(" . $s_selectedspells_data_count . ") spells saved: " . $s_selectedspells_data;
+                    $s_selectedspellsCount_data = "(" . $s_selectedspells_data_count . ")";
                 }
                 Else 
                 {
@@ -397,23 +397,26 @@ if ($decodedSpellLevels) {                                                     /
                         if ($s_selectedspells_data_count < 1) {
                             for ($spellsinbookinc = 0; $spellsinbookinc < $TotalSpellListCount; $spellsinbookinc++) {           //Iterate through all spell spells in the spell list for this level                     
                                 $s_spell_data .= "<option value=\"$spells_array[$spellsinbookinc]\">$spells_array[$spellsinbookinc]</option>";
+                              
                             }
                         }
                     }
                 }
             }
-
+            
+            
             $SpellTableData .= '<table><tr><td><input id="5" class="btn btn-info-red" type="button" name="' . $post_id . '_' . $Vuser_id . '_' . $i . '" value="-" addaditinal="" onclick="return remove_extra_level(this);"></td>';
-            $SpellTableData .= '<td>&nbsp;&nbsp;&nbsp;</td><td><table><tr><td><label for="select_existing_type' . $i . '">Type:</td><td><select name="select_existing_type' . $i . '" id="select_existing_type' . $i . '" style="width:3em;">' . $s_level_type_data . '</select></label></td><tr>';
-            $SpellTableData .= '<tr><td><label for="select_existing_lvl' . $i . '">Level:</td><td><select name="select_existing_level' . $i . '" id="select_existing_level' . $i . '" style="width:3em;">' . $s_level_data . '</select></label></td></tr>';
-            $SpellTableData .= '<tr><td>Current:</td><td><select name="select_existing_level_min' . $i . '" id="select_existing_level_min' . $i . '" style="width:3em;">' . $s_level_min_data . '</select></td></tr>';
-            $SpellTableData .= '<tr><td>Max:</td><td><select name="select_existing_level_max' . $i . '" id="select_existing_level_max' . $i . '" style="width:3em;">' . $s_level_max_data . '</select></td></tr></table></td>';
-            $SpellTableData .= '<td>&nbsp;&nbsp;&nbsp;<select name="spell_existing_level'.$i.'[]" id="spell_existing_level' . $i . '" class="spell_existing_level" multiple>'.$s_spell_data.'</select>&nbsp;&nbsp;</td>';
-            $SpellTableData .= '<td><label for="selected_existingspells_lvl' . $i . '"><input type="text" name="selected_existingspells_level"' . $i . '" id="selected_existingspells_level"' . $i . '" value="'. $s_selectedspells_data .'" size="70"></input></label></td>';
+            $SpellTableData .= '<td>&nbsp;&nbsp;&nbsp;</td><td><table><tr><td><label for="select_existing_type' . $i . '"><b>Type:</b></td><td><select name="select_existing_type' . $i . '" id="select_existing_type' . $i . '" style="width:3em;">' . $s_level_type_data . '</select></label></td><tr>';
+            $SpellTableData .= '<tr><td><label for="select_existing_lvl' . $i . '"><b>Level:</b></td><td><select name="select_existing_level' . $i . '" id="select_existing_level' . $i . '" style="width:3em;">' . $s_level_data . '</select></label></td></tr>';
+            $SpellTableData .= '<tr><td><b>Current:</b></td><td><select name="select_existing_level_min' . $i . '" id="select_existing_level_min' . $i . '" style="width:3em;">' . $s_level_min_data . '</select></td></tr>';
+            $SpellTableData .= '<tr><td><b>Max:</b</td><td><select name="select_existing_level_max' . $i . '" id="select_existing_level_max' . $i . '" style="width:3em;">' . $s_level_max_data . '</select></td></tr></table></td>';
+            $SpellTableData .= '<td>&nbsp;&nbsp;&nbsp;</td><td><table><tr><td><center><b>Spell List</b></center></td></tr><tr><td><select name="spell_existing_level'.$i.'[]" id="spell_existing_level' . $i . '" class="spell_existing_level" multiple>'.$s_spell_data.'</select>&nbsp;&nbsp;</td></tr></table></td>';
+            //$SpellTableData .= '<td></td><td>' . $s_selectedspellsCount_data . '&nbsp;&nbsp</td><td><input class="form-control" type="text" name="selected_existingspells_level"' . $i . '" id="selected_existingspells_level"' . $i . '" value="'. $s_selectedspells_data .'" size="70" readonly></input></label></td>';
+            //$SpellTableData .= '<td></td><td><table><tr><td><center><b>' . $s_selectedspellsCount_data . " Level " . $i . ' spells saved</b></center></td></tr><tr><td><textarea class="form-control" name="selected_existingspells_level"' . $i . '" id="selected_existingspells_level"' . $i . ' rows = "5" cols="75" readonly>' . $s_selectedspells_data .'</textarea></td></tr></table></td>';
+            $SpellTableData .= '<td></td><td><table><tr><td><center><b>' . $s_selectedspellsCount_data . " Level " . $i . ' spells saved</b></center></td></tr><tr><td><input class="form-control" name="selected_existingspells_level' . $i . '" id="selected_existingspells_level' . $i . '" value="' . $s_selectedspells_data . '" size="70" readonly></input></td></tr></table></td>';
             $SpellTableData .= '</tr></table><br>';
             $TotalSpellLevels++;
         }
-
     }
 }
 //echo $SpellTableData;
@@ -474,147 +477,6 @@ unset ($ability_desy);
 unset ($min_abilityy);
 unset ($max_abilityy);
 
-/* - 12/17/15
-$min_abilityyy = json_decode($min_abilityy, true);
-$s_min_ability = '';
-if ($min_abilityyy[0] != '') {
-    for ($i = 0; $i < $min_ability_data_count; $i++) {
-        if (count($min_abilityyy) == 1) {
-            $variable_ability = 'yes';
-            if ($min_ability_data[$i] == $min_abilityyy[0]) {
-                $selected = ' selected="selected"';
-            } else {
-                $selected = '';
-            }
-        }
-        //if($_REQUEST['mode'] == 'post')
-		if(request_var('mode','') == 'post')
-        {
-			$s_min_ability .= "<option value=\"$min_ability_data[$i]\">$min_ability_data[$i]</option>";
-			break;
-		}else{
-			$s_min_ability .= "<option value=\"$min_ability_data[$i]\"$selected>$min_ability_data[$i]</option>";
-		}
-    }
-}
-$selectbox_min_ability = '';
-if (count($min_abilityyy) > 1) {
-    $increment_variable_ability = '<input type="hidden" name="increment_variable_ability" id="increment_variable_ability" value="' . count($min_abilityyy) . '">';
-    $variable_ability = 'no';
-    for ($j = 0; $j < count($min_abilityyy); $j++) {
-        $selectstart = '';
-        $select = '';
-        $s_level_data_all_options = '';
-        if ($j == 0) {
-            $lvl = '';
-        } else {
-            $lvl = $j;
-        }
-
-        $selectstart .= '&nbsp;Current/Max : <select name="min_ability' . $lvl . '" id="min_ability' . $lvl . '" style="width:5em;;">';
-
-        for ($i = 0; $i < $min_ability_data_count; $i++) {
-            if ($min_ability_data[$i] == $min_abilityyy[$j]) {
-                $selected = 'selected="selected"';
-            } else {
-                $selected = '';
-            }
-            
-            
-		//if($_REQUEST['mode'] == 'post')
-		if(request_var('mode','') == 'post')
-		{
-			$s_level_data_all_options .= "<option value=\"$min_ability_data[$i]\"  >$min_ability_data[$i]</option>";
-			break;
-		}else{
-			$s_level_data_all_options .= "<option value=\"$min_ability_data[$i]\" $selected >$min_ability_data[$i]</option>";
-		}
-            
-        }
-        $selectends .= '</select>';
-        if ($j != (count($min_abilityyy) - 1)) {
-            $select .= $selectstart . $s_level_data_all_options . $selectends . "/" . "<br>";
-        } else {
-            $select .= $selectstart . $s_level_data_all_options . $selectends . "/";
-        }
-        
-        $selectbox_min_ability .= $select;
-    }
-}
-
-
-$max_abilityyy = json_decode($max_abilityy, true);
-
-$s_max_ability = '';
-for ($i = 0; $i < $max_ability_data_count; $i++) {
-    if (count($max_abilityyy) == 1) {
-        if ($max_ability_data[$i] == $max_abilityyy[0]) {
-            $selected = ' selected="selected"';
-        } else {
-            $selected = '';
-        }
-    }
-    //if($_REQUEST['mode'] == 'post')
-	if(request_var('mode','') == 'post')
-	{
-		$s_max_ability .= "<option value=\"$max_ability_data[$i]\">$max_ability_data[$i]</option>";
-		break;
-	}else{
-		$s_max_ability .= "<option value=\"$max_ability_data[$i]\"$selected>$max_ability_data[$i]</option>";
-	}
-}
-$selectbox_max_ability = '';
-$button_ability = '<br>';
-if (count($max_abilityyy) > 1) {
-    for ($j = 0; $j < count($max_abilityyy); $j++) {
-        $selectstart = '';
-        $selectends = '';
-        $select = '';
-        $s_level_data_all_options = '';
-        if ($j == 0) {
-            $lvl = '';
-        } else {
-            $lvl = $j;
-        }
-
-		
-        $selectstart .= '<select name="max_ability' . $lvl . '" id="max_ability' . $lvl . '" style="width:5em;;">';
-
-        for ($i = 0; $i < $max_ability_data_count; $i++) {
-            if ($max_ability_data[$i] == $max_abilityyy[$j]) {
-                $value = $max_ability_data[$i];
-                $ivalue = $j;
-                $selected = 'selected="selected"';
-            } else {
-                $selected = '';
-            }
-            
-            //if($_REQUEST['mode'] == 'post')
-			if(request_var('mode','') == 'post')
-			{
-				$s_level_data_all_options .= "<option value=\"$max_ability_data[$i]\" >$max_ability_data[$i]</option>";
-				break;
-			}else{
-				$s_level_data_all_options .= "<option value=\"$max_ability_data[$i]\" $selected >$max_ability_data[$i]</option>";
-			}
-            
-        }
-        $name = $post_id . '_' . $user->data["user_id"] . '_' . $ivalue;
-        $selectends .= '</select>';
-        $button_ability .='&nbsp<input type="button" name=' . $name . ' id=' . $value . ' value="-" class="btn btn-info-red" onclick="return remove_ability(this);"><br><br>';
-        if ($j != (count($max_abilityyy) - 1)) {
-            $select .= $selectstart . $s_level_data_all_options . $selectends . "<br>";
-        } else {
-            $select .= $selectstart . $s_level_data_all_options . $selectends;
-        }
-
-        $selectbox_max_ability .= $select;
-    }
-}
- * 
- * 
- */
-
 $seleted_gears = json_decode($seleted_gear, true);
 $s_gear_data = '';
 $sel_gear = array();
@@ -630,7 +492,6 @@ $unique = array_unique($arr_merge);
 $values = array_values($unique);
 $ar = array();
 $ar = array_diff($values, $sel_gear);
-//if($_REQUEST['mode'] == 'post'){
 
 if(request_var('mode','') == 'post'){
 	//$s_gear_data .= "<option value=''></option>";
@@ -735,7 +596,7 @@ $quick_skill_var = array_unique($quick_skill_var);
                     break;
                 }
             }
-            //if($_REQUEST['mode'] == 'post')
+
 			if(request_var('mode','') == 'post')	
             {
                 if($arr_merge[$gg] == ''){
@@ -832,7 +693,7 @@ if ($types != '') {
 
 $s_weapon_name = '';
 $weapon_names = json_decode($weapon_name, true);
-//if($_REQUEST['mode'] == 'post'){
+
 if(request_var('mode','') == 'post'){
 for ($wp = 0; $wp < count($weapon_names); $wp++) {
 	    $s_weapon_name .= '<option value="' . $weapon_names[$wp] . '"  ' . $selected . '>' . $weapon_names[$wp] . '</option>';
@@ -1015,71 +876,3 @@ $Decoded_RESISTIMMUNITY_count = count($DecodedRESISTIMMUNITY);
         $IMMUNITY = 0;
         
     }
-    
-//code for of Offense display at abbcode starts archi11
-/* $query = "SELECT " . USER_GROUP_TABLE . ".user_id
-FROM " . USER_GROUP_TABLE . "
-INNER JOIN " . GROUPS_TABLE . " ON " . USER_GROUP_TABLE . ".group_id = " . GROUPS_TABLE . ".group_id
-WHERE " . GROUPS_TABLE . ".group_name =  'GLOBAL_MODERATORS'
-OR " . GROUPS_TABLE . ".group_name =  'ADMINISTRATORS'
-GROUP BY " . USER_GROUP_TABLE . ".user_id";
-$results = $db->sql_query($query);
-$alias_data1 = getAlias($user->data['user_id']);
-$alias_count1 = count($alias_data1);
-
-while ($row = $db->sql_fetchrow($results)) {
-	
-    $id[] = $row['user_id'];
-}
-
-if (in_array($user->data["user_id"], $id)) {
-    $fetch_img = 'SELECT * FROM ' . MOD_IMG_LINK . ' WHERE moderator_id=' . $user->data["user_id"] . ' and post_id=' . $post_id;
-    $img_que = $db->sql_query($fetch_img);
-    $images1 = '';
-    while ($row1 = $db->sql_fetchrow($img_que)) {
-        $images1 .= '<h4>' . $row1["img_title"] . '</h4><br/><img src = "' . $row1["link_path"] . '"  style="width:690px;height:500px;margin-left:195px"><input type="button" name=' . $row1['moderator_link_id'] . ' onclick="delete_image(this.value)" value="Delete_'.$row1['moderator_link_id'].'" class="button1" style="margin-left: 17px; margin-top: -30px;"><input type="button" name=' . $row1['moderator_link_id'] . ' onclick=editimage(this.value) value="Edit_'.$row1['moderator_link_id'].'" class="button1" style="margin-left: 17px;margin-top: -30px;"><br/><br/>';
-    }
-	$images1 .= '<span id="update_form" style="margin-left:300px"></span>';
-} else {
-    $fetch_img = 'SELECT * FROM ' . MOD_IMG_LINK;
-    $img_que = $db->sql_query($fetch_img);
-    $images1 = '';
-    while ($row1 = $db->sql_fetchrow($img_que)) {
-        $images1 .= '<h4>' . $row1["img_title"] . '</h4><br/><img src = "' . $row1["link_path"] . '"  style="width:690px;height:500px" style="margin-left: 17px; margin-top: -30px;"><input type="button" name=' . $row1['moderator_link_id'] . ' onclick=editimage(this.value) value="Edit_'.$row1['moderator_link_id'].'" class="button1"><br/><br/>';
-    }
-}
-
-//abbcode ends archi11
-//process for the Central log of all changes groups
-
-$select_group_id = "SELECT group_id FROM " . USERS_TABLE . " where user_id=" . $user->data['user_id'];
-$result_user_table = $db->sql_query($select_group_id);
-$id = $db->sql_fetchrow($result_user_table);
-$user_groupid = $id['group_id'];
-
-$select_group = "SELECT user_id FROM " . USER_GROUP_TABLE . " where group_id=" . $user_groupid;
-$result_group_table = $db->sql_query($select_group);
-
-$table = '<br><br><table class="table1"><tr><th class="th1">Player Name</th><th class="th1">Player Information</th></tr>';
-$tableend = '</table><br><br>';
-$coyu = 0;
-//CSHELLY:  somewhere here it seems like it is grabbing the details for the character stats.
-
-
-// CVC -- 11/24/15 - Moved group code below into LoadGroupInformation because it seems to currently be overwriting the loaded user variables to null and I don't need this to work yet
-//include ($phpbb_root_path . 'includes/LoadGroupInformation.' . $phpEx);
-
-while ($rows = $db->sql_fetchrowset($result)) {
-    for ($i = 0; $i <= count($rows); $i++) {
-        $user_id = $rows[$i]['user_id'];
-        if ($user_id == $user->data['user_id']) {
-            $status_value = 'block';
-        }
-    }
-}
-
-//code for the spell boxxes starts...
-//code for the spell boxxes endss...
-//archi11 code end
-
-*/
