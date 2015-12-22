@@ -26,7 +26,7 @@ function getGroupMemberStats($forum_id)
     global $db;
     
 	$data = array();
-	$select = "select distinct uv.*, u.username from ".USERS_TABLE." u inner join ".ACL_GROUPS_TABLE." g on u.group_id = g.group_id inner join " . USER_VARIABLES_TABLE . " uv on u.user_id = uv.user_id where u.user_type = 0 AND g.forum_id = ".$forum_id;
+	$select = "select distinct uv.*, u.username from ".USERS_TABLE." u inner join ".ACL_GROUPS_TABLE." g on u.group_id = g.group_id inner join " . USER_VARIABLES_TABLE . " uv on u.user_id = uv.user_id where u.AccountType = 0 AND g.forum_id = ".$forum_id;
 	$result = $db->sql_query($select);
 	while($row = $db->sql_fetchrow($result))
 	{
