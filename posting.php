@@ -413,7 +413,7 @@ if ($groupMembers_count > 0 )
             $HPProgresBarText = '';
         }
         elseif (($HPPercent > 75) && ($HPPercent < 100)) {
-            $HPProgresBarColor = "progress-bar-success";    
+            $HPProgresBarColor = "progress-bar-success ";    
             $HPProgresBarText = '';
         }
         elseif (($HPPercent > 50) && ($HPPercent < 75)) {
@@ -425,15 +425,15 @@ if ($groupMembers_count > 0 )
             $HPProgresBarText = '';
         }                
         elseif (($HPPercent > 0) && ($HPPercent < 25)) {
-            $HPProgresBarColor = "progress-bar-danger";    
+            $HPProgresBarColor = "progress-bar-low";    
             $HPProgresBarText = '';
         }              
         elseif ($HPPercent == 0) {
-            $HPProgresBarColor = "progress-bar-danger progress-bar-striped'";    
+            $HPProgresBarColor = "progress-bar-danger progress-bar-striped";    
             //$HPProgresBarText = " <b>DISABLED</b>";
         }        
         elseif ($HPPercent < 0) {
-            $HPProgresBarColor = "progress-bar-dying progress-bar-striped'";    
+            $HPProgresBarColor = "progress-bar-dying progress-bar-striped";    
             //$HPProgresBarText = " <b>UNCONSCIOUS</b>";
         }        
         
@@ -481,43 +481,8 @@ if ($groupMembers_count > 0 )
         $groupMemberStats .= "<td>";
         // end hitpoints=================================================
                
-        //conditions=====================================================
+        // BUFFS & DEBUFFS (conditions_ =====================================================
         
-        /*
-        $cond_bad = $groupMembers_data[$gm]['seleted_bad_condition'];
-        $sbc = json_decode($cond_bad, true);
-        
-        $cond_bad_disp = '';
-        if(isset($sbc)) {
-            
-            for ($bc = 0; $bc < count($sbc); $bc++) {
-                if ($bc == 0)  {
-                    $cond_bad_disp .= $sbc[$bc];
-                } 
-                else {
-                    $cond_bad_disp .= "," . $sbc[$bc];
-                }
-            }
-        }           
-        
-        else {
-            $cond_bad_disp = 'None';
-        }
-        
-   
-         */           
-            //$groupDebuffEditableInfo = '<a href="#" id="GroupDebuffs' . $gm . '" data-type="select2" data-pk="' . $gm . '" data-title="Select debuffs ">' . $cond_bad_disp . '</a>';
-            //$groupMemberStats .= "<center><span class='BadConditionInfo' title='$curruser Buffs: $cond_bad_disp'>$groupDebuffEditableInfo</span></center>";
-        
-          //$groupCurrentHPEditableInfo = '<a href="#" id="GroupCurrentHP' . $gm . '" idval='. $gm . ' data-type="text" data-pk="' . $groupMembers_data[$gm]['user_id'] . '" data-title="Enter current Hit Points: ">' . $curhp . '</a>';    
-        
-            //$groupMemberStats .='<div id="container" class="row">';
-            //$groupMemberStats .='<div class="controls controls-row">';                       
-            //$groupMemberStats .='<span class="tags" id="GroupDebuffsTag' . $gm . '" ';
-            //$groupMemberStats .='data-toggle="manual" data-type="select2" ;
-            //$groupMemberStats .='data-value="apples, oranges, pie" data-original-title="Enter tags"></span>';
-            //$groupMemberStats .='<a href="#" id="GroupDebuffs' . $gm . '" data-type="select2" data-pk="1" data-title="Enter tags" Data-text="test" data-name="GroupDebuffs'. $gm . '">text</a>';
-            
         $GroupBuffsDebuffs = json_decode($groupMembers_data[$gm]['buffs_debuffs'], true);
         $GroupBuffsDebuffsString = '';
         
@@ -538,32 +503,7 @@ if ($groupMembers_count > 0 )
             $additionalTags = "ConditionLabelEmpty";
         }
         
-        $groupMemberStats .= '<span class="tags ' . $additionalTags . '" id="tags-editable-' . $gm . '" data-toggle="manual" data-type="select2" data-pk="' . $groupMembers_data[$gm]['user_id'] . '" data-value="'. $GroupBuffsDebuffsString .'" data-original-title="Enter tags"></span><a href="#" id="tags-edit-' . $gm . '" data-editable="tags-editable-' . $gm . '" class=""><i class="fa fa-pencil"></i></a>';
-            // working - $groupMemberStats .= '<div id="container" class="row"><div class="controls controls-row"><span class="tags" id="tags-editable-1" data-toggle="manual" data-type="select2" data-pk="1" data-value="apples,oranges,pie" data-original-title="Enter tags"></span><a href="#" id="tags-edit-1" data-editable="tags-editable-1" class="">Edit<i class="icon-pencil"></i></a></div></div>';
-            
-        $cond_good = $groupMembers_data[$gm]['seleted_good_condition'];
-        $sgc = json_decode($cond_good, true);
-
-                
-        $cond_good_disp = '';
-        if(isset($sgc)) {
-            
-            for ($gc = 0; $gc < count($sgc); $gc++) {
-                if ($gc == 0)  {
-                    $cond_bad_disp .= $sgc[$gc];
-                } 
-                else {
-                    $cond_good_disp .= "," . $sgc[$gc];
-                }
-            }
-        }           
-        
-        else {
-            $cond_bad_disp = 'None';
-        }
-                
-        //$groupMemberStats .= '<span class="tags" id="tags-editable-' . $gm . '" data-toggle="manual" data-type="select2" data-pk="1" data-value="Dying" data-original-title="Enter tags"></span><a href="#" id="tags-edit-' . $gm . '" data-editable="tags-editable-' . $gm . '" class=""><i class="fa fa-pencil"></i></a>';
-        
+        $groupMemberStats .= '<table><td><span class="tags ' . $additionalTags . '" id="tags-editable-' . $gm . '" data-toggle="manual" data-type="select2" data-pk="' . $groupMembers_data[$gm]['user_id'] . '" data-value="'. $GroupBuffsDebuffsString .'" data-original-title="Enter conditions"></span></td><td><span class="conditionAlignRight"><a href="#" id="tags-edit-' . $gm . '" data-editable="tags-editable-' . $gm . '" class=""><i class="fa fa-pencil RedConditionColor"></i></a></span></td></table>';            
         
         $groupMemberStats .= "</td>";        
         $groupMemberStats .= "<td>";

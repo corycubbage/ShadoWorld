@@ -151,9 +151,8 @@ $('[id^="tags-edit-"]').click(function(e) {
            $('#GroupCurrentHP'+i).on('save', function(e, params) {      
                ProgresBarName = "#HPProgressBar" + ($(this).attr("idval"));
                MaxHPName = "#GroupMaXHP" + ($(this).attr("idval"));
-               //JGL - need to pull input value on the fly (before validation from DB?) here, else have response do the update.
-               CurrentHP = ($(this).text());  // JGL - this value here is pulling old data from page instead of entry from popup
-
+               //CurrentHP = ($(this).text());  // JGL - this value here is pulling old data from page instead of entry from popup
+               CurrentHP = params["newValue"];
                MaxHP = ($(MaxHPName).text());
                HPPercentage = ((CurrentHP/MaxHP)*100);          
                updateColor(ProgresBarName, HPPercentage, "HP");                    
