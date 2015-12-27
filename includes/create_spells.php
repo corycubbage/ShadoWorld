@@ -58,6 +58,7 @@ for ($i = 0; $i < $spell1_count; $i++) {
 }
 
 $s_level_type_data .= "<option value='Alchemist'>Alchemist</option>";
+$s_level_type_data .= "<option value='Antipaladin'>Antipaladin</option>";
 $s_level_type_data .= "<option value='Bard'>Bard</option>";
 $s_level_type_data .= "<option value='Bloodrager'>Bloodrager</option>";
 $s_level_type_data .= "<option value='Cleric'>Cleric</option>";

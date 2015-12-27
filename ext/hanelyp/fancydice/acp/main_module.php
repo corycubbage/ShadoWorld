@@ -78,8 +78,8 @@ class main_module
 	{
 		global $db, $user, $auth, $template, $cache, $request;
 		global $config, $phpbb_root_path, $phpbb_admin_path, $phpEx;
-                debug_to_console("Dice: User");
-		debug_to_console($user);
+                //debug_to_console("Dice: User");
+		//debug_to_console($user);
                 //$user->add_lang('acp/common');
 		$user->add_lang_ext('hanelyp/fancydice', 'common');
 		$this->tpl_name = 'fancydice_body';

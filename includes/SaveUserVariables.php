@@ -122,7 +122,10 @@ if (request_var('skill_desc','') != '' && request_var('hidden_skill','') != '') 
                                 break;                                                                  
                             case "Wizard": 
                                 $decodedSTExisting ="15";
-                                break;                                          
+                                break;                                
+                            case "Antipaladin":
+                                $decodedSTExisting ="16";
+                                break;
                             }      
                 $spell_class_typeExisting[] = $decodedSTExisting;               
                 $levelExisting[] = request_var('select_existing_level' . $i . '','');
@@ -183,7 +186,10 @@ if (request_var('skill_desc','') != '' && request_var('hidden_skill','') != '') 
                             break;                                                                  
                         case "Wizard": 
                             $decodedST ="15";
-                            break;                                          
+                            break;                     
+                        case "Antipaladin":
+                            $decodedST ="16";
+                            break;
                         }      
                 $spell_class_type[] = $decodedST;
                 $level[] = request_var('select_level' . $i . '','');

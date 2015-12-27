@@ -49,7 +49,8 @@
 	<!-- IF not S_IS_BOT -->{RUN_CRON_TASK}<!-- ENDIF -->
 </div>
 
-<div id="darkenwrapper" data-ajax-error-title="{L_AJAX_ERROR_TITLE}" data-ajax-error-text="{L_AJAX_ERROR_TEXT}" data-ajax-error-text-abort="{L_AJAX_ERROR_TEXT_ABORT}" data-ajax-error-text-timeout="{L_AJAX_ERROR_TEXT_TIMEOUT}" data-ajax-error-text-parsererror="{L_AJAX_ERROR_TEXT_PARSERERROR}">
+<div id="darkenwrapper" data-ajax-error-title="{L_AJAX_ERROR_TITLE}" data-ajax-error-text="{L_AJAX_ERROR_TEXT}" data-ajax-error-text-abort="{L_AJAX_ERROR_TEXT_ABORT}" data-
+ajax-error-text-timeout="{L_AJAX_ERROR_TEXT_TIMEOUT}" data-ajax-error-text-parsererror="{L_AJAX_ERROR_TEXT_PARSERERROR}">
 		<div id="darken">&nbsp;</div>
 </div>
 
@@ -110,11 +111,13 @@ $("#post_as").change(function(){
 <!-- INCLUDEJS forum_fn.js -->
 <!-- INCLUDEJS ajax.js -->
 
+
+<!-- EVENT overall_footer_body_after -->
+<!-- <script type="text/javascript" src="{T_THEME_PATH}/js/tab.js"></script> -->
+
+
+
 <script src="{T_THEME_PATH}/js/main.min.js?assets_version={T_ASSETS_VERSION}"></script>
-
-<!-- INCLUDE components/footerjs.html -->
-
-<!-- EVENT overall_footer_after -->
 
 <!-- IF S_PLUPLOAD --><!-- INCLUDE plupload.html --><!-- ENDIF -->
 {$SCRIPTS}
@@ -124,10 +127,36 @@ $("#post_as").change(function(){
 <!-- INCLUDE custom/custom.js -->
 </script>
 
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> 
+<script type="text/javascript" src="{T_THEME_PATH}/js/bootstrap.js"></script> 
+
+<link href="{T_THEME_PATH}/css/bootstrap-editable.css" rel="stylesheet"/>
+<script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.min.js"></script> -->
+<script type="text/javascript" src="{T_THEME_PATH}/js/editable.js"></script>
+
+<script type="text/javascript" src="{T_THEME_PATH}/js/select2.min.js"></script>
+<link href="{T_THEME_PATH}/js/select2.css" rel="stylesheet" />
+
+<link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
+<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
+
+<script src="//vitalets.github.io/x-editable/assets/mockjax/jquery.mockjax.js"></script>
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.10/css/dataTables.bootstrap.min.css">
+<script type="text/javascript" charset="utf-8" src="//cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="//cdn.datatables.net/1.10.10/js/dataTables.bootstrap.min.js"></script>
+
+<link href="{T_ASSETS_PATH}/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<script type="text/javascript" src="{T_THEME_PATH}/js/underscore-min.js"></script>
+
 
 <!-- INCLUDE components/analytics.html -->
 
-<!-- EVENT overall_footer_body_after -->
-<script type="text/javascript" src="{T_THEME_PATH}/js/tab.js"></script>
+<!-- INCLUDE components/footerjs.html -->
+
+<!-- EVENT overall_footer_after -->
+
+
 </body>
 </html>

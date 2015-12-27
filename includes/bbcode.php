@@ -50,7 +50,7 @@ class bbcode
 	* Second pass bbcodes
 	*/
 	function bbcode_second_pass(&$message, $bbcode_uid = '', $bbcode_bitfield = false)
-	{
+	{      
 		if ($bbcode_uid)
 		{
 			$this->bbcode_uid = $bbcode_uid;
@@ -182,7 +182,7 @@ class bbcode
 			$db->sql_freeresult($result);
 		}
 
-		// To perform custom second pass in extension, use $this->bbcode_second_pass_by_extension()
+                // To perform custom second pass in extension, use $this->bbcode_second_pass_by_extension()
 		// method which accepts variable number of parameters
 		foreach ($bbcode_ids as $bbcode_id)
 		{

@@ -26,8 +26,7 @@ function getGroupMemberStats($forum_id)
     global $db;
     
 	$data = array();
-	//$select = "select distinct uv.*, u.username from ".USERS_TABLE." u inner join ".ACL_GROUPS_TABLE." g on u.group_id = g.group_id inner join " . USER_VARIABLES_TABLE . " uv on u.user_id = uv.user_id where u.user_type = 0 AND g.forum_id = ".$forum_id;
-        $select = "select distinct uv.*, u.username from ".USERS_TABLE." u inner join ".ACL_GROUPS_TABLE." g on u.group_id = g.group_id inner join " . USER_VARIABLES_TABLE . " uv on u.user_id = uv.user_id where uv.AccountType = 0 AND g.forum_id = ".$forum_id;
+	$select = "select distinct uv.*, u.username from ".USERS_TABLE." u inner join ".ACL_GROUPS_TABLE." g on u.group_id = g.group_id inner join " . USER_VARIABLES_TABLE . " uv on u.user_id = uv.user_id where (u.AccountType = 0 OR u.AccountType = 2) AND g.forum_id = ".$forum_id;
 	$result = $db->sql_query($select);
 	while($row = $db->sql_fetchrow($result))
 	{
@@ -2037,7 +2036,7 @@ function submit_post($mode, $subject, $username, $topic_type, &$poll, &$data, $u
 	}
 
 	// Update the posts table
-        //echo "Update the post table?\n";
+        echo "Update the post table?\n";
 	if (isset($sql_data[POSTS_TABLE]['sql']))
 	{
             echo "YES!\n";
@@ -2788,8 +2787,4 @@ function phpbb_handle_post_delete($forum_id, $topic_id, $post_id, &$post_data, $
 	}
 
 	trigger_error('USER_CANNOT_DELETE');
-}
-
-function myFilter($var){
-  return ($var !== NULL && $var !== FALSE && $var !== '');
 }

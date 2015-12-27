@@ -3749,7 +3749,7 @@ function getDefaultUser($user_id)
         //debug_to_console ("Calling getDefaultUser for user_id: " . $user_id); 
 	global $db, $user, $auth, $config, $phpbb_root_path, $phpEx;
 	$data = array();
-	$select = "Select distinct u.user_id from ".USERS_TABLE." u left join ".USER_SUBACCOUNT." sa on u.user_id = sa.alias_accout_id inner JOIN (Select distinct g.group_id from ".SESSIONS_TABLE." s inner join ".ACL_GROUPS_TABLE." g on s.session_forum_id = g.forum_id and s.session_forum_id <> 0 where s.session_user_id = ".$user_id." order by session_last_visit desc) g1 on g1.group_id = u.group_id where sa.uid = ".$user_id." or u.user_id = ".$user_id." order by g1.group_id ASC limit 1;";
+	$select = "Select distinct u.user_id from ".USERS_TABLE." u left join ".USER_SUBACCOUNT." sa on u.user_id = sa.alias_accout_id inner JOIN (Select distinct g.group_id from ".SESSIONS_TABLE." s inner join ".ACL_GROUPS_TABLE." g on s.session_forum_id = g.forum_id and s.session_forum_id <> 0 where s.session_user_id = ".$user_id." order by session_last_visit desc) g1 on g1.group_id = u.group_id where (sa.uid = ".$user_id." or u.user_id = ".$user_id.") AND u.AccountType <> 2 order by g1.group_id ASC limit 1;";
         $result = $db->sql_query($select);
 	while($row = $db->sql_fetchrow($result))
 	{

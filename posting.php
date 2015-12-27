@@ -336,8 +336,11 @@ $groupMembers_data = getGroupMemberStats($forum_id);
 $groupMembers_count = count($groupMembers_data);
 if ($groupMembers_count > 0 )
 {
+    //$groupMemberStats.='<div style="float: right; margin-bottom: 10px"><label style="display: inline-block; margin-right: 50px"><input type="checkbox" id="autoopen" style="vertical-align: baseline">&nbsp;auto-open next field</label><button id="enable" class="btn btn-default">enable / disable</button></div><p>Click to edit</p>';
     $groupMemberStats.="<div class=\"container\">";
-    $groupMemberStats.="<table class=\"table-hover table-responsive table-striped table-bordered\" style=\"width:100%\">";
+    $groupMemberStats.='<div class="checkbox"><label><input type="checkbox" value="checked" id="GroupPartyVitalsHideStaticInfo">Show All</label></div>';
+    $groupMemberStats.="<table class=\"table-hover table-responsive table-striped table-bordered\" style=\"width:100%\" id=\"GroupUserData\">";
+    $groupMemberStats.='<col class="col1"/><col class="col2"/><col class="col3"/><col class="col4"/><col class="col5"/><col class="col6"/><col class="col7"/><col class="col8"/>';
     $groupMemberStats.="<thead>";
     $groupMemberStats.="<tr>";
     $groupMemberStats.="<th><center><span class='CharacterInfoTITLE'>CHARACTER INFORMATION</center></th>";
@@ -348,6 +351,7 @@ if ($groupMembers_count > 0 )
     $groupMemberStats.="<th><center><span class='InitInfoTITLE'>INIT</span><br><span class='SpeedInfoTITLE'>SPEED</span></center></th>";
     $groupMemberStats.="<th><center><span class='ACInfoTITLE'>AC</span><br><span class='SAVEInfoTITLE'>SAVES</span></center></th>";
     $groupMemberStats.="<th><center><span class='resist_infoTITLE'>RESISTS</span><br><span class='ImmunityInfoTITLE'>IMMUNITIES</span></center></th>";
+    $groupMemberStats.="<th><center></center></th>";
     $groupMemberStats.="</tr>";
     $groupMemberStats.="</thead>";
     $groupMemberStats.="<tbody>";
@@ -383,6 +387,7 @@ if ($groupMembers_count > 0 )
         $curhp = (int) $cur_hp;
         $nlhp = (int) $nl_hp;
         $maxhp = (int) $max_hp;
+        
         if ((!$curhp) || (!$maxhp)) {
         $HPPercent = 0;
         }
@@ -396,120 +401,170 @@ if ($groupMembers_count > 0 )
         else{
             $NLHPPercent = (100*($nlhp/$maxhp));
         }
+          
+        $HPProgresBarText = "";
         
-
-        
-        $ProgresBarText = "uhoh";
+        if ($HPPercent > 100) {
+            $HPProgresBarColor = "progress-bar-info progress-bar-striped";    
+            $HPProgresBarText = '';
+        }
         if ($HPPercent == 100) {
             $HPProgresBarColor = "progress-bar-full progress-bar-striped";    
-            $ProgresBarText = $curhp . "/" . $maxhp;
+            $HPProgresBarText = '';
         }
         elseif (($HPPercent > 75) && ($HPPercent < 100)) {
             $HPProgresBarColor = "progress-bar-success";    
-            $ProgresBarText = $curhp . "/" . $maxhp;
+            $HPProgresBarText = '';
         }
         elseif (($HPPercent > 50) && ($HPPercent < 75)) {
             $HPProgresBarColor = "progress-bar-warning";    
-            $ProgresBarText = $curhp . "/" . $maxhp;
+            $HPProgresBarText = '';
         }                
         elseif (($HPPercent > 25) && ($HPPercent < 50)) {
             $HPProgresBarColor = "progress-bar-yellow";    
-            $ProgresBarText = $curhp . "/" . $maxhp;
+            $HPProgresBarText = '';
         }                
         elseif (($HPPercent > 0) && ($HPPercent < 25)) {
             $HPProgresBarColor = "progress-bar-danger";    
-            $ProgresBarText = $curhp . "/" . $maxhp;
+            $HPProgresBarText = '';
         }              
         elseif ($HPPercent == 0) {
             $HPProgresBarColor = "progress-bar-danger progress-bar-striped'";    
-            $ProgresBarText = $curhp . "/" . $maxhp . " <b>DISABLED</b>";
+            //$HPProgresBarText = " <b>DISABLED</b>";
         }        
         elseif ($HPPercent < 0) {
             $HPProgresBarColor = "progress-bar-dying progress-bar-striped'";    
-            $ProgresBarText = $curhp . "/" . $maxhp . " <b>UNCONSCIOUS</b>";
+            //$HPProgresBarText = " <b>UNCONSCIOUS</b>";
         }        
-        $groupMemberStats .= "<div class='progressHP'><div class='progress-bar " . $HPProgresBarColor ."' role='progressbar' aria-valuenow='100' aria-valuemin='0' aria-valuemax='100' style='width:100%' title='HP: $curhp/$maxhp'><b>HP</b>: ".$ProgresBarText."</div></div>";
         
+        $groupHPCombinedValue = $curhp . "/" . $maxhp;
+        
+        
+        $groupCurrentHPEditableInfo = '<a href="#" id="GroupCurrentHP' . $gm . '" idval='. $gm . ' data-type="text" data-pk="' . $groupMembers_data[$gm]['user_id'] . '" data-title="Enter current Hit Points: ">' . $curhp . '</a>';
+        $groupMaxHPEditableInfo = '<a href="#" id="GroupMaXHP' . $gm . '" data-type="text" data-pk="' . $groupMembers_data[$gm]['user_id'] . '" data-title="Enter maximum Hit Points: ">' . $maxhp . '</a>';        
+        $HPProgresBarText = $groupCurrentHPEditableInfo . "/" . $groupMaxHPEditableInfo . $HPProgresBarText;
+        $groupMemberStats .= '<div class="progressHP"><div class="progress-bar ' . $HPProgresBarColor . '" id="HPProgressBar' . $gm . '" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%" title="HP: "' . $groupHPCombinedValue . '"><b>HP</b>: '  . $HPProgresBarText . '</div></div>';    
+        
+        //Setup progress bar for nonlethal
+        $NLProgresBarText = '';
         if ($nlhp > $curhp)                                 //Unconscious
             {    
-            $groupMemberStats .= "<div class='progressNL'><div class='progress-bar progress-bar-danger progress-bar-striped' role='progressbar' aria-valuenow='$nlhp' aria-valuemin='0' aria-valuemax='$maxhp' style='width:100%' title ='Nonlethal damage: $nlhp'><b>STAGGERED</b></div></div>";
+            $NLHPProgresBarColor = "progress-bar-danger progress-bar-striped";
+            $NLProgresBarText = ' UNCONSCIOUS';
             }
-            Elseif (($nlhp == $curhp) && ($curhp > 0)) {        //staggered
-                $groupMemberStats .= "<div class='progressNL'><div class='progress-bar progress-bar-danger progress-bar-striped' role='progressbar' aria-valuenow='$nlhp' aria-valuemin='0' aria-valuemax='$maxhp' style='width:100%' title ='Nonlethal damage: $nlhp'><b>UNCONSCIOUS</b></div></div>";
-            }
-            Elseif (($nlhp < $curhp) && ($curhp > 0) && ($nlhp >0)) {          // nonlethal < cur HP
-                        IF ($NLHPPercent < 30) {
-                            $NLHPPercent = 30;        
-                        }
-                
-                $groupMemberStats .= "<div class='progressNL'><div class='progress-bar progress-bar-danger progress-bar-striped' role='progressbar' aria-valuenow='$nlhp' aria-valuemin='0' aria-valuemax='$maxhp' style='width:". $NLHPPercent . "%' title ='Nonlethal damage: $nlhp'> <b>NL</b>: ". $nlhp . "</div></div>";
-            }
-            elseif (($nlhp <= 0) || ($nlhp == ''))              //No nonletahl HP
-            {
-               $groupMemberStats .= "<div class='progressNL'><div class='progress-bar progress-bar-danger progress-bar-striped' role='progressbar' aria-valuenow='$nlhp' aria-valuemin='0' aria-valuemax='$maxhp' style='width:0%'></div></div>";
-            }
+        Elseif (($nlhp == $curhp) && ($curhp > 0)) {        //staggered
+            $NLHPProgresBarColor = "progress-bar-danger progress-bar-striped";
+            $NLProgresBarText = ' STAGGERED';
+        }
+        Elseif (($nlhp < $curhp) && ($curhp > 0) && ($nlhp >0)) {          // nonlethal < cur HP
+                    IF ($NLHPPercent < 30) {
+                        $NLHPPercent = 30;        
+                    }                
+            $NLHPProgresBarColor = "progress-bar-danger progress-bar-striped";
+            $NLProgresBarText = '';
+        }
+        elseif (($nlhp <= 0) || ($nlhp == ''))              //No nonletahl HP
+        {
+           $NLHPProgresBarColor = "progress-bar-none progress-bar-striped";
+           $NLProgresBarText = '';
+        }
         
+        //$groupMemberStats .= '<div class="progressHP"><div class="progress-bar ' . $HPProgresBarColor . '" id="HPProgressBar' . $gm . '" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%" title="HP: $groupHPCombinedValue"><b>HP</b>: '  . $HPProgresBarText . '</div></div>';    
+        
+        //if ($NLHPPercent <> 0) {
+            
+            $groupNLHPEditableInfo = '<a href="#" id="GroupNLHP' . $gm . '" idval='. $gm . ' data-type="text" data-pk="' . $groupMembers_data[$gm]['user_id'] . '" data-title="Enter Non-lethal Hit Points: ">' . $nlhp . '</a>';        
+            $NLProgresBarText = $groupNLHPEditableInfo . $NLProgresBarText;
+            $groupMemberStats .= '<div class="progressNL"><div class="progress-bar ' . $NLHPProgresBarColor . '" id="NLProgressBar' . $gm . '" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%" title ="Nonlethal damage: "' . $nlhp . '"><b>NL</b>: ' . $NLProgresBarText . '</div></div>';
+        //}        
         $groupMemberStats .= "</td>";        
         $groupMemberStats .= "<td>";
         // end hitpoints=================================================
-        
+               
         //conditions=====================================================
         
-        $cond_good = $groupMembers_data[$gm]['seleted_good_condition'];
+        /*
         $cond_bad = $groupMembers_data[$gm]['seleted_bad_condition'];
-        $sgc = json_decode($cond_good, true);
         $sbc = json_decode($cond_bad, true);
-        if (count($sbc) > 1) 
-        {
-            $cond_bad_disp = '';
-            for ($bc = 0; $bc < count($sbc); $bc++) 
-            {
-                if ($bc != (count($sbc) - 1)) 
-                {
-                    $cond_bad_disp .=$sbc[$bc] . ",&nbsp;";
+        
+        $cond_bad_disp = '';
+        if(isset($sbc)) {
+            
+            for ($bc = 0; $bc < count($sbc); $bc++) {
+                if ($bc == 0)  {
+                    $cond_bad_disp .= $sbc[$bc];
                 } 
-                else 
-                {
-                    $cond_bad_disp .=$sbc[$bc];
+                else {
+                    $cond_bad_disp .= "," . $sbc[$bc];
                 }
             }
-        } 
-        elseif (count($sbc) == 1) 
-        {
-            $cond_bad_disp .=$sbc[0];
-        } 
-        elseif ($sbc == null) 
-        {
-            $cond_bad_disp = '';
+        }           
+        
+        else {
+            $cond_bad_disp = 'None';
         }
+        
+   
+         */           
+            //$groupDebuffEditableInfo = '<a href="#" id="GroupDebuffs' . $gm . '" data-type="select2" data-pk="' . $gm . '" data-title="Select debuffs ">' . $cond_bad_disp . '</a>';
+            //$groupMemberStats .= "<center><span class='BadConditionInfo' title='$curruser Buffs: $cond_bad_disp'>$groupDebuffEditableInfo</span></center>";
+        
+          //$groupCurrentHPEditableInfo = '<a href="#" id="GroupCurrentHP' . $gm . '" idval='. $gm . ' data-type="text" data-pk="' . $groupMembers_data[$gm]['user_id'] . '" data-title="Enter current Hit Points: ">' . $curhp . '</a>';    
+        
+            //$groupMemberStats .='<div id="container" class="row">';
+            //$groupMemberStats .='<div class="controls controls-row">';                       
+            //$groupMemberStats .='<span class="tags" id="GroupDebuffsTag' . $gm . '" ';
+            //$groupMemberStats .='data-toggle="manual" data-type="select2" ;
+            //$groupMemberStats .='data-value="apples, oranges, pie" data-original-title="Enter tags"></span>';
+            //$groupMemberStats .='<a href="#" id="GroupDebuffs' . $gm . '" data-type="select2" data-pk="1" data-title="Enter tags" Data-text="test" data-name="GroupDebuffs'. $gm . '">text</a>';
+            
+        $GroupBuffsDebuffs = json_decode($groupMembers_data[$gm]['buffs_debuffs'], true);
+        $GroupBuffsDebuffsString = '';
+        
+        if(isset($GroupBuffsDebuffs)) {
+            
+            for ($bd = 0; $bd < count($GroupBuffsDebuffs); $bd++) {
+                if ($bd == 0)  {
+                    $GroupBuffsDebuffsString = $GroupBuffsDebuffs[$bd];
+                    $additionalTags = "ConditionLabel";
+                } 
+                else {
+                    $GroupBuffsDebuffsString .= "," . $GroupBuffsDebuffs[$bd];
+                    $additionalTags = "ConditionLabel";
+                }
+            }
+        }
+        else {
+            $additionalTags = "ConditionLabelEmpty";
+        }
+        
+        $groupMemberStats .= '<span class="tags ' . $additionalTags . '" id="tags-editable-' . $gm . '" data-toggle="manual" data-type="select2" data-pk="' . $groupMembers_data[$gm]['user_id'] . '" data-value="'. $GroupBuffsDebuffsString .'" data-original-title="Enter tags"></span><a href="#" id="tags-edit-' . $gm . '" data-editable="tags-editable-' . $gm . '" class=""><i class="fa fa-pencil"></i></a>';
+            // working - $groupMemberStats .= '<div id="container" class="row"><div class="controls controls-row"><span class="tags" id="tags-editable-1" data-toggle="manual" data-type="select2" data-pk="1" data-value="apples,oranges,pie" data-original-title="Enter tags"></span><a href="#" id="tags-edit-1" data-editable="tags-editable-1" class="">Edit<i class="icon-pencil"></i></a></div></div>';
+            
+        $cond_good = $groupMembers_data[$gm]['seleted_good_condition'];
+        $sgc = json_decode($cond_good, true);
 
-        //seleted good condition       
-        if (count($sgc) > 1) {
-            $cond_good_disp = '';
+                
+        $cond_good_disp = '';
+        if(isset($sgc)) {
+            
             for ($gc = 0; $gc < count($sgc); $gc++) {
-                if ($gc != (count($sgc) - 1)) {
-                    $cond_good_disp .=$sgc[$gc] . ",&nbsp;";
-                } else {
-                    $cond_good_disp .=$sgc[$gc];
+                if ($gc == 0)  {
+                    $cond_bad_disp .= $sgc[$gc];
+                } 
+                else {
+                    $cond_good_disp .= "," . $sgc[$gc];
                 }
             }
-        } elseif (count($sgc) == 1) {
-            $cond_good_disp .=$sgc[0];
-        } elseif ($sgc == null) {
-            $cond_good_disp = '';
+        }           
+        
+        else {
+            $cond_bad_disp = 'None';
         }
-        ///=======================
-        if ($cond_good_disp != '' OR $cond_bad_disp != '')
-        {
-            if($cond_good_disp != '')
-            {
-                $groupMemberStats .= "<center><span class='GoodConditionInfo' title='$curruser Buffs: $cond_good_disp'>$cond_good_disp</span></center>";
-            }
-            if($cond_bad_disp != '')
-            {
-                $groupMemberStats .= "<center><span class='BadConditionInfo' title='$curruser Debuffs: $cond_bad_disp'>$cond_bad_disp</span></center>";
-            }
-        }
+                
+        //$groupMemberStats .= '<span class="tags" id="tags-editable-' . $gm . '" data-toggle="manual" data-type="select2" data-pk="1" data-value="Dying" data-original-title="Enter tags"></span><a href="#" id="tags-edit-' . $gm . '" data-editable="tags-editable-' . $gm . '" class=""><i class="fa fa-pencil"></i></a>';
+        
+        
         $groupMemberStats .= "</td>";        
         $groupMemberStats .= "<td>";
         //end conditions =============================================================
@@ -538,11 +593,11 @@ if ($groupMembers_count > 0 )
                         $SpellsPerLevel ='';
                     }
                     if ($j == 0) {
-                        $GroupSpellsName = '<span class="Spellinfo" title="Level ' . $DecodedSpellsNames[$j] . ' Spells [' . count($DecodedGroupSpells[$j]) . ']: ' . $DecodedSpellsDescs[$j] . '"><b> Level: ' . $DecodedSpellsNames[$j] . '</b>: ' . $DecodedGroupMinSpells[$j] . '/' . $DecodedGroupMaxSpells[$j] . $SpellsPerLevel . ' </span>'; 
+                        $GroupSpellsName = '<span class="Spellinfo" title="Level ' . $DecodedSpellsNames[$j] . ' Spells [' . count($DecodedGroupSpells[$j]) . ']: ' . $DecodedSpellsDescs[$j] . '"><b> L' . $DecodedSpellsNames[$j] . '</b>: ' . $DecodedGroupMinSpells[$j] . '/' . $DecodedGroupMaxSpells[$j] . $SpellsPerLevel . ' </span>'; 
                         
                     }
                     else {
-                        $GroupSpellsName .= ', <span class="Spellinfo" title="Level ' . $DecodedSpellsNames[$j] . ' Spells [' . count($DecodedGroupSpells[$j]) . ']: ' . $DecodedSpellsDescs[$j] . '"><b> Level: ' . $DecodedSpellsNames[$j] . '</b>: ' . $DecodedGroupMinSpells[$j] . '/' . $DecodedGroupMaxSpells[$j] . $SpellsPerLevel . '</span> '; 
+                        $GroupSpellsName .= ', <span class="Spellinfo" title="Level ' . $DecodedSpellsNames[$j] . ' Spells [' . count($DecodedGroupSpells[$j]) . ']: ' . $DecodedSpellsDescs[$j] . '"><b> L' . $DecodedSpellsNames[$j] . '</b>: ' . $DecodedGroupMinSpells[$j] . '/' . $DecodedGroupMaxSpells[$j] . $SpellsPerLevel . '</span> '; 
                         
                     }
         }
@@ -574,12 +629,12 @@ if ($groupMembers_count > 0 )
                     
                     if ($j == 0) {
                         //$GroupAbiltyName .= "<b>" . $DecodedAbilityNames[$j] . "</b>: " . $DecodedGroupMinAbilities[$j] . "/" .$DecodedGroupMaxAbilities[$j]; 
-                        $GroupAbiltyName .= '<span class="AbilityInfo" title="' . $DecodedAbilityNames[$j] . ': ' . $DecodedAbilityDescs[$j] . '"><b>' . $DecodedAbilityNames[$j] . ': </b>: ' . $DecodedGroupMinAbilities[$j] . '/' . $DecodedGroupMaxAbilities[$j] . '</span> '; 
+                        $GroupAbiltyName .= '<span class="AbilityInfo" title="' . $DecodedAbilityNames[$j] . ': ' . $DecodedAbilityDescs[$j] . '"><b>' . $DecodedAbilityNames[$j] . ': </b>' . $DecodedGroupMinAbilities[$j] . '/' . $DecodedGroupMaxAbilities[$j] . '</span> '; 
                         
                     }
                     else {
                         //$GroupAbiltyName .= ", <b>" . $DecodedAbilityNames[$j] . "</b>: " . $DecodedGroupMinAbilities[$j] . "/" .$DecodedGroupMaxAbilities[$j]; 
-                        $GroupAbiltyName .= ', <span class="AbilityInfo" title="' . $DecodedAbilityNames[$j] . ': ' . $DecodedAbilityDescs[$j] . '"><b>' . $DecodedAbilityNames[$j] . ': </b>: ' . $DecodedGroupMinAbilities[$j] . '/' . $DecodedGroupMaxAbilities[$j] . '</span> '; 
+                        $GroupAbiltyName .= ', <span class="AbilityInfo" title="' . $DecodedAbilityNames[$j] . ': ' . $DecodedAbilityDescs[$j] . '"><b>' . $DecodedAbilityNames[$j] . ': </b>' . $DecodedGroupMinAbilities[$j] . '/' . $DecodedGroupMaxAbilities[$j] . '</span> '; 
                         
                     }
         }
@@ -599,10 +654,24 @@ if ($groupMembers_count > 0 )
         
         //hero point ====================================================
         $GroupHero_point = $groupMembers_data[$gm]['hero_point'];
-        if($GroupHero_point)
+
+        if(isset($GroupHero_point))
         {
-            $groupMemberStats .= "<center><span class='HeroPointInfo' title='$curruser Hero Points: $GroupHero_point'>".$GroupHero_point."</span></center>";
-        }        
+
+            //$groupNLHPEditableInfo = '<a href="#" id="GroupNLHP' . $gm . '" idval='. $gm . ' data-type="text" data-pk="' . $groupMembers_data[$gm]['user_id'] . '" data-title="Enter Non-lethal Hit Points: ">' . $nlhp . '</a>';        
+            //$NLProgresBarText = $groupNLHPEditableInfo . $NLProgresBarText;
+            //$groupMemberStats .= '<div class="progressNL"><div class="progress-bar ' . $NLHPProgresBarColor . '" id="NLProgressBar' . $gm . '" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%" title ="Nonlethal damage: "' . $nlhp . '"><b>NL</b>: ' . $NLProgresBarText . '</div></div>';
+            
+            $groupHeroPointsEditableInfo = '<a href="#" id="GroupHeroPoints' . $gm . '" idval='. $gm . ' data-type="text" data-pk="' . $groupMembers_data[$gm]['user_id'] . '" data-title="Enter Hero Points: ">' . $GroupHero_point . '</a>';
+            $groupMemberStats .= "<center><span class='InitInfo' title='$curruser Hero Points: $GroupInit'>". $groupHeroPointsEditableInfo."</span></center>";
+        }
+        else
+        {
+            $GroupHero_point = "N/A";
+            $groupHeroPointsEditableInfo = '<a href="#" id="GroupHeroPoints' . $groupMembers_data[$gm]['user_id'] . '" data-type="text" data-pk="' . $gm . '" data-title="Enter Hero Points: ">' . $GroupHero_point . '</a>';
+            $groupMemberStats .= "<center><span class='InitInfo' title='$curruser Hero Points: $GroupHero_point'>". $groupHeroPointsEditableInfo."</span></center>";
+        }   
+        
         $groupMemberStats .= "</td>";        
         $groupMemberStats .= "<td>";
 
@@ -611,20 +680,35 @@ if ($groupMembers_count > 0 )
         // STATIC VALUES -- These values are not daily expenditures, so we are putting them last
         
         //Init ====================================================
-        $Groupinit = $groupMembers_data[$gm]['INIT'];
-        if(isset($Groupinit))
+        $GroupInit = $groupMembers_data[$gm]['INIT'];
+        echo $GroupInit;
+        if(isset($GroupInit))
         {
-            $groupMemberStats .= "<center><span class='InitInfo' title='$curruser Inititive: $Groupinit'>+".$Groupinit."</span></center>";
-        }        
+            $groupInitEditableInfo = '<a href="#" id="GroupInit' . $gm . '" data-type="text" data-pk="' . $gm . '" data-title="Enter initiative: ">' . $GroupInit . '</a>';
+            $groupMemberStats .= "<center><span class='InitInfo' title='$curruser Initiative: $GroupInit'>+". $groupInitEditableInfo."</span></center>";
+        }
+        else
+        {
+            $GroupInit='';
+            $groupInitEditableInfo = '<a href="#" id="GroupInit' . $gm . '" data-type="text" data-pk="' . $gm . '" data-title="Enter initiative: ">' . $GroupInit . '</a>';
+            $groupMemberStats .= "<center><span class='InitInfo' title='$curruser Initiative: $GroupInit'>". $groupInitEditableInfo."</span></center>";
+        }            
 
         //end init =================================================
         
         //Speed ====================================================
         $GroupSpeed = $groupMembers_data[$gm]['SPEED'];
-        if($GroupSpeed)
+        if(isset($GroupSpeed))
         {
-            $groupMemberStats .= "<center><span class='SpeedInfo' title='$curruser Speed: $GroupSpeed ft.'>".$GroupSpeed." ft</span></center>";
-        }        
+            $groupSpeedEditableInfo = '<a href="#" id="GroupSpeed' . $gm . '" data-type="text" data-pk="' . $gm . '"data-title="Enter speed: ">' . $GroupSpeed . '</a>';
+            $groupMemberStats .= "<center><span class='SpeedInfo' title='$curruser Speed: $GroupSpeed ft.'>". $groupSpeedEditableInfo." ft.</span></center>";
+        }
+        else {
+            $GroupSpeed ='';    
+            $groupSpeedEditableInfo = '<a href="#" id="GroupSpeed' . $gm . '" data-type="text" data-pk="' . $gm . '" data-title="Enter speed: ">' . $GroupSpeed . '</a>';
+            $groupMemberStats .= "<center><span class='SpeedInfo' title='$curruser Speed: $GroupSpeed'>". $groupSpeedEditableInfo."</span></center>";
+        }
+        
         $groupMemberStats .= "</td>";        
         $groupMemberStats .= "<td>";
 
@@ -633,35 +717,60 @@ if ($groupMembers_count > 0 )
         //AC ========================================================================
         $GroupDecodedAC = json_decode($groupMembers_data[$gm]['AC'], true);
         $GroupDecoded_AC_count = count($GroupDecodedAC);
-
-        if ($GroupDecodedAC) {
+        
+        if(isset($GroupDecodedAC))
+        {
             $GroupAC = $GroupDecodedAC[0];          //AC
             $GroupTAC = $GroupDecodedAC[1];         //Touch AC
             $GroupFFAC = $GroupDecodedAC[2];        //Flat Footed AC
-
-        }	
-        else    {
-            $GroupAC = 0;
-            $GroupTAC = 0;
-            $GroupFFAC = 0;
+            
+            if (strlen($GroupAC)== 1) {$GroupAC = "0" . $GroupAC;}
+            if (strlen($GroupTAC)== 1) {$GroupTAC = "0" . $GroupTAC;}
+            if (strlen($GroupFFAC)== 1) {$GroupFFAC = "0" . $GroupFFAC;}
         }
-        If (!$GroupAC) {$GroupAC = "00";}            //CVC - Set a default value to keep the formatting correct if there is nothing set - 12/14/15 
-        If (!$GroupTAC) {$GroupTAC ="00";}           //CVC - Set a default value to keep the formatting correct if there is nothing set - 12/14/15 
-        If (!$GroupFFAC) {$GroupFFAC ="00";}         //CVC - Set a default value to keep the formatting correct if there is nothing set - 12/14/15 
-        if (strlen($GroupAC)== 1) {$GroupAC = "0" . $GroupAC;}
-        if (strlen($GroupTAC)== 1) {$GroupTAC = "0" . $GroupTAC;}
-        if (strlen($GroupFFAC)== 1) {$GroupFFAC = "0" . $GroupFFAC;}
+        else {
+            
+            $GroupAC = '';          //AC
+            $GroupTAC = '';         //Touch AC
+            $GroupFFAC = '';        //Flat Footed AC
+        }
+            $groupACEditableInfo = '<a href="#" id="GroupAC' . $gm . '" data-type="text" data-pk="' . $gm . '" data-title="Enter AC: ">'.$GroupAC.'</a>';
+            $groupTACEditableInfo = '<a href="#" id="GroupTAC' . $gm . '" data-type="text" data-pk="' . $gm . '" data-title="Enter Touch AC: ">'.$GroupTAC.'</a>';
+            $groupFFACEditableInfo = '<a href="#" id="GroupFFAC' . $gm . '" data-type="text" data-pk="' . $gm . '" data-title="Enter Flat-footed AC: ">'.$GroupFFAC.'</a>';
+            $groupMemberStats .= "<center><span class='ACInfo'  title='$curruser AC: $GroupAC, TAC: $GroupTAC, FFAC: $GroupFFAC'><b>AC</b>: " . $groupACEditableInfo . "<b> T</b>: ".$groupTACEditableInfo." <b>FF</b>: ".$groupFFACEditableInfo."</span></center>";
         
-        $groupMemberStats .= "<center><span class='ACInfo' title='$curruser AC: $GroupAC Touch AC: $GroupTAC Flat Footed AC: $GroupFFAC'><b>AC</b>: " . $GroupAC . "<b> T</b>: ".$GroupTAC." <b>FF</b>: ".$GroupFFAC."</span></center>";
- 
-      
         //END AC=====================================================================
         
         // SAVES ========================================================
         $GroupDecodedSAVES = json_decode($groupMembers_data[$gm]['SAVES'], true);
         $GroupDecoded_SAVES_count = count($GroupDecodedSAVES);
 
-        if ($GroupDecodedSAVES) {
+        if(isset($GroupDecodedSAVES))
+        {
+            $GroupFORT = $GroupDecodedSAVES[0];          //AC
+            $GroupREFLEX = $GroupDecodedSAVES[1];         //Touch AC
+            $GroupWILL = $GroupDecodedSAVES[2];        //Flat Footed AC
+            
+            if (strlen($GroupFORT)== 1) {$GroupFORT = "0" . $GroupFORT;}
+            if (strlen($GroupREFLEX)== 1) {$GroupREFLEX = "0" . $GroupREFLEX;}
+            if (strlen($GroupWILL)== 1) {$GroupWILL = "0" . $GroupWILL;}    
+        }
+        else {
+            $GroupFORT = '';          //AC
+            $GroupREFLEX = '';         //Touch AC
+            $GroupWILL = '';        //Flat Footed AC
+            
+        }
+        
+        $groupFORTEditableInfo = '<a href="#" id="GroupFORT' . $gm . '" data-type="text" data-pk="' . $gm . '" data-title="Enter Fortitude Save: ">' . $GroupFORT . '</a>';
+        $groupREFLEXEditableInfo = '<a href="#" id="GroupREFLEX' . $gm . '" data-type="text" data-pk="' . $gm . '" data-title="Enter Refelx Save: ">' . $GroupREFLEX . '</a>';
+        $groupWILLEditableInfo = '<a href="#" id="GroupWILL' . $gm . '" data-type="text" data-pk="' . $gm . '" data-title="Enter Will Save: ">' . $GroupWILL . '</a>';        
+        $groupMemberStats .= "<center><span class='SAVEInfo'  title='$curruser AC: $GroupFORT, TAC: $GroupREFLEX, FFAC: $GroupWILL'><b>F</b>: " . $groupFORTEditableInfo . "<b> R</b>: ".$groupREFLEXEditableInfo." <b> W</b>: ".$groupWILLEditableInfo."</span></center>";
+        $groupMemberStats .= "</td>";        
+        $groupMemberStats .= "<td>";
+        
+        /* if ($GroupDecodedSAVES) {
+         
             $GroupFORT = $GroupDecodedSAVES[0];          //AC
             $GroupREFLEX = $GroupDecodedSAVES[1];         //Touch AC
             $GroupWILL = $GroupDecodedSAVES[2];        //Flat Footed AC
@@ -683,37 +792,39 @@ if ($groupMembers_count > 0 )
         $groupMemberStats .= "<center><span class='SAVEInfo' title='$curruser Fort: $GroupFORT Reflex: $GroupREFLEX Will: $GroupWILL'><b>F</b>: ".$GroupFORT." <b>R</b>: ".$GroupREFLEX." <b>W</b>: ".$GroupWILL."</span></center>";
         $groupMemberStats .= "</td>";        
         $groupMemberStats .= "<td>";
-      
+
+         */
+        
         //END SAVES=====================================================================
                 
         //Resists========================================================
         $GroupDecodedRESISTIMMUNITY = json_decode($groupMembers_data[$gm]['RESISTIMMUNITY'], true);
         $GroupDecoded_RESISTIMMUNITY_count = count($GroupDecodedRESISTIMMUNITY);
 
-        if ($GroupDecodedRESISTIMMUNITY) {
+        if(isset($GroupDecodedRESISTIMMUNITY)) {
             $GroupRESIST = $GroupDecodedRESISTIMMUNITY[0];          
-            $GroupIMMUNITY = $GroupDecodedRESISTIMMUNITY[1];         
-                }
-        else {
-            $GroupRESIST = 0;
-            $GroupIMMUNITY = 0;
-
+            $GroupIMMUNITY = $GroupDecodedRESISTIMMUNITY[1];          
         }
+        
         if($GroupRESIST)
         {
-            $groupMemberStats .= "<center><span class='resist_info' title='$curruser Resistance: $GroupRESIST'>$GroupRESIST</span></center>";
+            $groupResistEditableInfo = '<a href="#" id="GroupResistance' . $gm . '" data-type="text" data-pk="' . $gm . '" data-title="Enter resist">' . $GroupRESIST . '</a>';
+            $groupMemberStats .= "<center><span class='resist_info' title='$curruser . $gm . Resistance: $GroupRESIST'>$groupResistEditableInfo</span></center>";
+            
         }
         //End resists====================================================
         
         //imunity =======================================================
         if($GroupIMMUNITY)
         {
-            $groupMemberStats .= "<center><span class='ImmunityInfo' title='$curruser Immunity: $GroupIMMUNITY'>$GroupIMMUNITY</span></center>";
+            $GroupIMMUNITYEditableInfo = '<a href="#" id="GroupImmunity' . $gm . '" data-type="text" data-pk="' . $gm . '" data-title="Enter immunity: ">' . $GroupIMMUNITY . '</a>';
+            $groupMemberStats .= "<center><span class='ImmunityInfo' title='$curruser . $gm . Immunity: $GroupIMMUNITY'>$GroupIMMUNITYEditableInfo</span></center>";
         }
         $groupMemberStats .= "</td>";        
         $groupMemberStats .= "<td>";        
         //end immunity ==================================================
                 
+        $groupMemberStats .= '<input type="hidden" name="UID" id="UID' . $gm . '" value="'. $groupMembers_data[$gm]['user_id'].'"}></td>';
         $groupMemberStats .= "</tr>";
     }
     
@@ -2756,7 +2867,8 @@ $page_data = array(
         'SELECTED_SIG' => $selected_Sig,
         'GROUP_MEMBERS_STATS' => $groupMemberStats,
         'GROUPCOUNT' => " (" . $groupMembers_count . " members)",
-        //CVC - End User Variables
+        'GROUPCOUNTVAL' => $groupMembers_count,
+                //CVC - End User Variables
 );
 
 // Build custom bbcodes array

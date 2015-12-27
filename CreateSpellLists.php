@@ -254,6 +254,121 @@ $spells_array[] = "Walk through Space"; // You can spend a move action to telepo
 $spells_array[] = "Wind Walk"; // You and your allies turn vaporous and travel fast. 
         }
     }
+    if ($spell_type == "Antipaladin") {
+        if($level == 1){
+$spells_array[] = "Animal Purpose Training"; // Animal gains a new general purpose
+$spells_array[] = "Bane"; // Enemies take –1 on attack rolls and saves vs. fear.
+$spells_array[] = "Blood Blaze"; // 5-foot-radius aura that causes the blood of creatures in that area to ignite upon contact with air.
+$spells_array[] = "Cause Fear"; // A creature of 5 HD or less flees for 1d4 rounds.
+$spells_array[] = "Command"; // One subject obeys a command for 1 round.
+$spells_array[] = "Curse WaterM"; // Makes unholy water.
+$spells_array[] = "Death Candle"; // Functions like death knell, except you summon a Small fire elemental resembling the slain creature.
+$spells_array[] = "Death Knell"; // Kills dying creature; you gain 1d8 temporary hp, +2 to Str, and +1 caster level.
+$spells_array[] = "Demand Offering"; // Make a creature give you an object it's holding.
+$spells_array[] = "Detect Poison"; // Detects poison in a creature or object.
+$spells_array[] = "Disguise Self"; // Changes your appearance.
+$spells_array[] = "Doom"; // One subject takes –2 on attack rolls, damage rolls, saves, and checks.
+$spells_array[] = "Inflict Light Wounds"; // Touch deals 1d8 damage +1/level (max +5).
+$spells_array[] = "Ironbeard"; // Causes a brushy beard of stiff iron to erupt from the face of a willing target.
+$spells_array[] = "Linebreaker"; // You gain a +20 foot bonus to your base speed when charging and a +2 bonus on combat maneuver checks made to bull rush or overrun.
+$spells_array[] = "Litany of Sloth"; // Single target cannot make attacks of opportunity for 1 round.
+$spells_array[] = "Litany of Weakness"; // Single target is fatigued for 1 round.
+$spells_array[] = "Longshot"; // Grants a +10 foot bonus to the range increment for any ranged weapon fired.
+$spells_array[] = "Magic Weapon"; // Weapon gains +1 bonus.
+$spells_array[] = "Murderous Command"; // Target is compelled to kill its ally.
+$spells_array[] = "Protection from Good"; // +2 to AC and saves, plus additional protection against selected alignment.
+$spells_array[] = "Protection from Law"; // +2 to AC and saves, plus additional protection against selected alignment.
+$spells_array[] = "Read Magic"; // Read scrolls and spellbooks.
+$spells_array[] = "Savage Maw"; // Your teeth extend and sharpen, transforming your mouth into a maw of razor-sharp fangs.
+$spells_array[] = "Sentry Skull"; // Restore the senses to the severed head of a humanoid or monstrous humanoid killed within the past 24 hours, creating a grisly sentinel.
+$spells_array[] = "Summon Minor Monster"; // Summon 1d3 Tiny animals.
+$spells_array[] = "Summon Monster I"; // (Evil creatures only.) Summons extraplanar creature to fight for you.
+$spells_array[] = "Wartrain Mount"; // Animal gains the combat training general purpose.        
+        }
+        if($level == 2){
+$spells_array[] = "Agonizing Rebuke"; // You instill such apprehension about attacking you in your target that doing so causes it mental distress and pain.
+$spells_array[] = "Bestow Weapon Proficiency"; // Grant a creature proficiency in a single weapon for short period of time.
+$spells_array[] = "Blindness/Deafness"; // Makes subject blind or deaf.
+$spells_array[] = "Blood Scent"; // You greatly magnify the target's ability to smell the presence of blood.
+$spells_array[] = "Bullet Ward"; // Adamantine bullets intercept firearm attacks.
+$spells_array[] = "Bull's Strength"; // Subject gains +4 to Str for 1 min./level.
+$spells_array[] = "Corruption Resistance"; // Protects creature against damage from alignment-based attacks.
+$spells_array[] = "Darkness"; // 20-ft. radius of supernatural shadow.
+$spells_array[] = "Darkvision"; // See 60 ft. in total darkness.
+$spells_array[] = "Desecrate"; // Fills area with negative energy, making undead stronger.
+$spells_array[] = "Eagle's Splendor"; // Subject gains +4 to Cha for 1 min./level.
+$spells_array[] = "Enemy's Heart"; // Cut out an enemy's heart and consume it, absorbing that enemy's power as your own.
+$spells_array[] = "Hold Person"; // Paralyzes one humanoid for 1 round/level.
+$spells_array[] = "Improve Trap"; // Improves one specific element of a trap chosen at the time of casting.
+$spells_array[] = "Inflict Pain"; // Target takes a –4 penalty on attack rolls, skill checks, and ability checks.
+$spells_array[] = "Invisibility"; // Subject is invisible for 1 min./level or until it attacks.
+$spells_array[] = "Litany of Defense"; // Doubles armor's enhancement bonus.
+$spells_array[] = "Litany of Eloquence"; // Fascinates a single creature for 1 round.
+$spells_array[] = "Litany of Entanglement"; // Entangles a creature for 1 round.
+$spells_array[] = "Litany of Warding"; // You gain two additional attacks of opportunity for 1 round.
+$spells_array[] = "Magic Siege Engine"; // Siege engine gains +1 on targeting and damage rolls.
+$spells_array[] = "Pernicious Poison"; // Target takes a –4 penalty against poison.
+$spells_array[] = "Protection from Good, Communal"; // As protection from good, but you may divide the duration among creatures touched.
+$spells_array[] = "Protection from Law, Communal"; // As protection from law, but you may divide the duration among creatures touched.
+$spells_array[] = "Scare"; // Frightens creature of less than 6 HD.
+$spells_array[] = "Sickening Strikes"; // You are imbued with disease, and any creature you strike may be sickened.
+$spells_array[] = "Silence"; // Negates sound in 20-ft. radius.
+$spells_array[] = "Summon Monster II"; // (Evil creatures only.) Summons extraplanar creature to fight for you.
+$spells_array[] = "Toxic Gift"; // Target suffers the effect of a poison in you.
+$spells_array[] = "Unadulterated Loathing"; // Target is compelled to avoid another creature.
+$spells_array[] = "Undetectable Alignment"; // Conceals alignment for 24 hours.
+$spells_array[] = "Vestment of the Champion"; // Armor or shield gains a +1 enhancement per four levels.
+$spells_array[] = "Widen Auras"; // Increase the range of auras bestowed by your class.        
+        }
+        if($level == 3){
+$spells_array[] = "Adjustable Disguise"; // As disguise self, but you can change the disguise as a swift action.
+$spells_array[] = "Ancestral Regression"; // The target drow transforms into a surface elf.
+$spells_array[] = "Animate Dead"; // Creates undead skeletons and zombies.
+$spells_array[] = "Battle Trance"; // You are transformed into a single-minded force of destruction.
+$spells_array[] = "Bestow Auras"; // Transfer your paladin or antipaladin auras to another creature.
+$spells_array[] = "Bestow Curse"; // –6 to an ability score; –4 on attack rolls, saves, and checks; or 50% chance of losing each action.
+$spells_array[] = "Blade of Dark Triumph"; // Bonded weapon gains ghost touch.
+$spells_array[] = "Burst of Speed"; // You gain increased speed, and your movement ignores attacks of opportunity and allows you to move through the space of creatures larger than you are.
+$spells_array[] = "Contagion"; // Infects subject with chosen disease.
+$spells_array[] = "Darkvision, Communal"; // As darkvision, but you may divide the duration among creatures touched.
+$spells_array[] = "Deadly Juggernaut"; // Your might increases with every kill you make.
+$spells_array[] = "Deeper Darkness"; // Object sheds shadows in 60-ft. radius.
+$spells_array[] = "Defile Armor"; // As sanctify armor, but gain DR 5/good when using judgment or smite.
+$spells_array[] = "Dispel Magic"; // Cancels one magical spell or effect.
+$spells_array[] = "Inflict Moderate Wounds"; // Touch attack, 2d8 damage +1/level (max +10).
+$spells_array[] = "Litany of Escape"; // Teleports a friend out of a grapple.
+$spells_array[] = "Litany of Sight"; // You can see invisible creatures and objects within 30 feet of you.
+$spells_array[] = "Magic Circle against Chaos"; // As protection spells, but 10-ft. radius and 10 min./level.
+$spells_array[] = "Magic Circle against Law"; // As protection spells, but 10-ft. radius and 10 min./level.
+$spells_array[] = "Magic Weapon, Greater"; // Weapon gains +1 bonus/four levels (max +5).
+$spells_array[] = "Nondetection"; // Hides subject from divination, scrying.
+$spells_array[] = "Summon Monster III"; // (Evil creatures only.) Summons extraplanar creature to fight for you.
+$spells_array[] = "Utter Contempt"; // Target's attitude worsens by two categories.
+$spells_array[] = "Vampiric Touch"; // Touch deals 1d6 damage/2 levels; caster gains damage as temporary hp.
+        }
+        if($level == 4){
+$spells_array[] = "Bloatbomb"; // Kill a weak creature and turn its corpse into an explosive trap.
+$spells_array[] = "Darkvision, Greater"; // See 120 ft. in total darkness.
+$spells_array[] = "Dispel Good"; // +4 against attacks by good creatures.
+$spells_array[] = "Dispel Law"; // +4 against attacks by lawful creatures.
+$spells_array[] = "Eyes of the Void"; // See 60 ft. in darkness, including magical darkness.
+$spells_array[] = "Fear"; // Subjects within cone flee for 1 round/level.
+$spells_array[] = "Foster Hatred"; // Cause creatures to hate one type of creature.
+$spells_array[] = "Inflict Pain, Mass"; // As inflict pain, but affecting one creature per level.
+$spells_array[] = "Inflict Serious Wounds"; // Touch attack, 3d8 damage +1/level (max +15).
+$spells_array[] = "Invisibility, Greater"; // As invisibility, but subject can attack and stay invisible.
+$spells_array[] = "Litany of Madness"; // A single target is confused for at least 1 round.
+$spells_array[] = "Litany of Thunder"; // A single target is deafened until the condition is removed, and is confused for 1 round.
+$spells_array[] = "Litany of Vengeance"; // Allies attacking the target of the spell gain a +5 bonus on damage rolls for 1 round.
+$spells_array[] = "Magic Siege Engine, Greater"; // Siege engine gains +1 on targeting and damage rolls for every four caster levels.
+$spells_array[] = "Nondetection, Communal"; // As nondetection, but you may divide the duration among creatures touched.
+$spells_array[] = "Poison"; // Touch deals 1d3 Con damage 1/round for 6 rounds.
+$spells_array[] = "Resounding Blow"; // Melee attack deals 1d6 more damage.
+$spells_array[] = "Slay Living"; // Touch attack deals 12d6 +1 per level.
+$spells_array[] = "Summon Monster IV"; // (Evil creatures only.) Summons extraplanar creature to fight for you.
+$spells_array[] = "Unholy Sword"; // Weapon becomes +5, deals +2d6 damage vs. good.        
+        }        
+    }
     if ($spell_type == "Bard") {                            
             
         if($level == 0){
@@ -3139,26 +3254,28 @@ $spells_array[] = "Winds of Vengeance"; // Gives you the ability to fly and atta
     if ($spell_type == "Wizard" || $spell_type == "Sorcerer") {        
         
         if($level == 0){
-                $spells_array[] = "Acid Splash";
-                $spells_array[] = "Arcane Mark";       
-                $spells_array[] = "Bleed";
-                $spells_array[] = "Dancing Lights";
-                $spells_array[] = "Daze";
-                $spells_array[] = "Detect Magic";
-                $spells_array[] = "Detect Poison";
-                $spells_array[] = "Disrupt Undead";       
-                $spells_array[] = "Flare";
-                $spells_array[] = "Guidance";                
-                $spells_array[] = "Light";
-                $spells_array[] = "Read Magic";
-                $spells_array[] = "Resistance";
-                $spells_array[] = "Ray of Frost";
-                $spells_array[] = "Ghost Sound";                
-                $spells_array[] = "Prestidigitation";       
-                $spells_array[] = "Open/Close";       
-                $spells_array[] = "Message";       
-                $spells_array[] = "Mage Hand:";       
-                $spells_array[] = "Touch of Fatigue";       
+$spells_array[] = "Acid Splash"; // Orb deals 1d3 acid damage.
+$spells_array[] = "Arcane Mark"; // Inscribes a personal rune on an object or creature (visible or invisible).
+$spells_array[] = "Bleed"; // Cause a stabilized creature to resume dying.
+$spells_array[] = "Dancing Lights"; // Creates torches or other lights.
+$spells_array[] = "Daze"; // A single humanoid creature with 4 HD or less loses its next action.
+$spells_array[] = "Detect Magic"; // Detects all spells and magic items within 60 ft.
+$spells_array[] = "Detect Poison"; // Detects poison in one creature or small object.
+$spells_array[] = "Disrupt Undead"; // Deals 1d6 damage to one undead.
+$spells_array[] = "Flare"; // Dazzles one creature (–1 on attack rolls).
+$spells_array[] = "Ghost Sound"; // Figment sounds.
+$spells_array[] = "Haunted Fey Aspect"; // You surround yourself with disturbing illusions.
+$spells_array[] = "Light"; // Object shines like a torch.
+$spells_array[] = "Mage Hand"; // 5-pound telekinesis.
+$spells_array[] = "Mending"; // Makes minor repairs on an object.
+$spells_array[] = "Message"; // Whisper conversation at distance.
+$spells_array[] = "Open/Close"; // Opens or closes small or light things.
+$spells_array[] = "Prestidigitation"; // Performs minor tricks.
+$spells_array[] = "Ray of Frost"; // Ray deals 1d3 cold damage.
+$spells_array[] = "Read Magic"; // Read scrolls and spellbooks.
+$spells_array[] = "Resistance"; // Subject gains +1 on saving throws.
+$spells_array[] = "Spark"; // Ignites flammable objects.
+$spells_array[] = "Touch of Fatigue"; // Touch attack fatigues target.   
                 
         }               //CVC - 12/05/15  - Complete                    
         if($level == 1){

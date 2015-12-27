@@ -186,6 +186,7 @@ class bbcode_firstpass extends bbcode
 
 		$bbcodes = $this->bbcodes;
 
+                
 		/**
 		* Event to modify the bbcode data for later parsing
 		*

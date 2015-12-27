@@ -1012,7 +1012,6 @@ function apply_onkeypress_event() {
             }
         });
 
-
     });
     //delete gear  
     $("#delete_skill").click(function() {
@@ -1180,31 +1179,4 @@ function goodconditionpopup() {
     alert($('#good_con').val());
 }
 
-//function editdescription()
-//{
-//    alert('gggggggg');
-//    var spell = [];
-//    var description = [];
-//    var i = 0;
-//    $('input[name="skillname[]"]').each(function() {
-//        spell[i] = $(this).attr('id');
-//        description[i] = $("#description_" + i).val();
-//        i++;
-//    });
-////    var level = $('#select_level').val();
-////    var account_id = $('#account_id').val();
-////    var add = 'Addskilltouserskill';
-////    $.ajax({
-////        type: "POST",
-////        async: false,
-////        data: {"spell": spell, "description": description, "add": add, "level": level, 'account_id': account_id},
-////        url: 'includes/ucp/ucp_add_spells_skills.php',
-////        success: function(result) {
-////            //alert(result);
-////            $("#details").hide();
-////            $("#description").html('');
-////            $("#description").append('<br><br><font color="green" size="4px"> Skill name and Description Added</font>');
-////        }
-////    });
-//}
-//archi11 ends
+

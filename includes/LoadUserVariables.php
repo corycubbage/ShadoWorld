@@ -342,6 +342,10 @@ if ($decodedSpellLevels) {                                                     /
                             $s_level_type_data .= "<option value='Wizard'>Wizard</option>";
                             $spell_type = "Wizard"; 
                             break;                                          
+                        case "16":
+                            $s_level_type_data .= "<option value='Antipaladin'>Antipaladin</option>";
+                            $spell_type = "Antipaladin"; 
+                            break;                                                         
                         } 
            
             if ($spells_array) {

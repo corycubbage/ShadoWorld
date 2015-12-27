@@ -139,13 +139,30 @@ class main_listener implements EventSubscriberInterface
 		/*
 		cancel, forum_id, load, message_parser, mode, post_data, post_id, preview, refresh, save, submit, topic_id 
 		*/
+                
+                $original = $event['message_parser']->message.'<br />';
+
+                //Handle ="Stuff" tags by just moving text to the front
+                $pattern = "#\[dice=(.*?)\]#";
+                $replacement = "<b>$1</b>[dice]";
+                $modified = preg_replace($pattern, $replacement, $original);
+               
+                //Handle multi roll by inserting newlines so roller can handle properly
+                $pattern = "#\[/dice\](.*?)\[dice\]#";
+                $replacement = "[/dice]\n$1[dice]";             
+                $modified = preg_replace($pattern, $replacement, $modified);                   
+              
+                $event['message_parser']->message = $modified;                             
+                               
 		if ($this->rollcount == 0)
 		{
 			$message = $event['message_parser']->message.'<br />';
+
 			// count already prepped dice in post
 			$jnk = array();
 		//JGL - TODO: fix properly by checking secure seed value and filling missing numbers or scanning and ensuring no duplicate?
-                        
+                        //or determine highest rollcount from before by scanning secure=x_N
+                
                         $this->rollcount = preg_match_all('#\[dice\sseed=(\d+)\ssecure=(\w+):?\w*\](.+?)\[/dice\]#i',
 						$message, $jnk);
                         
@@ -162,7 +179,9 @@ class main_listener implements EventSubscriberInterface
 
 	public function dice_process_text($event)
 	{
+                //dice already rolled here? : [dice]1d20[/dice][dice]1d21[/dice] > 1d20[/dice][dice]1d21: [5, div0, , 20] ⇒ [25 div0 ] 
 		$message = $event['text'];
+
 		$that = $this;
 		$message = preg_replace_callback('#\[dice\sseed=(\d+)\ssecure=(\w+):?\w*\](.+?)\[/dice\]#i',
 			function($matches) use ($that)
@@ -224,10 +243,13 @@ class main_listener implements EventSubscriberInterface
 	public function bb_prep_dice($spec, $uid)
 	{
 		//echo "$spec<br />";
+                //same line ill formatted coming in
+                //[dice]1d20[/dice][dice]1d21[/dice] > 1d20[/dice][dice]1d21
 		//global $last_post_time;
 		//echo 'last post '.$last_post_time.'<br />';
 		$count = $this->rollcount;
 		$seed = $this->get_seed(); //rand();
+                               
 		$secure = $this->validate($seed, $spec, $count);
 		return '[dice seed='.$seed.' secure='.$secure.':'.$uid.']'.$spec.'[/dice]';
 	}
@@ -260,6 +282,14 @@ class main_listener implements EventSubscriberInterface
 
 		$dice = new \hanelyp\fancydice\fancydice($this->get_macros(), $seed, $this->user);
 		//$dice->debug = true;
+                //echo "$spec <br>\n";
+                //[dice]1d20[/dice][dice]1d21[/dice] > 1d20[/dice][dice]1d21
+                //this keeps getting added below?  
+                //1d20
+                //1d21
+                //1d22
+                //somehow adding a 1d20 to 1d22...
+                
 		$roll = $dice->roll($spec);
 		$total = $dice->sum($roll);
 

@@ -66,11 +66,15 @@
 	</style>
 	<!-- ENDIF -->
 
+
 	<!-- IF S_CONTENT_DIRECTION eq 'rtl' -->
 		<link href="{T_THEME_PATH}/css/main_rtl.min.css?assets_version={T_ASSETS_VERSION}" rel="stylesheet" type="text/css" media="screen" />
 	<!-- ELSE -->
-		<link href="{T_THEME_PATH}/css/main.min.css?assets_version={T_ASSETS_VERSION}" rel="stylesheet" type="text/css" media="screen" /><!-- ENDIF -->
-
+                <link href="{T_THEME_PATH}/css/main.min.css?assets_version={T_ASSETS_VERSION}" rel="stylesheet" type="text/css" media="screen" />
+                <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">            
+        <!-- ENDIF -->
+            
+        
 	<link href="{T_THEME_PATH}/css/mdi.css?assets_version={T_ASSETS_VERSION}" rel="stylesheet" type="text/css">
 
 	<link href="{T_THEME_PATH}/print.css?assets_version={T_ASSETS_VERSION}" rel="stylesheet" type="text/css" media="print" title="printonly" />
@@ -214,7 +218,7 @@
 	</div>
 	<!-- ENDIF -->
 
-	<!-- EVENT overall_header_page_body_before -->
+	<!-- EVENT overall_header_page_body_before  -->
 
 
 	<div id="page-body">
