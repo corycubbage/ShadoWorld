@@ -330,6 +330,7 @@ if ($mode == 'edit') {
 // **** ALIAS END
 
 include ($phpbb_root_path . 'includes/LoadUserVariables.' . $phpEx);                //CVC - 11/23/15
+$EnableDataTables = 1;
 
 //  Get Group Member stats
 $groupMembers_data = getGroupMemberStats($forum_id);
@@ -338,13 +339,11 @@ if ($groupMembers_count > 0 )
 {
     //$groupMemberStats.='<div style="float: right; margin-bottom: 10px"><label style="display: inline-block; margin-right: 50px"><input type="checkbox" id="autoopen" style="vertical-align: baseline">&nbsp;auto-open next field</label><button id="enable" class="btn btn-default">enable / disable</button></div><p>Click to edit</p>';
     $groupMemberStats.="<div class=\"container\">";
-    $groupMemberStats.='<div class="checkbox"><label><input type="checkbox" value="checked" id="GroupPartyVitalsHideStaticInfo">Show All</label></div>';
     $groupMemberStats.="<table class=\"table-hover table-responsive table-striped table-bordered\" style=\"width:100%\" id=\"GroupUserData\">";
     $groupMemberStats.='<col class="col1"/><col class="col2"/><col class="col3"/><col class="col4"/><col class="col5"/><col class="col6"/><col class="col7"/><col class="col8"/>';
     $groupMemberStats.="<thead>";
-    $groupMemberStats.="<tr>";
     $groupMemberStats.="<th><center><span class='CharacterInfoTITLE'>CHARACTER INFORMATION</center></th>";
-    $groupMemberStats.="<th><center><span class='HitPointInfoTITLE'>HIT POINTS</span><br><span class='RedHitPointInfoTITLE'>NONLETHAL</span></center></th>";
+    $groupMemberStats.="<th><center><span class='HitPointInfoTITLE'>HIT POINTS</span><br><span class='NonlethalPointInfoTITLE'>NONLETHAL</span></center></th>";
     $groupMemberStats.="<th><center><span class='GoodConditionInfoTITLE'>BUFFS</span><br><span class='BadConditionInfoTITLE'>DEBUFFS</span></center></th>";
     $groupMemberStats.="<th><center><span class='SpellinfoTITLE'>SPELLS</span><br><span class='AbilityInfoTITLE'>ABILITIES</span></center></th>";
     $groupMemberStats.="<th><center><span class='HeroPointInfoTITLE'>HERO<br>POINTS</span></center></th>";
@@ -354,6 +353,11 @@ if ($groupMembers_count > 0 )
     $groupMemberStats.="<th><center></center></th>";
     $groupMemberStats.="</tr>";
     $groupMemberStats.="</thead>";
+    $groupMemberStats.="<tfoot>";    
+    $groupMemberStats.="<tr>";    
+    $groupMemberStats.='<td><div id="wrapper"></div></td>';    
+    $groupMemberStats.="</tr>";
+    $groupMemberStats.="</tfoot>";    
     $groupMemberStats.="<tbody>";
     for ($gm = 0; $gm < $groupMembers_count; $gm++)
     {
@@ -365,8 +369,12 @@ if ($groupMembers_count > 0 )
         else {
             $groupMemberStats .= "<tr><td><b>";
         }
-        $groupMemberStats .= "<center><span class='CharacterTableInfo'>" . $groupMembers_data[$gm]['username'] . "</span> <span class='playerinfo'>[" . $groupMembers_data[$gm]['PLAYERINFO'] . "]</span><br><span class='class_info'>" . $groupMembers_data[$gm]['CLASS_INFO'] . "</span></center>";
-        //$groupMemberStats .= "<div id='DisplayHoverText'><center><span id='default' class='CharacterTableHover'>".$groupMembers_data[$gm]['username']."</span><span id='revealed'><span class='CharacterTableInfo'>" . $groupMembers_data[$gm]['username'] . "</span> <span class='playerinfo'>[" . $groupMembers_data[$gm]['PLAYERINFO'] . "]<br><span class='class_info'>" . $groupMembers_data[$gm]['CLASS_INFO'] . "</span></span></center></span></div>";
+                        
+        $groupMemberStats .= "<center><span class='CharacterTableInfo'>" . $groupMembers_data[$gm]['username'] . "</span> <span class='playerinfo'>[" . $groupMembers_data[$gm]['PLAYERINFO'] . "]</span><br></center>";        
+        $GroupClassInfo = $groupMembers_data[$gm]['CLASS_INFO'];
+        $groupClassInfoEditableInfo = '<a href="#" id="GroupClassInfo' . $gm . '" idval='. $gm . ' data-type="text" data-pk="' . $groupMembers_data[$gm]['user_id'] . '" data-title="Enter Race/Sex/Class/Levels: ">' . $GroupClassInfo . '</a>';        
+        $groupMemberStats .= "<center><span class='class_info'>" . $groupClassInfoEditableInfo . "</span></center>";
+        
         $curruser = $groupMembers_data[$gm]['username'];
         $groupMemberStats .= "</b></td>";
         
@@ -392,7 +400,7 @@ if ($groupMembers_count > 0 )
         $HPPercent = 0;
         }
         else{
-            $HPPercent = (100*($curhp/$maxhp));
+            $HPPercent = round(100*($curhp/$maxhp));
         }
         
         if ((!$nlhp) || (!$maxhp)) {
@@ -405,15 +413,15 @@ if ($groupMembers_count > 0 )
         $HPProgresBarText = "";
         
         if ($HPPercent > 100) {
-            $HPProgresBarColor = "progress-bar-info progress-bar-striped";    
+            $HPProgresBarColor = "progress-bar-above-max ";    
             $HPProgresBarText = '';
         }
         if ($HPPercent == 100) {
-            $HPProgresBarColor = "progress-bar-full progress-bar-striped";    
+            $HPProgresBarColor = "progress-bar-full ";    
             $HPProgresBarText = '';
         }
         elseif (($HPPercent > 75) && ($HPPercent < 100)) {
-            $HPProgresBarColor = "progress-bar-success ";    
+            $HPProgresBarColor = "progress-bar-threequarters ";    
             $HPProgresBarText = '';
         }
         elseif (($HPPercent > 50) && ($HPPercent < 75)) {
@@ -437,30 +445,34 @@ if ($groupMembers_count > 0 )
             //$HPProgresBarText = " <b>UNCONSCIOUS</b>";
         }        
         
-        $groupHPCombinedValue = $curhp . "/" . $maxhp;
+        $groupHPCombinedValue = $curhp . "/" . $maxhp . " (" . $HPPercent . "%)";
         
-        
+        $CurrentHPProgressBarTitle = '"Current Hit Points: ' . $groupHPCombinedValue . '"';
         $groupCurrentHPEditableInfo = '<a href="#" id="GroupCurrentHP' . $gm . '" idval='. $gm . ' data-type="text" data-pk="' . $groupMembers_data[$gm]['user_id'] . '" data-title="Enter current Hit Points: ">' . $curhp . '</a>';
         $groupMaxHPEditableInfo = '<a href="#" id="GroupMaXHP' . $gm . '" data-type="text" data-pk="' . $groupMembers_data[$gm]['user_id'] . '" data-title="Enter maximum Hit Points: ">' . $maxhp . '</a>';        
         $HPProgresBarText = $groupCurrentHPEditableInfo . "/" . $groupMaxHPEditableInfo . $HPProgresBarText;
-        $groupMemberStats .= '<div class="progressHP"><div class="progress-bar ' . $HPProgresBarColor . '" id="HPProgressBar' . $gm . '" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%" title="HP: "' . $groupHPCombinedValue . '"><b>HP</b>: '  . $HPProgresBarText . '</div></div>';    
+        $groupMemberStats .= '<div class="progressHP"><div class="progress-bar ' . $HPProgresBarColor . '" id="HPProgressBar' . $gm . '" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%" title=' . $CurrentHPProgressBarTitle . '><b>HP</b>: '  . $HPProgresBarText . '</div></div>';    
         
         //Setup progress bar for nonlethal
         $NLProgresBarText = '';
+        //$NLUnconscious = 'none';
+        //$NLStaggered = 'none';
         if ($nlhp > $curhp)                                 //Unconscious
             {    
-            $NLHPProgresBarColor = "progress-bar-danger progress-bar-striped";
-            $NLProgresBarText = ' UNCONSCIOUS';
+            $NLHPProgresBarColor = "progressNL progress-bar-striped";
+            //$NLProgresBarText = ' UNCONSCIOUS';
+            //$NLUnconscious = 'block';
             }
         Elseif (($nlhp == $curhp) && ($curhp > 0)) {        //staggered
             $NLHPProgresBarColor = "progress-bar-danger progress-bar-striped";
-            $NLProgresBarText = ' STAGGERED';
+            //$NLProgresBarText = ' STAGGERED';
+            //$NLStaggered = 'block';
         }
         Elseif (($nlhp < $curhp) && ($curhp > 0) && ($nlhp >0)) {          // nonlethal < cur HP
                     IF ($NLHPPercent < 30) {
                         $NLHPPercent = 30;        
                     }                
-            $NLHPProgresBarColor = "progress-bar-danger progress-bar-striped";
+            $NLHPProgresBarColor = "progressNL progress-bar-striped";
             $NLProgresBarText = '';
         }
         elseif (($nlhp <= 0) || ($nlhp == ''))              //No nonletahl HP
@@ -469,14 +481,15 @@ if ($groupMembers_count > 0 )
            $NLProgresBarText = '';
         }
         
-        //$groupMemberStats .= '<div class="progressHP"><div class="progress-bar ' . $HPProgresBarColor . '" id="HPProgressBar' . $gm . '" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%" title="HP: $groupHPCombinedValue"><b>HP</b>: '  . $HPProgresBarText . '</div></div>';    
+        $NLProgressBarTitle = '"Nonlethal damage: ' . $nlhp . '"';
+        $groupNLHPEditableInfo = '<a href="#" id="GroupNLHP' . $gm . '" idval='. $gm . ' data-type="text" data-pk="' . $groupMembers_data[$gm]['user_id'] . '" data-title="Enter Non-lethal Hit Points: ">' . $nlhp . '</a>';        
+        $NLProgresBarText = $groupNLHPEditableInfo . $NLProgresBarText;
         
-        //if ($NLHPPercent <> 0) {
-            
-            $groupNLHPEditableInfo = '<a href="#" id="GroupNLHP' . $gm . '" idval='. $gm . ' data-type="text" data-pk="' . $groupMembers_data[$gm]['user_id'] . '" data-title="Enter Non-lethal Hit Points: ">' . $nlhp . '</a>';        
-            $NLProgresBarText = $groupNLHPEditableInfo . $NLProgresBarText;
-            $groupMemberStats .= '<div class="progressNL"><div class="progress-bar ' . $NLHPProgresBarColor . '" id="NLProgressBar' . $gm . '" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%" title ="Nonlethal damage: "' . $nlhp . '"><b>NL</b>: ' . $NLProgresBarText . '</div></div>';
-        //}        
+        //JGL - increased height to add conditions to be dynamic, div not working properly for inline display.  
+        //$groupMemberStats .= '<div class="progressNL" style="height: 36px"><div class="progress-bar ' . $NLHPProgresBarColor . '" id="NLProgressBar' . $gm . '" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%" title ="Nonlethal damage: "' . $nlhp . '"><div class="left-floater"><b>NL</b>: ' . $NLProgresBarText . '</div><div class="left-floater" id="staggered" style="display:' . $NLStaggered . '">STAGGERED</div><div class="left-floater" id="unconscious" style="display:' . $NLUnconscious . '">UNCONSCIOUS</div></div></div>';
+        //CVC - I plan to remove the conditions from the HP area and add them instead to the buffs/debuffs area.
+        $groupMemberStats .= '<div class="progressNL"><div class="progress-bar ' . $NLHPProgresBarColor . '" id="NLProgressBar' . $gm . '" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%" title ='. $NLProgressBarTitle . '><center><b>NL</b>: ' . $NLProgresBarText . '</center></div></div>';
+
         $groupMemberStats .= "</td>";        
         $groupMemberStats .= "<td>";
         // end hitpoints=================================================
@@ -491,11 +504,11 @@ if ($groupMembers_count > 0 )
             for ($bd = 0; $bd < count($GroupBuffsDebuffs); $bd++) {
                 if ($bd == 0)  {
                     $GroupBuffsDebuffsString = $GroupBuffsDebuffs[$bd];
-                    $additionalTags = "ConditionLabel";
+                    //$additionalTags = "ConditionLabel";
                 } 
                 else {
                     $GroupBuffsDebuffsString .= "," . $GroupBuffsDebuffs[$bd];
-                    $additionalTags = "ConditionLabel";
+                    //$additionalTags = "ConditionLabel";
                 }
             }
         }
@@ -503,7 +516,8 @@ if ($groupMembers_count > 0 )
             $additionalTags = "ConditionLabelEmpty";
         }
         
-        $groupMemberStats .= '<table><td><span class="tags ' . $additionalTags . '" id="tags-editable-' . $gm . '" data-toggle="manual" data-type="select2" data-pk="' . $groupMembers_data[$gm]['user_id'] . '" data-value="'. $GroupBuffsDebuffsString .'" data-original-title="Enter conditions"></span></td><td><span class="conditionAlignRight"><a href="#" id="tags-edit-' . $gm . '" data-editable="tags-editable-' . $gm . '" class=""><i class="fa fa-pencil RedConditionColor"></i></a></span></td></table>';            
+        $groupMemberStats .= '<table><td><span class="tags ' . $additionalTags . '" id="tags-editable-' . $gm . '" data-toggle="manual" data-type="select2" data-pk="' . $groupMembers_data[$gm]['user_id'] . '" data-value="'. $GroupBuffsDebuffsString .'" data-original-title="Enter conditions"></span></td><td><span class="conditionAlignRight"><a href="#" id="tags-edit-' . $gm . '" data-editable="tags-editable-' . $gm . '" class=""><i class="fa fa-pencil ConditionColor"></i></a></span></td></table>';            
+        //$groupMemberStats .= '<table><td><span class="tags ' . $additionalTags . '" id="tags-editable-' . $gm . '" data-toggle="manual" data-type="select2" data-pk="' . $groupMembers_data[$gm]['user_id'] . '" data-value="'. $GroupBuffsDebuffsString .'" data-original-title="Enter conditions"></span></td><td><span class="conditionAlignRight"><a href="#" id="tags-edit-' . $gm . '" data-editable="tags-editable-' . $gm . '" class=""><i class="fa fa-pencil ConditionColor"></i></a></span></td></table>';            
         
         $groupMemberStats .= "</td>";        
         $groupMemberStats .= "<td>";
@@ -597,11 +611,6 @@ if ($groupMembers_count > 0 )
 
         if(isset($GroupHero_point))
         {
-
-            //$groupNLHPEditableInfo = '<a href="#" id="GroupNLHP' . $gm . '" idval='. $gm . ' data-type="text" data-pk="' . $groupMembers_data[$gm]['user_id'] . '" data-title="Enter Non-lethal Hit Points: ">' . $nlhp . '</a>';        
-            //$NLProgresBarText = $groupNLHPEditableInfo . $NLProgresBarText;
-            //$groupMemberStats .= '<div class="progressNL"><div class="progress-bar ' . $NLHPProgresBarColor . '" id="NLProgressBar' . $gm . '" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%" title ="Nonlethal damage: "' . $nlhp . '"><b>NL</b>: ' . $NLProgresBarText . '</div></div>';
-            
             $groupHeroPointsEditableInfo = '<a href="#" id="GroupHeroPoints' . $gm . '" idval='. $gm . ' data-type="text" data-pk="' . $groupMembers_data[$gm]['user_id'] . '" data-title="Enter Hero Points: ">' . $GroupHero_point . '</a>';
             $groupMemberStats .= "<center><span class='InitInfo' title='$curruser Hero Points: $GroupInit'>". $groupHeroPointsEditableInfo."</span></center>";
         }
@@ -768,7 +777,12 @@ if ($groupMembers_count > 0 )
         $groupMemberStats .= "</tr>";
     }
     
+    
+    //$groupMemberStats.='<td><div id="datawrapperbottom"></div></td>';    
+    //$groupMemberStats.='<td><div id="wrapper2">b</div></td>';    
     $groupMemberStats.="</tbody>";
+    $groupMemberStats.='<table><td><div class="checkbox"><label><input type="checkbox" value="checked" id="GroupPartyVitalsHideStaticInfo">Show All</label></div></td>';
+    $groupMemberStats.='<td><div class="checkbox"><label><input type="checkbox" id="ToggleEdit" checked>Enable Editing</label></div></td>';
     $groupMemberStats.="</table>" ; 
     $groupMemberStats.="</div>";
     
@@ -2064,8 +2078,9 @@ if ($submit || $preview || $refresh)
                     );
                     */
                         
-                    $sql = 'UPDATE ' . USER_VARIABLES_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $data_update_post) . ' WHERE user_id = ' . $poster_id;
-                    $db->sql_query($sql);
+                    // CVC - 12/27/15 - Commented out so that information doesn't get written on post save
+                    //$sql = 'UPDATE ' . USER_VARIABLES_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $data_update_post) . ' WHERE user_id = ' . $poster_id;
+                    //$db->sql_query($sql);
                     // to update post table
                         
                 //if ($mode == 'edit') {
@@ -2624,6 +2639,7 @@ $template->assign_vars(array(
     //'NEW_MODE' => request_var('mode'],
     'NEW_MODE' => request_var('mode',''),
     'GROUP_VARIABLE' => $gruop_variables,
+    'DATATABLES' => $EnableDataTables,
     'SPELL_PAGE' => $spell,
     'ACCOUNT_ID' => $accout_id,
     'MODE' => $modes,
@@ -2766,7 +2782,8 @@ $page_data = array(
         'BUTTON_ABILITY' => $button_ability,
         //'TITLE' => ucwords($img1['img_title']),
         'IMAGE' => $images1,
-        'VARIABLE' => 'this is my',
+        
+                'VARIABLE' => 'this is my',
         'PLAYERINFO' => $PLAYERINFO,
         'CLASS_INFO' => $CLASS_INFO,
         'AC' => $AC,                                                             //CVC - 11/28/15 - AC displayed in Vitals area of Posting_editor.
@@ -2806,6 +2823,7 @@ $page_data = array(
         'SELECTED_ALIAS' => $selected_Alias,
         'SELECTED_SIG' => $selected_Sig,
         'GROUP_MEMBERS_STATS' => $groupMemberStats,
+        'DATATABLES' => $EnableDataTables,
         'GROUPCOUNT' => " (" . $groupMembers_count . " members)",
         'GROUPCOUNTVAL' => $groupMembers_count,
                 //CVC - End User Variables

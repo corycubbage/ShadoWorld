@@ -78,20 +78,25 @@ ajax-error-text-timeout="{L_AJAX_ERROR_TEXT_TIMEOUT}" data-ajax-error-text-parse
 <script type="text/javascript" src="{T_THEME_PATH}/js/modernizr.custom.js?assets_version={T_ASSETS_VERSION}"></script>
 
 <script type="text/javascript" src="{T_THEME_PATH}/bower_components/jquery/dist/jquery.min.js?assets_version={T_ASSETS_VERSION}"></script>
-<script type="text/javascript" src="{T_SUPER_TEMPLATE_PATH}/forum_fn.js"></script>
-<script>
-$("#post_as").change(function(){
-	var post_id = $("#post_as").val();
-        var url = document.URL;
-        var message;
-        //if (localStorage.getItem("message")) {
-        //    message = localStorage.getItem("message");
-        //}       
-        //document.getElementById('message').value = message;
-        localStorage.setItem("message", document.getElementById('message').value);
-        window.location = url+'&useraccount='+post_id;
-});
-</script>
+
+<!-- IF DATATABLES -->
+
+    <script type="text/javascript" src="{T_SUPER_TEMPLATE_PATH}/forum_fn.js"></script>
+    <script>
+    $("#post_as").change(function(){
+            var post_id = $("#post_as").val();
+            var url = document.URL;
+            var message;
+            //if (localStorage.getItem("message")) {
+            //    message = localStorage.getItem("message");
+            //}       
+            //document.getElementById('message').value = message;
+            localStorage.setItem("message", document.getElementById('message').value);
+            window.location = url+'&useraccount='+post_id;
+    });
+    </script>
+
+<!-- ENDIF -->
 
 <!-- IF ST_wysiwyg != 0 -->
 	<script type="text/javascript" src="{T_THEME_PATH}/js/sceditor/jquery.sceditor.bbcode.min.js"></script>
@@ -128,28 +133,29 @@ $("#post_as").change(function(){
 </script>
 
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> 
-<script type="text/javascript" src="{T_THEME_PATH}/js/bootstrap.js"></script> 
+    <script type="text/javascript" src="{T_THEME_PATH}/js/bootstrap.js"></script> 
 
-<link href="{T_THEME_PATH}/css/bootstrap-editable.css" rel="stylesheet"/>
-<script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.min.js"></script> -->
-<script type="text/javascript" src="{T_THEME_PATH}/js/editable.js"></script>
+<!-- IF DATATABLES -->    
 
-<script type="text/javascript" src="{T_THEME_PATH}/js/select2.min.js"></script>
-<link href="{T_THEME_PATH}/js/select2.css" rel="stylesheet" />
+    <link href="{T_THEME_PATH}/css/bootstrap-editable.css" rel="stylesheet"/>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.min.js"></script> -->
+    <script type="text/javascript" src="{T_THEME_PATH}/js/editable.js"></script>
 
-<link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
-<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
+    <script type="text/javascript" src="{T_THEME_PATH}/js/select2.min.js"></script>
+    <link href="{T_THEME_PATH}/js/select2.css" rel="stylesheet" />
 
-<script src="//vitalets.github.io/x-editable/assets/mockjax/jquery.mockjax.js"></script>
+    <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" rel="stylesheet" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
 
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.10/css/dataTables.bootstrap.min.css">
-<script type="text/javascript" charset="utf-8" src="//cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="//cdn.datatables.net/1.10.10/js/dataTables.bootstrap.min.js"></script>
+    <script src="//vitalets.github.io/x-editable/assets/mockjax/jquery.mockjax.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.10/css/dataTables.bootstrap.min.css">
+    <script type="text/javascript" charset="utf-8" src="//cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="//cdn.datatables.net/1.10.10/js/dataTables.bootstrap.min.js"></script>
+
+    <!-- ENDIF -->
 
 <link href="{T_ASSETS_PATH}/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
-
-<script type="text/javascript" src="{T_THEME_PATH}/js/underscore-min.js"></script>
-
 
 <!-- INCLUDE components/analytics.html -->
 
